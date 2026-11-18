@@ -75,6 +75,11 @@ final class Updater: ObservableObject {
                 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "lastUpdateCheck")
                 self.available = found
                 done?(found)
+                // Announce each new version once with a small notification card.
+                if let f = found, done == nil, UserDefaults.standard.string(forKey: "notifiedVersion") != f.version || userInitiated {
+                    UserDefaults.standard.set(f.version, forKey: "notifiedVersion")
+                    Toasts.shared.updateAvailable(f)
+                }
                 if userInitiated {
                     self.status = error != nil ? "Couldn't reach GitHub. Try again later."
                         : found == nil ? "You're on the latest version (\(self.current))." : nil
@@ -100,6 +105,28 @@ final class Updater: ObservableObject {
         case .alertThirdButtonReturn: NSWorkspace.shared.open(r.pageURL)
         default: break
         }
+    }
+
+    /// First launch → welcome card; first launch after an update → "what's new" card for this version.
+    func announceLaunch() {
+        let d = UserDefaults.standard
+        let last = d.string(forKey: "lastSeenVersion")
+        d.set(current, forKey: "lastSeenVersion")
+        if last == nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { Toasts.shared.welcome() }
+        } else if last != current {
+            fetchNotes(for: current) { notes in Toasts.shared.whatsNew(version: self.current, notes: notes) }
+        }
+    }
+
+    func fetchNotes(for version: String, _ done: @escaping (String) -> Void) {
+        var req = URLRequest(url: URL(string: "https://api.github.com/repos/\(Self.repo)/releases/tags/v\(version)")!)
+        req.setValue("Thermo-updater", forHTTPHeaderField: "User-Agent")
+        req.timeoutInterval = 15
+        URLSession.shared.dataTask(with: req) { data, _, _ in
+            let body = data.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }?["body"] as? String ?? ""
+            DispatchQueue.main.async { done(body) }
+        }.resume()
     }
 
     /// `Thermo --update-now`: check and install without prompting (used from the command line / for testing).

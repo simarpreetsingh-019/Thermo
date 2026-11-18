@@ -308,11 +308,7 @@ struct SettingsMenu: View {
                 .disabled(settings.mode == .menuBar)
             Toggle("Open at login", isOn: Binding(
                 get: { SMAppService.mainApp.status == .enabled },
-                set: { on in
-                    do { on ? try SMAppService.mainApp.register() : try SMAppService.mainApp.unregister() }
-                    catch { NSSound.beep(); NSLog("Thermo login item: \(error)") }
-                    settings.objectWillChange.send()
-                }))
+                set: { on in setOpenAtLogin(on); settings.objectWillChange.send() }))
             Divider()
             Button("Check for Updates…") { Updater.shared.check(userInitiated: true) }
             Toggle("Check for updates automatically", isOn: Binding(

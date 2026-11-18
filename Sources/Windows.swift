@@ -39,15 +39,21 @@ struct NotchRoot: View {
 
     var body: some View {
         let open = m.expanded
-        let icon = min(notchHeight - 11, 24)   // leave room for the glow so rings are never clipped
+        let icon = min(notchHeight - 8, 26)   // as large as fits, with room left for the glow
         let side = settings.notchSide
-        let gauges: CGFloat = settings.style == .rings ? 90 : 32   // width of the orb or the 3 rings
-        let temp: CGFloat = 50
-        let leftW: CGFloat = side == .right ? 0 : side == .left ? gauges + temp : gauges
-        let rightW: CGFloat = side == .left ? 0 : side == .right ? gauges + temp : temp
+        let rings = settings.style == .rings
+        let temp: CGFloat = 46, sp: CGFloat = 5
+        // Each side is exactly as wide as what it holds; nothing is padded to match the other side.
+        let leftItems: CGFloat = rings ? icon * 2 + sp : icon
+        let rightItems: CGFloat = rings ? icon + sp + temp : temp
+        let allW: CGFloat = leftItems + sp + rightItems
+        let leftW: CGFloat = side == .right ? 0 : side == .left ? allW : leftItems
+        let rightW: CGFloat = side == .left ? 0 : side == .right ? allW : rightItems
         let gap = notchWidth + 12   // keep 6 pt clear on each side of the physical notch
-        let pads: CGFloat = (leftW > 0 ? 10 : 0) + (rightW > 0 ? 10 : 0)
-        let w = open ? Self.panelSize.width : gap + leftW + rightW + pads + (side == .both ? 0 : 20)
+        let lp: CGFloat = leftW > 0 ? leftW + 12 : 8, rp: CGFloat = rightW > 0 ? rightW + 12 : 8   // + outer margin
+        // Shift the strip so the reserved gap sits exactly over the notch even when the sides differ in width.
+        let shift: CGFloat = open ? 0 : (rp - lp) / 2
+        let w = open ? Self.panelSize.width : gap + lp + rp
         let h = open ? notchHeight + Self.panelSize.height : notchHeight
         VStack(spacing: 0) {
             ZStack(alignment: .top) {
@@ -55,12 +61,12 @@ struct NotchRoot: View {
                 VStack(spacing: 0) {
                     HStack(spacing: 0) {
                         HStack(spacing: 5) {
-                            if side == .both { firstHalf(icon) } else if side == .left { firstHalf(icon); secondHalf() }
-                        }.frame(width: leftW, alignment: .leading).padding(.leading, leftW > 0 ? 10 : 0)
+                            if side == .both { leftHalf(icon) } else if side == .left { allItems(icon) }
+                        }.frame(width: leftW, alignment: .trailing).padding(.leading, lp - leftW)
                         Spacer(minLength: gap)
                         HStack(spacing: 5) {
-                            if side == .both { secondHalf() } else if side == .right { firstHalf(icon); secondHalf() }
-                        }.frame(width: rightW, alignment: .trailing).padding(.trailing, rightW > 0 ? 10 : 0)
+                            if side == .both { rightHalf(icon) } else if side == .right { allItems(icon) }
+                        }.frame(width: rightW, alignment: .leading).padding(.trailing, rp - rightW)
                     }
                     .frame(height: notchHeight)
                     .contentShape(Rectangle())
@@ -78,6 +84,7 @@ struct NotchRoot: View {
                 }
             }
             .frame(width: w, height: h)
+            .offset(x: shift)
             .foregroundStyle(.white)
             .onHover { inside in
                 if inside { set(true) } else if !m.pinned { set(false) }
@@ -87,17 +94,19 @@ struct NotchRoot: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
-    @ViewBuilder func firstHalf(_ icon: CGFloat) -> some View {
-        if settings.style == .orb {
-            Orb(m: m, size: icon)
-        } else {
+    // Both-sides layout hugs the notch: left items align toward it, right items start right after it.
+    @ViewBuilder func leftHalf(_ icon: CGFloat) -> some View {
+        if settings.style == .orb { Orb(m: m, size: icon) } else {
             Ring(metric: .cpu, value: m.snap.cpu, size: icon)
             Ring(metric: .ram, value: m.snap.ramPct, size: icon)
-            Ring(metric: .gpu, value: m.snap.gpu, size: icon)
         }
     }
-    @ViewBuilder func secondHalf() -> some View {
-        TempBadge(m: m, big: settings.style == .orb)
+    @ViewBuilder func rightHalf(_ icon: CGFloat) -> some View {
+        if settings.style == .rings { Ring(metric: .gpu, value: m.snap.gpu, size: icon) }
+        TempBadge(m: m, big: true)
+    }
+    @ViewBuilder func allItems(_ icon: CGFloat) -> some View {
+        leftHalf(icon); rightHalf(icon)
     }
 
     func set(_ v: Bool) {
