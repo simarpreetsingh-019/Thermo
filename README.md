@@ -1,4 +1,13 @@
+<p align="center"><img src="docs/icon.png" width="128" alt="Thermo icon"></p>
+
 # Thermo
+
+<p align="center">
+  <b>Created by <a href="https://simarpreet-019.github.io">Simarpreet Singh</a></b> ·
+  <a href="https://x.com/simarpreet_019">@simarpreet_019</a> ·
+  <a href="mailto:simarpreetsingh.019@gmail.com">simarpreetsingh.019@gmail.com</a><br>
+  If Thermo helps you, please ⭐ star the repo and share it!
+</p>
 
 A tiny, live system monitor that lives **in your MacBook's notch**, or floats anywhere on any Mac.
 It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you **what's slowing down, which app is causing it, how long cooling will take, and what to close**.
@@ -59,6 +68,17 @@ How it stays light:
 | Per-app usage | `proc_pid_rusage`; helper processes are grouped under their parent app |
 | Throttling | `ProcessInfo.thermalState` |
 
+## Creator
+
+Thermo is designed and built by **Simarpreet Singh**.
+
+- 🌐 Portfolio: [simarpreet-019.github.io](https://simarpreet-019.github.io)
+- 🐦 X / Twitter: [@simarpreet_019](https://x.com/simarpreet_019)
+- ✉️ Email: [simarpreetsingh.019@gmail.com](mailto:simarpreetsingh.019@gmail.com)
+- 💻 GitHub: [@simarpreetsingh-019](https://github.com/simarpreetsingh-019)
+
+Ideas, bugs or a feature you'd love? [Open an issue](https://github.com/simarpreetsingh-019/Thermo/issues), fork it, or send a pull request. Contributions are welcome!
+
 ## Credits and similar projects
 
 Inspired by [Stats](https://github.com/exelban/stats), [Boring.Notch](https://github.com/TheBoredTeam/boring.notch), [Atoll](https://github.com/Ebullioscopic/Atoll) and [MacThrottle](https://github.com/angristan/MacThrottle).
@@ -66,3 +86,10 @@ Inspired by [Stats](https://github.com/exelban/stats), [Boring.Notch](https://gi
 ## License
 
 MIT
+
+## Security
+
+- **No network access, no telemetry, no admin rights.** Thermo only reads local system statistics and saves its own preferences.
+- **Stopping processes:** apps are asked to quit normally, so they can prompt you to save. Background processes are stopped only after you confirm, and only if they belong to your user account. System-critical ones (loginwindow, Dock, WindowServer and others) are never offered. Each process is re-checked just before it's stopped, so a recycled process ID can't hit the wrong program.
+- **Click-outside detection** watches only *that* a mouse click happened, never where or in which app, and never keystrokes. It needs no Accessibility permission.
+- The app is ad-hoc signed with the hardened runtime. It isn't notarized yet; each release lists its SHA-256 checksum so you can verify the download.

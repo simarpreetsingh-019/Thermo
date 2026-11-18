@@ -25,12 +25,13 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleExecutable</key><string>Thermo</string>
   <key>CFBundleIconFile</key><string>Thermo</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.3</string>
+  <key>CFBundleShortVersionString</key><string>1.3.1</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
+  <key>NSHumanReadableCopyright</key><string>© 2026 Simarpreet Singh · simarpreet-019.github.io · MIT License</string>
 </dict></plist>
 PLIST
-codesign --force -s - "$APP"
+codesign --force --options runtime -s - "$APP"   # ad-hoc + hardened runtime
 echo "Built $APP"
 if [[ "${1:-}" == "--install" ]]; then
   pkill -x Thermo || true
@@ -38,4 +39,8 @@ if [[ "${1:-}" == "--install" ]]; then
   cp -R "$APP" /Applications/
   open /Applications/Thermo.app
   echo "Installed to /Applications/Thermo.app"
+  echo ""
+  echo "  🌡️  Thermo is installed — created by Simarpreet Singh"
+  echo "     simarpreet-019.github.io · x.com/simarpreet_019"
+  echo "     ⭐ Like it? Star or fork: https://github.com/simarpreetsingh-019/Thermo"
 fi

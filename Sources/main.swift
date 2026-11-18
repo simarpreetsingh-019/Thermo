@@ -39,15 +39,16 @@ struct NotchRoot: View {
     static let panelSize = CGSize(width: 460, height: 228)
 
     var body: some View {
-        let s = m.snap
         let open = m.expanded
-        let icon = min(notchHeight - 6, 27)
+        let icon = min(notchHeight - 11, 24)   // leave room for the glow so rings are never clipped
         let side = settings.notchSide
-        let gauges: CGFloat = settings.style == .rings ? 96 : 34   // width of the orb or the 3 rings
+        let gauges: CGFloat = settings.style == .rings ? 90 : 32   // width of the orb or the 3 rings
         let temp: CGFloat = 50
         let leftW: CGFloat = side == .right ? 0 : side == .left ? gauges + temp : gauges
         let rightW: CGFloat = side == .left ? 0 : side == .right ? gauges + temp : temp
-        let w = open ? Self.panelSize.width : notchWidth + leftW + rightW + (side == .both ? 0 : 20)
+        let gap = notchWidth + 12   // keep 6 pt clear on each side of the physical notch
+        let pads: CGFloat = (leftW > 0 ? 10 : 0) + (rightW > 0 ? 10 : 0)
+        let w = open ? Self.panelSize.width : gap + leftW + rightW + pads + (side == .both ? 0 : 20)
         let h = open ? notchHeight + Self.panelSize.height : notchHeight
         VStack(spacing: 0) {
             ZStack(alignment: .top) {
@@ -57,7 +58,7 @@ struct NotchRoot: View {
                         HStack(spacing: 5) {
                             if side == .both { firstHalf(icon) } else if side == .left { firstHalf(icon); secondHalf() }
                         }.frame(width: leftW, alignment: .leading).padding(.leading, leftW > 0 ? 10 : 0)
-                        Spacer(minLength: notchWidth)
+                        Spacer(minLength: gap)
                         HStack(spacing: 5) {
                             if side == .both { secondHalf() } else if side == .right { firstHalf(icon); secondHalf() }
                         }.frame(width: rightW, alignment: .trailing).padding(.trailing, rightW > 0 ? 10 : 0)

@@ -72,7 +72,7 @@ final class ProcSampler {
             if groups[key] == nil {
                 groups[key] = AppUsage(id: key, name: app?.localizedName ?? pname, project: nil, pids: [],
                                        mainPID: app?.processIdentifier ?? pid, cpu: 0, mem: 0,
-                                       isApp: app != nil, canQuit: true, icon: app?.icon)
+                                       isApp: app != nil, canQuit: app != nil, icon: app?.icon)
             }
             groups[key]!.pids.append(pid)
             groups[key]!.cpu += max(cpu, 0)
@@ -85,9 +85,21 @@ final class ProcSampler {
         let top = Set(list.sorted { $0.cpu > $1.cpu }.prefix(12).map(\.id) + list.sorted { $0.mem > $1.mem }.prefix(12).map(\.id))
         for i in list.indices where top.contains(list[i].id) && !list[i].isApp {
             list[i].project = Self.cwdFolder(list[i].mainPID)
-            list[i].canQuit = Self.uid(list[i].mainPID) == myUID
+            list[i].canQuit = Self.safeToStop(list[i].mainPID, name: list[i].name)
         }
         return list
+    }
+
+    /// User-owned processes that keep the session alive: stopping them would log out or break the desktop.
+    static let protected: Set<String> = ["launchd", "loginwindow", "Dock", "SystemUIServer", "ControlCenter",
+        "WindowManager", "NotificationCenter", "Finder", "UserEventAgent", "cfprefsd", "distnoted", "secd",
+        "trustd", "securityd", "sharingd", "coreaudiod", "WindowServer", "Thermo"]
+
+    /// Only our own user's, non-critical processes may be stopped, and only if the pid still belongs to the
+    /// same process we listed (guards against pid reuse between listing and clicking).
+    static func safeToStop(_ pid: pid_t, name: String) -> Bool {
+        pid > 1 && pid != getpid() && uid(pid) == getuid()
+            && Self.name(pid) == name && !protected.contains(name)
     }
 
     static func looksLikeHelper(_ name: String, appName: String) -> Bool {
@@ -214,7 +226,7 @@ enum Advisor {
 }
 
 func stopApp(_ a: AppUsage) {
-    if a.isApp, let app = NSRunningApplication(processIdentifier: a.mainPID) {
+    if a.isApp, let app = NSRunningApplication(processIdentifier: a.mainPID), app.localizedName == a.name {
         app.terminate()   // graceful: the app can ask to save documents
         return
     }
@@ -225,6 +237,8 @@ func stopApp(_ a: AppUsage) {
     alert.addButton(withTitle: "Stop")
     alert.addButton(withTitle: "Cancel")
     if alert.runModal() == .alertFirstButtonReturn {
-        for pid in a.pids { kill(pid, SIGTERM) }
+        // Re-check right before signalling: the pid may have exited and been reused while the alert was open.
+        guard ProcSampler.safeToStop(a.mainPID, name: a.name) else { NSSound.beep(); return }
+        kill(a.mainPID, SIGTERM)   // background entries are always a single process
     }
 }

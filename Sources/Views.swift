@@ -248,6 +248,8 @@ struct ExpandedPanel: View {
     }
 }
 
+private func open(_ url: String) { if let u = URL(string: url) { NSWorkspace.shared.open(u) } }
+
 struct SettingsMenu: View {
     @ObservedObject var settings: Settings
     var body: some View {
@@ -283,6 +285,15 @@ struct SettingsMenu: View {
                     settings.objectWillChange.send()
                 }))
             Divider()
+            Menu("About Thermo") {
+                Text("Thermo \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") — by Simarpreet Singh")
+                Button("Portfolio: simarpreet-019.github.io") { open("https://simarpreet-019.github.io") }
+                Button("X / Twitter: @simarpreet_019") { open("https://x.com/simarpreet_019") }
+                Button("Email the creator") { open("mailto:simarpreetsingh.019@gmail.com?subject=Thermo") }
+                Divider()
+                Button("⭐ Star Thermo on GitHub") { open("https://github.com/simarpreetsingh-019/Thermo") }
+                Button("Report an issue or idea") { open("https://github.com/simarpreetsingh-019/Thermo/issues/new") }
+            }
             Button("Open Activity Monitor") { NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app")) }
             Button("Quit") { NSApp.terminate(nil) }
         } label: {
