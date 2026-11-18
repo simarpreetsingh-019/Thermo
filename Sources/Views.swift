@@ -9,17 +9,23 @@ import ServiceManagement
 enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", thermal = "Heat" }
 enum DisplayMode: String, CaseIterable { case notch = "Around the notch", floating = "Floating (movable)", menuBar = "Menu bar only" }
 enum Orientation: String, CaseIterable { case horizontal = "Horizontal", vertical = "Vertical" }
+enum NotchSide: String, CaseIterable { case both = "Both sides", left = "Left of notch", right = "Right of notch" }
+enum CompactStyle: String, CaseIterable { case orb = "Single orb", rings = "All gauges" }
 
 final class Settings: ObservableObject {
     private let d = UserDefaults.standard
     @Published var mode: DisplayMode { didSet { d.set(mode.rawValue, forKey: "mode") } }
     @Published var orientation: Orientation { didSet { d.set(orientation.rawValue, forKey: "orientation") } }
     @Published var menuBarItem: Bool { didSet { d.set(menuBarItem, forKey: "menuBarItem") } }
+    @Published var style: CompactStyle { didSet { d.set(style.rawValue, forKey: "style") } }
+    @Published var notchSide: NotchSide { didSet { d.set(notchSide.rawValue, forKey: "notchSide") } }
 
     init(hasNotch: Bool) {
         mode = DisplayMode(rawValue: d.string(forKey: "mode") ?? "") ?? (hasNotch ? .notch : .floating)
         orientation = Orientation(rawValue: d.string(forKey: "orientation") ?? "") ?? .horizontal
-        menuBarItem = d.object(forKey: "menuBarItem") as? Bool ?? false
+        menuBarItem = d.object(forKey: "menuBarItem") as? Bool ?? true
+        style = CompactStyle(rawValue: d.string(forKey: "style") ?? "") ?? .orb
+        notchSide = NotchSide(rawValue: d.string(forKey: "notchSide") ?? "") ?? .both
     }
 }
 
@@ -169,8 +175,10 @@ struct TempPill: View {
 struct CompactStrip: View {
     @ObservedObject var m: Monitor
     let vertical: Bool
+    var orb = false
     var body: some View {
         let s = m.snap
+        if orb { Orb(m: m, size: 34).padding(6) } else {
         let items = Group {
             Ring(metric: .cpu, value: s.cpu, size: 26, showLabel: true)
             Ring(metric: .ram, value: s.ramPct, size: 26, showLabel: true)
@@ -181,6 +189,7 @@ struct CompactStrip: View {
             VStack(spacing: 8) { items }.padding(.horizontal, 8).padding(.vertical, 10)
         } else {
             HStack(spacing: 10) { items }.padding(.horizontal, 12).padding(.vertical, 7)
+        }
         }
     }
 }
@@ -246,11 +255,19 @@ struct SettingsMenu: View {
             Picker("Show", selection: $settings.mode) {
                 ForEach(DisplayMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
             }
+            Picker("Compact style", selection: $settings.style) {
+                ForEach(CompactStyle.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+            }
+            if settings.mode == .notch {
+                Picker("Notch side", selection: $settings.notchSide) {
+                    ForEach(NotchSide.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                }
+            }
             Picker("Floating layout", selection: $settings.orientation) {
                 ForEach(Orientation.allCases, id: \.self) { Text($0.rawValue).tag($0) }
             }
             if settings.mode == .floating {
-                Menu("Move to corner") {
+                Menu("Move to") {
                     ForEach(Corner.allCases, id: \.self) { c in
                         Button(c.rawValue) { NotificationCenter.default.post(name: .moveToCorner, object: c) }
                     }
@@ -474,12 +491,13 @@ struct Ring: View {
 
 struct TempBadge: View {
     @ObservedObject var m: Monitor
+    var big = false
     var body: some View {
         if let t = m.snap.hottest {
             let alert = m.advice.level >= .hot
             HStack(spacing: 2) {
-                Image(systemName: alert ? "flame.fill" : "thermometer.medium").font(.system(size: 10, weight: .bold))
-                Text("\(Int(t))°").font(.system(size: 11, weight: .heavy, design: .rounded)).monospacedDigit()
+                Image(systemName: alert ? "flame.fill" : "thermometer.medium").font(.system(size: big ? 12 : 11, weight: .bold))
+                Text("\(Int(t))°").font(.system(size: big ? 14 : 12, weight: .heavy, design: .rounded)).monospacedDigit()
             }
             .foregroundStyle(heat(t))
             .shadow(color: heat(t).opacity(alert ? 0.9 : 0.4), radius: alert ? 4 : 2)
@@ -488,5 +506,48 @@ struct TempBadge: View {
             .fixedSize()
             .help("Hottest sensor \(Int(t))°C — \(m.advice.level.title)")
         }
+    }
+}
+
+// MARK: - Orb: one glanceable indicator showing whatever matters most right now
+
+struct OrbReading { let label: String; let text: String; let fraction: Double; let color: Color }
+
+func headline(_ m: Monitor) -> OrbReading {
+    let s = m.snap
+    if m.advice.level >= .warm, let t = s.hottest {
+        return OrbReading(label: "TEMP", text: "\(Int(t))°", fraction: (t - 30) / 70, color: heat(t))
+    }
+    if s.ramPct >= 85 { return OrbReading(label: "RAM", text: "\(Int(s.ramPct))", fraction: s.ramPct / 100, color: load(s.ramPct)) }
+    let gpu = s.gpu ?? 0
+    let (label, v, tint) = gpu > s.cpu ? ("GPU", gpu, Metric.gpu.tint) : ("CPU", s.cpu, Metric.cpu.tint)
+    return OrbReading(label: label, text: "\(Int(v))", fraction: v / 100, color: v >= 60 ? load(v) : tint)
+}
+
+struct Orb: View {
+    @ObservedObject var m: Monitor
+    var size: CGFloat = 26
+    var body: some View {
+        let r = headline(m)
+        let alert = m.advice.level >= .hot
+        ZStack {
+            Circle().fill(RadialGradient(colors: [r.color.opacity(0.55), r.color.opacity(0.08)],
+                                         center: .center, startRadius: 0, endRadius: size * 0.6))
+            Circle().stroke(r.color.opacity(0.2), lineWidth: size * 0.09)
+            Circle().trim(from: 0, to: min(max(r.fraction, 0.02), 1))
+                .stroke(AngularGradient(colors: [r.color.opacity(0.4), r.color], center: .center),
+                        style: StrokeStyle(lineWidth: size * 0.09, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .shadow(color: r.color, radius: size * 0.12)
+                .animation(.easeOut(duration: 0.6), value: r.fraction)
+            VStack(spacing: -1) {
+                Text(r.text).font(.system(size: size * 0.36, weight: .heavy, design: .rounded)).monospacedDigit()
+                if size >= 30 { Text(r.label).font(.system(size: size * 0.17, weight: .bold)).opacity(0.7) }
+            }.foregroundStyle(.white)
+        }
+        .frame(width: size, height: size)
+        .scaleEffect(alert && m.blink ? 1.08 : 1)
+        .animation(.easeInOut(duration: 0.7), value: m.blink)
+        .help("\(r.label) \(r.text) — click for details")
     }
 }

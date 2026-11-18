@@ -5,7 +5,7 @@ import AppKit
 import SwiftUI
 import Combine
 
-enum Corner: String, CaseIterable { case topLeft = "Top left", topRight = "Top right", bottomLeft = "Bottom left", bottomRight = "Bottom right" }
+enum Corner: String, CaseIterable { case topLeft = "Top left", topCenter = "Top centre", topRight = "Top right", center = "Centre of screen", bottomLeft = "Bottom left", bottomRight = "Bottom right" }
 extension Notification.Name { static let moveToCorner = Notification.Name("moveToCorner")
     static let detachFromNotch = Notification.Name("detachFromNotch")
     static let dockToNotch = Notification.Name("dockToNotch") }
@@ -35,13 +35,19 @@ struct NotchRoot: View {
     @ObservedObject var m: Monitor
     @ObservedObject var settings: Settings
     let notchWidth: CGFloat, notchHeight: CGFloat
-    static let wing: CGFloat = 58
+    static let wing: CGFloat = 62
     static let panelSize = CGSize(width: 460, height: 228)
 
     var body: some View {
         let s = m.snap
         let open = m.expanded
-        let w = open ? Self.panelSize.width : notchWidth + Self.wing * 2
+        let icon = min(notchHeight - 6, 27)
+        let side = settings.notchSide
+        let gauges: CGFloat = settings.style == .rings ? 96 : 34   // width of the orb or the 3 rings
+        let temp: CGFloat = 50
+        let leftW: CGFloat = side == .right ? 0 : side == .left ? gauges + temp : gauges
+        let rightW: CGFloat = side == .left ? 0 : side == .right ? gauges + temp : temp
+        let w = open ? Self.panelSize.width : notchWidth + leftW + rightW + (side == .both ? 0 : 20)
         let h = open ? notchHeight + Self.panelSize.height : notchHeight
         VStack(spacing: 0) {
             ZStack(alignment: .top) {
@@ -49,14 +55,12 @@ struct NotchRoot: View {
                 VStack(spacing: 0) {
                     HStack(spacing: 0) {
                         HStack(spacing: 5) {
-                            Ring(metric: .cpu, value: s.cpu)
-                            Ring(metric: .ram, value: s.ramPct)
-                        }.frame(width: Self.wing, alignment: .leading).padding(.leading, 10)
+                            if side == .both { firstHalf(icon) } else if side == .left { firstHalf(icon); secondHalf() }
+                        }.frame(width: leftW, alignment: .leading).padding(.leading, leftW > 0 ? 10 : 0)
                         Spacer(minLength: notchWidth)
                         HStack(spacing: 5) {
-                            Ring(metric: .gpu, value: s.gpu)
-                            TempBadge(m: m)
-                        }.frame(width: Self.wing, alignment: .trailing).padding(.trailing, 10)
+                            if side == .both { secondHalf() } else if side == .right { firstHalf(icon); secondHalf() }
+                        }.frame(width: rightW, alignment: .trailing).padding(.trailing, rightW > 0 ? 10 : 0)
                     }
                     .frame(height: notchHeight)
                     .contentShape(Rectangle())
@@ -81,6 +85,19 @@ struct NotchRoot: View {
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+
+    @ViewBuilder func firstHalf(_ icon: CGFloat) -> some View {
+        if settings.style == .orb {
+            Orb(m: m, size: icon)
+        } else {
+            Ring(metric: .cpu, value: m.snap.cpu, size: icon)
+            Ring(metric: .ram, value: m.snap.ramPct, size: icon)
+            Ring(metric: .gpu, value: m.snap.gpu, size: icon)
+        }
+    }
+    @ViewBuilder func secondHalf() -> some View {
+        TempBadge(m: m, big: settings.style == .orb)
     }
 
     func set(_ v: Bool) {
@@ -111,7 +128,8 @@ final class FloatController {
         // Grow toward the screen centre so the panel never runs off-screen.
         let anchorRight = f.midX > vis.midX
         let anchorTop = f.midY > vis.midY
-        let newX = anchorRight ? f.maxX - size.width : f.minX
+        let centred = abs(f.midX - vis.midX) < 40
+        let newX = centred ? f.midX - size.width / 2 : anchorRight ? f.maxX - size.width : f.minX
         let newY = anchorTop ? f.maxY - size.height : f.minY
         f = NSRect(x: newX, y: newY, width: size.width, height: size.height)
         panel.setFrame(clamp(f, vis), display: true)
@@ -152,8 +170,16 @@ final class FloatController {
         guard let panel, let screen = panel.screen ?? NSScreen.main else { return }
         let v = screen.visibleFrame, m: CGFloat = 12
         var f = panel.frame
-        f.origin.x = (c == .topLeft || c == .bottomLeft) ? v.minX + m : v.maxX - f.width - m
-        f.origin.y = (c == .topLeft || c == .topRight) ? v.maxY - f.height - m : v.minY + m
+        switch c {
+        case .topLeft, .bottomLeft: f.origin.x = v.minX + m
+        case .topRight, .bottomRight: f.origin.x = v.maxX - f.width - m
+        case .topCenter, .center: f.origin.x = v.midX - f.width / 2
+        }
+        switch c {
+        case .topLeft, .topRight, .topCenter: f.origin.y = v.maxY - f.height - m
+        case .bottomLeft, .bottomRight: f.origin.y = v.minY + m
+        case .center: f.origin.y = v.midY - f.height / 2
+        }
         panel.setFrame(f, display: true, animate: true)
         UserDefaults.standard.set(NSStringFromPoint(f.origin), forKey: "floatOrigin")
     }
@@ -179,13 +205,13 @@ struct FloatingRoot: View {
                     ExpandedPanel(m: m, settings: settings, onCollapse: { m.expanded = false })
                 }
             } else {
-                CompactStrip(m: m, vertical: settings.orientation == .vertical)
+                CompactStrip(m: m, vertical: settings.orientation == .vertical, orb: settings.style == .orb)
                     .contentShape(Rectangle())
                     .onTapGesture { m.expanded = true }
             }
         }
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.black.opacity(0.88))
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.12))))
+        .background(RoundedRectangle(cornerRadius: m.expanded || settings.style == .rings ? 14 : 23).fill(Color.black.opacity(0.88))
+            .overlay(RoundedRectangle(cornerRadius: m.expanded || settings.style == .rings ? 14 : 23).stroke(.white.opacity(0.12))))
         .foregroundStyle(.white)
         .fixedSize()
         .background(GeometryReader { g in Color.clear.preference(key: SizeKey.self, value: g.size) })
@@ -227,6 +253,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .store(in: &bag)
         monitor.$snap.sink { [weak self] _ in DispatchQueue.main.async { self?.updateStatusTitle() } }.store(in: &bag)
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main) { [weak self] _ in self?.apply(force: true) }
+        // A click anywhere outside Thermo collapses the expanded panel.
+        NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
+            guard let m = self?.monitor, m.expanded else { return }
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { m.pinned = false; m.expanded = false }
+        }
         NotificationCenter.default.addObserver(forName: .detachFromNotch, object: nil, queue: .main) { [weak self] _ in
             let p = NSEvent.mouseLocation
             UserDefaults.standard.set(NSStringFromPoint(NSPoint(x: p.x - 80, y: p.y - 30)), forKey: "floatOrigin")
@@ -278,7 +309,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             notchW = screen.frame.width - l.width - r.width
             notchH = screen.safeAreaInsets.top
         }
-        let winW = max(NotchRoot.panelSize.width, notchW + NotchRoot.wing * 2 + 28) + 40
+        let winW = max(NotchRoot.panelSize.width, notchW + NotchRoot.wing * 4 + 40) + 40
         let winH = notchH + NotchRoot.panelSize.height + 20
         let p = basePanel(NSRect(x: screen.frame.midX - winW / 2, y: screen.frame.maxY - winH, width: winW, height: winH))
         p.level = .statusBar + 1
@@ -297,7 +328,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let p = basePanel(NSRect(origin: origin, size: CGSize(width: 300, height: 34)))
         p.level = .floating
         floatCtl.panel = p
-        p.contentView = NSHostingView(rootView: FloatingRoot(m: monitor, settings: settings, ctl: floatCtl))
+        let host = NSHostingView(rootView: FloatingRoot(m: monitor, settings: settings, ctl: floatCtl))
+        host.sizingOptions = []   // FloatController positions/sizes the window so it stays on screen
+        p.contentView = host
         p.orderFrontRegardless()
         panel = p
     }
@@ -327,6 +360,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let b = statusItem?.button else { return }
         let s = monitor.snap
         var parts = ["CPU \(Int(s.cpu))%", "RAM \(Int(s.ramPct))%"]
+        if let g = s.gpu { parts.append("GPU \(Int(g))%") }
         if let t = s.hottest { parts.append((monitor.advice.level >= .hot ? "⚠︎ " : "") + "\(Int(t))°") }
         b.attributedTitle = NSAttributedString(string: parts.joined(separator: "  "),
             attributes: [.font: NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium)])
