@@ -28,7 +28,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleShortVersionString</key><string>1.4.0</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
-  <key>NSHumanReadableCopyright</key><string>© 2026 Simarpreet Singh · simarpreet-019.github.io · MIT License</string>
+  <key>NSHumanReadableCopyright</key><string>© 2026 Simarpreet Singh · simarpreetsingh-019.github.io · MIT License</string>
 </dict></plist>
 PLIST
 codesign --force --options runtime -s - "$APP"   # ad-hoc + hardened runtime
@@ -41,6 +41,6 @@ if [[ "${1:-}" == "--install" ]]; then
   echo "Installed to /Applications/Thermo.app"
   echo ""
   echo "  🌡️  Thermo is installed — created by Simarpreet Singh"
-  echo "     simarpreet-019.github.io · x.com/simarpreet_019"
+  echo "     simarpreetsingh-019.github.io · x.com/simarpreet_019"
   echo "     ⭐ Like it? Star or fork: https://github.com/simarpreetsingh-019/Thermo"
 fi

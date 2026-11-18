@@ -20,7 +20,7 @@ gh release create "v$V" build/Thermo.zip build/Thermo.zip.sha256 --repo "$REPO" 
 
 Already have Thermo? It updates itself — look for the orange **Update** button in the panel, or run \`brew upgrade --cask thermo\`.
 
-Made by **Simarpreet Singh** · [simarpreet-019.github.io](https://simarpreet-019.github.io) · [@simarpreet_019](https://x.com/simarpreet_019)
+Made by **Simarpreet Singh** · [simarpreetsingh-019.github.io](https://simarpreetsingh-019.github.io) · [@simarpreet_019](https://x.com/simarpreet_019)
 💬 [Send feedback](https://github.com/$REPO/issues/new/choose) · ⭐ Star the repo if Thermo helps you!"
 
 TAP=$(mktemp -d)

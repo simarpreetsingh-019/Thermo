@@ -262,9 +262,26 @@ struct ExpandedPanel: View {
 
 private func open(_ url: String) { if let u = URL(string: url) { NSWorkspace.shared.open(u) } }
 
+/// Set by tools/demo.swift: ImageRenderer can't draw menus or scroll views, so plain stand-ins are used.
+enum Offscreen { static var rendering = false }
+
+/// A ScrollView in the app; a plain stack when rendering the README demo offscreen.
+struct MaybeScroll<C: View>: View {
+    @ViewBuilder let content: C
+    var body: some View {
+        if Offscreen.rendering { VStack(spacing: 0) { content }.fixedSize(horizontal: false, vertical: true).frame(minHeight: 0, maxHeight: .infinity, alignment: .top).clipped() } else { ScrollView { content } }
+    }
+}
+
 struct SettingsMenu: View {
     @ObservedObject var settings: Settings
     var body: some View {
+        if Offscreen.rendering {
+            Image(systemName: "gearshape.fill").font(.system(size: 11))
+                .frame(width: 22, height: 22).background(Circle().fill(.white.opacity(0.1)))
+        } else { realMenu }
+    }
+    var realMenu: some View {
         Menu {
             Picker("Show", selection: $settings.mode) {
                 ForEach(DisplayMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
@@ -303,7 +320,7 @@ struct SettingsMenu: View {
             Button("Send Feedback…") { sendFeedback() }
             Menu("About Thermo") {
                 Text("Thermo \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") — by Simarpreet Singh")
-                Button("Portfolio: simarpreet-019.github.io") { open("https://simarpreet-019.github.io") }
+                Button("Portfolio: simarpreetsingh-019.github.io") { open("https://simarpreetsingh-019.github.io") }
                 Button("X / Twitter: @simarpreet_019") { open("https://x.com/simarpreet_019") }
                 Button("Send feedback") { sendFeedback() }
                 Divider()
@@ -419,11 +436,20 @@ struct AppsTab: View {
             HStack {
                 Text("Top apps & processes").font(.system(size: 11, weight: .semibold)).foregroundStyle(.secondary)
                 Spacer()
-                Picker("", selection: $m.sortByMemory) {
-                    Text("CPU").tag(false); Text("Memory").tag(true)
-                }.pickerStyle(.segmented).frame(width: 130).labelsHidden()
+                if Offscreen.rendering {
+                    HStack(spacing: 0) {
+                        ForEach([("CPU", false), ("Memory", true)], id: \.0) { label, mem in
+                            Text(label).font(.system(size: 11, weight: .medium)).frame(maxWidth: .infinity).padding(.vertical, 3)
+                                .background(RoundedRectangle(cornerRadius: 5).fill(.white.opacity(m.sortByMemory == mem ? 0.22 : 0)))
+                        }
+                    }.padding(2).background(RoundedRectangle(cornerRadius: 7).fill(.white.opacity(0.08))).frame(width: 130)
+                } else {
+                    Picker("", selection: $m.sortByMemory) {
+                        Text("CPU").tag(false); Text("Memory").tag(true)
+                    }.pickerStyle(.segmented).frame(width: 130).labelsHidden()
+                }
             }
-            ScrollView {
+            MaybeScroll {
                 VStack(spacing: 1) {
                     ForEach(m.sortedApps) { AppRow(a: $0, highlightMemory: m.sortByMemory) }
                 }
@@ -436,7 +462,7 @@ struct ThermalTab: View {
     @ObservedObject var m: Monitor
     var body: some View {
         let a = m.advice
-        ScrollView {
+        MaybeScroll {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .center, spacing: 10) {
                     Image(systemName: a.level >= .hot ? "flame.fill" : a.level == .warm ? "thermometer.medium" : "snowflake")

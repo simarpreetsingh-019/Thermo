@@ -3,7 +3,7 @@
 # Thermo
 
 <p align="center">
-  <b>Created by <a href="https://simarpreet-019.github.io">Simarpreet Singh</a></b> ·
+  <b>Created by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></b> ·
   <a href="https://x.com/simarpreet_019">@simarpreet_019</a> ·
   <a href="mailto:simarpreetsingh.019@gmail.com">simarpreetsingh.019@gmail.com</a><br>
   If Thermo helps you, please ⭐ star the repo and share it!
@@ -11,6 +11,8 @@
 
 A tiny, live system monitor that lives **in your MacBook's notch**, or floats anywhere on any Mac.
 It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you **what's slowing down, which app is causing it, how long cooling will take, and what to close**.
+
+<p align="center"><img src="docs/demo.gif" width="720" alt="Thermo demo: notch gauges, expanded panel, apps list and heat advisor"></p>
 
 - **Notch HUD:** glowing ring gauges beside the notch. Hover to expand, click 📌 to pin.
 - **Pull it out:** drag the notch down and it becomes a floating widget. Drop it back at the top centre to re-dock.
@@ -80,7 +82,7 @@ How it stays light:
 
 Thermo is designed and built by **Simarpreet Singh**.
 
-- 🌐 Portfolio: [simarpreet-019.github.io](https://simarpreet-019.github.io)
+- 🌐 Portfolio: [simarpreetsingh-019.github.io](https://simarpreetsingh-019.github.io)
 - 🐦 X / Twitter: [@simarpreet_019](https://x.com/simarpreet_019)
 - ✉️ Email: [simarpreetsingh.019@gmail.com](mailto:simarpreetsingh.019@gmail.com)
 - 💻 GitHub: [@simarpreetsingh-019](https://github.com/simarpreetsingh-019)
