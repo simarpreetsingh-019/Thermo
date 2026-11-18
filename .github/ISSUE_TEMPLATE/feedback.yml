@@ -1,0 +1,31 @@
+name: 💬 Feedback or idea
+description: Tell me what you like, what's missing, or what you'd love Thermo to do next
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying Thermo! 🙌 Every bit of feedback helps shape the next version.
+        — Simarpreet
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What's on your mind?
+      placeholder: Loved the notch view, but I'd like…
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How do you use Thermo?
+      options: [Around the notch, Floating widget, Menu bar, Just trying it out]
+  - type: input
+    id: environment
+    attributes:
+      label: Version & Mac
+      description: Filled in automatically when you use "Send Feedback…" in the app
+  - type: input
+    id: contact
+    attributes:
+      label: Want a reply somewhere else? (optional)
+      placeholder: X/Twitter handle, Telegram, email…

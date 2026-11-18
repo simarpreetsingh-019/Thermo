@@ -40,6 +40,14 @@ git clone https://github.com/simarpreetsingh-019/Thermo && cd Thermo && ./build.
 
 Requires macOS 13+. It's a universal app (Apple Silicon and Intel), but temperature sensors are read on Apple Silicon only.
 
+## Updates
+
+Thermo checks GitHub for a new version once a day. When one is out, an orange **Update** button appears in the panel: one click downloads it, verifies it and relaunches. You can also use ⚙ → **Check for Updates…**, or `brew upgrade --cask thermo` if you installed it with Homebrew.
+
+## Feedback
+
+I'd love to hear from you! Use ⚙ → **Send Feedback…** in the app (it fills in your version and Mac model), [open a feedback issue](https://github.com/simarpreetsingh-019/Thermo/issues/new/choose), DM me on [X](https://x.com/simarpreet_019), or email me (address in the Creator section below).
+
 ## How light is it?
 
 Measured on an M5 MacBook:
@@ -50,7 +58,7 @@ Measured on an M5 MacBook:
 | Memory (physical footprint) | **~16 MB** |
 | CPU, notch collapsed | **~2.7% of one core**, about 0.3% of the whole chip |
 | GPU | none beyond normal window drawing |
-| Disk / network | none: it writes only a few settings and never connects to the network |
+| Disk / network | writes only a few settings; one small update check per day |
 
 How it stays light:
 - It samples every 2 s, with timer tolerance so macOS can batch wake-ups.
@@ -89,7 +97,8 @@ MIT
 
 ## Security
 
-- **No network access, no telemetry, no admin rights.** Thermo only reads local system statistics and saves its own preferences.
+- **No telemetry, no admin rights.** Thermo reads local system statistics and saves its own preferences. Its only network request is a daily update check against GitHub Releases, which sends nothing about you or your Mac. You can turn it off with ⚙ → "Check for updates automatically".
+- **Updates are verified:** the downloaded zip must match the SHA-256 checksum published with the release, and the app inside must pass `codesign --verify` and carry Thermo's bundle ID before it replaces the installed copy.
 - **Stopping processes:** apps are asked to quit normally, so they can prompt you to save. Background processes are stopped only after you confirm, and only if they belong to your user account. System-critical ones (loginwindow, Dock, WindowServer and others) are never offered. Each process is re-checked just before it's stopped, so a recycled process ID can't hit the wrong program.
 - **Click-outside detection** watches only *that* a mouse click happened, never where or in which app, and never keystrokes. It needs no Accessibility permission.
 - The app is ad-hoc signed with the hardened runtime. It isn't notarized yet; each release lists its SHA-256 checksum so you can verify the download.

@@ -199,6 +199,7 @@ struct CompactStrip: View {
 struct ExpandedPanel: View {
     @ObservedObject var m: Monitor
     @ObservedObject var settings: Settings
+    @ObservedObject var up = Updater.shared
     var showPin = false
     var onCollapse: (() -> Void)? = nil
 
@@ -220,6 +221,14 @@ struct ExpandedPanel: View {
                     }.buttonStyle(.plain)
                 }
                 Spacer()
+                if let r = up.available {
+                    Button { up.promptInstall() } label: {
+                        Label("Update \(r.version)", systemImage: "arrow.down.circle.fill")
+                            .font(.system(size: 10, weight: .bold))
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .background(Capsule().fill(Color.orange.opacity(0.9)))
+                    }.buttonStyle(.plain).help("A new version of Thermo is available")
+                }
                 if showPin {
                     iconButton(m.pinned ? "pin.fill" : "pin", help: m.pinned ? "Unpin" : "Keep open") { m.pinned.toggle() }
                 }
@@ -234,6 +243,9 @@ struct ExpandedPanel: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            if let st = up.status {
+                Text(st).font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1)
+            }
         }
         .padding(14)
         .frame(width: 440, height: 210)
@@ -285,11 +297,15 @@ struct SettingsMenu: View {
                     settings.objectWillChange.send()
                 }))
             Divider()
+            Button("Check for Updates…") { Updater.shared.check(userInitiated: true) }
+            Toggle("Check for updates automatically", isOn: Binding(
+                get: { Updater.shared.autoCheck }, set: { Updater.shared.autoCheck = $0 }))
+            Button("Send Feedback…") { sendFeedback() }
             Menu("About Thermo") {
                 Text("Thermo \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") — by Simarpreet Singh")
                 Button("Portfolio: simarpreet-019.github.io") { open("https://simarpreet-019.github.io") }
                 Button("X / Twitter: @simarpreet_019") { open("https://x.com/simarpreet_019") }
-                Button("Email the creator") { open("mailto:simarpreetsingh.019@gmail.com?subject=Thermo") }
+                Button("Send feedback") { sendFeedback() }
                 Divider()
                 Button("⭐ Star Thermo on GitHub") { open("https://github.com/simarpreetsingh-019/Thermo") }
                 Button("Report an issue or idea") { open("https://github.com/simarpreetsingh-019/Thermo/issues/new") }

@@ -264,6 +264,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ n: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        _ = Updater.shared   // starts the daily update check
+        if CommandLine.arguments.contains("--update-now") { Updater.shared.updateNow() }
         apply(force: true)
         settings.objectWillChange
             .sink { [weak self] in DispatchQueue.main.async { self?.apply() } }
