@@ -214,8 +214,6 @@ struct FloatingRoot: View {
             .overlay(RoundedRectangle(cornerRadius: m.expanded || settings.style == .rings ? 14 : 23).stroke(.white.opacity(0.12))))
         .foregroundStyle(.white)
         .fixedSize()
-        .background(GeometryReader { g in Color.clear.preference(key: SizeKey.self, value: g.size) })
-        .onPreferenceChange(SizeKey.self) { ctl.resize(to: $0) }
         .simultaneousGesture(DragGesture(minimumDistance: 4)
             .onChanged { _ in ctl.drag(changed: true) }
             .onEnded { _ in ctl.drag(changed: false) })
@@ -229,6 +227,24 @@ struct FloatingRoot: View {
 }
 
 // MARK: - App
+
+/// Reports its SwiftUI content size so the floating window can be resized (and kept on screen) by us.
+final class FitHostingView<V: View>: NSHostingView<V> {
+    var onFit: ((CGSize) -> Void)?
+    private var pending = false
+    override func invalidateIntrinsicContentSize() {
+        super.invalidateIntrinsicContentSize()
+        guard !pending else { return }
+        pending = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.pending = false
+            let s = self.intrinsicContentSize
+            if s.width > 0, s.height > 0 { self.onFit?(s) }
+        }
+    }
+    override func viewDidMoveToWindow() { super.viewDidMoveToWindow(); invalidateIntrinsicContentSize() }
+}
 
 final class OverlayPanel: NSPanel {
     override var canBecomeKey: Bool { true }   // lets menus and buttons work
@@ -328,8 +344,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let p = basePanel(NSRect(origin: origin, size: CGSize(width: 300, height: 34)))
         p.level = .floating
         floatCtl.panel = p
-        let host = NSHostingView(rootView: FloatingRoot(m: monitor, settings: settings, ctl: floatCtl))
-        host.sizingOptions = []   // FloatController positions/sizes the window so it stays on screen
+        let host = FitHostingView(rootView: FloatingRoot(m: monitor, settings: settings, ctl: floatCtl))
+        host.sizingOptions = [.intrinsicContentSize]   // no auto window resizing; FloatController keeps it on screen
+        host.onFit = { [weak self] size in self?.floatCtl.resize(to: size) }
         p.contentView = host
         p.orderFrontRegardless()
         panel = p

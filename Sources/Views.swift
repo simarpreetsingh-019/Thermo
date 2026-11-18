@@ -23,7 +23,7 @@ final class Settings: ObservableObject {
     init(hasNotch: Bool) {
         mode = DisplayMode(rawValue: d.string(forKey: "mode") ?? "") ?? (hasNotch ? .notch : .floating)
         orientation = Orientation(rawValue: d.string(forKey: "orientation") ?? "") ?? .horizontal
-        menuBarItem = d.object(forKey: "menuBarItem") as? Bool ?? true
+        menuBarItem = d.object(forKey: "menuBarItem") as? Bool ?? !hasNotch   // notch Macs already see stats at the notch
         style = CompactStyle(rawValue: d.string(forKey: "style") ?? "") ?? .orb
         notchSide = NotchSide(rawValue: d.string(forKey: "notchSide") ?? "") ?? .both
     }
