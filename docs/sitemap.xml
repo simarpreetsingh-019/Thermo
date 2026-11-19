@@ -2,5 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://simarpreetsingh-019.github.io/Thermo/</loc><changefreq>weekly</changefreq></url>
   <url><loc>https://simarpreetsingh-019.github.io/Thermo/agents.html</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html</loc><changefreq>monthly</changefreq></url>
   <url><loc>https://simarpreetsingh-019.github.io/Thermo/llms.txt</loc></url>
 </urlset>

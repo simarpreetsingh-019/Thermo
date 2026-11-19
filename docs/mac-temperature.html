@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to check your MacBook's temperature (and cool it down) | Thermo</title>
+<meta name="description" content="macOS doesn't show your Mac's temperature. Here's how to see the exact CPU, GPU, battery and SSD temperature on a MacBook, what's normal on Apple Silicon, the best free apps to monitor it, and 8 ways to cool a hot Mac down.">
+<meta name="keywords" content="check macbook temperature, mac cpu temperature, macbook running hot, how hot is my mac, mac temperature monitor free, apple silicon temperature normal, cool down macbook, mac gpu temperature, macbook overheating">
+<meta name="author" content="Simarpreet Singh">
+<meta name="theme-color" content="#050506">
+<link rel="canonical" href="https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html">
+<link rel="icon" href="icon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to check your MacBook's temperature (and cool it down)">
+<meta property="og:description" content="See the exact CPU, GPU and battery temperature, know what's normal, and cool a hot Mac down.">
+<meta property="og:url" content="https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html">
+<meta property="og:image" content="https://simarpreetsingh-019.github.io/Thermo/icon.png">
+<script type="application/ld+json">
+[{"@context":"https://schema.org","@type":"Article","headline":"How to check your MacBook's temperature (and cool it down)",
+  "author":{"@type":"Person","name":"Simarpreet Singh","url":"https://simarpreetsingh-019.github.io"},
+  "datePublished":"2026-11-20","dateModified":"2026-11-20","mainEntityOfPage":"https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html"},
+ {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I see my MacBook's exact temperature?","acceptedAnswer":{"@type":"Answer","text":"macOS doesn't show temperatures in degrees, so you need a free app that reads the Mac's sensors. Thermo (free, open source) shows CPU, GPU, memory, SSD, battery and palm-rest temperatures beside the notch or in the menu bar, and runs `thermo temps` in Terminal. Stats, iStat Menus and Macs Fan Control are other options."}},
+  {"@type":"Question","name":"What is a normal MacBook temperature?","acceptedAnswer":{"@type":"Answer","text":"On Apple Silicon Macs, CPU temperatures of about 35–60°C at light use and 70–95°C under heavy load are normal. Apple chips slow themselves down (throttle) above roughly 95–105°C to stay safe. The battery should stay below about 40–45°C, and the palm rest below about 40°C."}},
+  {"@type":"Question","name":"How do I cool down a hot MacBook?","acceptedAnswer":{"@type":"Answer","text":"Find and quit the app using the most CPU or GPU, put the Mac on a hard flat surface, keep vents clear, move to a cooler room (lower room temperature helps directly), unplug the charger for a while if the battery is warm, close browser tabs playing video, and lower screen brightness. Thermo shows which app is causing the heat and how long cooling will take."}},
+  {"@type":"Question","name":"Does moving to an air-conditioned room cool a Mac faster?","acceptedAnswer":{"@type":"Answer","text":"Yes. A Mac can only cool down to a bit above the room temperature, so a cooler room lowers both the idle temperature and how hot it gets under load. It helps most for fanless MacBook Airs. Stopping the busy app helps even more."}},
+  {"@type":"Question","name":"Is there a free app to monitor Mac temperature?","acceptedAnswer":{"@type":"Answer","text":"Yes. Thermo and Stats are free and open source. Thermo shows per-part temperatures around the MacBook notch, explains what is heating the Mac and what to close, tracks battery health and 24-hour history, and needs no admin rights."}}
+ ]}]
+</script>
+<link rel="stylesheet" href="style.css">
+<style>
+  article{max-width:760px;margin:0 auto}
+  article h2{font-size:clamp(28px,4vw,40px);margin:64px 0 16px}
+  article h3{margin:28px 0 8px}
+  article p,article li{color:#d2d2d7;font-size:18px;line-height:1.7}
+  article ul,article ol{padding-left:22px}
+  article li{margin:8px 0}
+  .tldr{background:linear-gradient(135deg,rgba(255,107,44,.12),rgba(169,139,255,.1));border:1px solid var(--line2);border-radius:20px;padding:24px 28px;margin:30px 0}
+  .tldr p{margin:0}
+  .meta{color:var(--dim);font-size:14px;margin-top:14px}
+  .rng td:nth-child(2){color:var(--cool)}.rng td:nth-child(3){color:var(--warm)}.rng td:nth-child(4){color:var(--hot)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="./"><img src="icon.png" alt="">Thermo</a>
+  <div class="links"><a href="./#features">Features</a><a href="agents.html">For AI agents</a><a href="./#install">Install</a></div>
+  <a class="btn primary cta" href="./#install">Get Thermo free</a>
+</div></nav>
+
+<section class="hero" style="padding-bottom:20px">
+  <div class="glow"></div>
+  <article>
+    <div class="eyebrow">Guide</div>
+    <h1 style="font-size:clamp(38px,6vw,64px)">How to check your MacBook's temperature, <span class="grad">and cool it down.</span></h1>
+    <p class="meta">By Simarpreet Singh · Updated 20 November 2026 · 5 min read</p>
+
+    <div class="tldr">
+      <p><b>Short answer:</b> macOS doesn't show temperatures, so install a free sensor app. <a href="./#install">Thermo</a> shows the exact CPU, GPU, battery and SSD temperature beside your notch and tells you which app is heating your Mac. Normal is about <b>35–60°C</b> at light use and <b>70–95°C</b> under heavy load. To cool down: quit the busiest app, use a hard surface, and move somewhere cooler.</p>
+    </div>
+
+    <h2>Why macOS doesn't show the temperature</h2>
+    <p>Activity Monitor shows CPU and memory use, but not degrees. macOS only tells apps a vague "thermal state" (nominal, fair, serious, critical). The real numbers come from dozens of hardware sensors inside your Mac, which a monitoring app can read without admin rights.</p>
+
+    <h2>The quickest way: Thermo (free)</h2>
+    <p>Thermo is a free, open-source app that sits around your MacBook's notch (or in the menu bar on any Mac).</p>
+    <ul>
+      <li><b>Exact temperature of every part:</b> CPU performance and efficiency cores, GPU, memory, SSD, battery, Wi-Fi and palm rest, each against its own safe range.</li>
+      <li><b>Why it's hot:</b> names the app causing the heat (even which project a <code>node</code> or <code>python</code> process belongs to), with one-click quit.</li>
+      <li><b>How long to cool:</b> an estimate of when it'll be back to normal.</li>
+      <li><b>Alerts</b> if it stays hot, plus 24-hour history and battery health.</li>
+      <li>About 16 MB of memory, no admin rights, no telemetry.</li>
+    </ul>
+<pre>brew install --cask simarpreetsingh-019/thermo/thermo</pre>
+    <p>Or <a href="https://github.com/simarpreetsingh-019/Thermo/releases/latest">download the zip</a> (see <a href="./#install">first-launch help</a>). Prefer Terminal? Run <code>thermo temps</code>:</p>
+<pre>🟢 CPU performance cores    66°C
+🟢 CPU efficiency cores     55°C
+🟢 GPU                      56°C
+🟢 Memory                   48°C
+🟢 SSD                      45°C
+🟢 Battery                  37°C</pre>
+
+    <h2>What's a normal MacBook temperature?</h2>
+    <p>Typical ranges for Apple Silicon (M1 to M5) MacBooks:</p>
+    <div class="tbl rng"><table>
+      <tr><th>Part</th><th>Normal</th><th>Warm</th><th>Hot</th></tr>
+      <tr><td>CPU / GPU</td><td>35–70°C</td><td>70–90°C</td><td>95°C+ (throttles)</td></tr>
+      <tr><td>Battery</td><td>25–35°C</td><td>35–40°C</td><td>45°C+</td></tr>
+      <tr><td>SSD</td><td>30–50°C</td><td>50–60°C</td><td>70°C+</td></tr>
+      <tr><td>Palm rest</td><td>25–33°C</td><td>33–38°C</td><td>43°C+</td></tr>
+    </table></div>
+    <p>Short spikes to 90°C+ while compiling, exporting or gaming are expected. What matters is staying hot for minutes: that's when macOS slows the chip down (throttling), and builds, renders and games get noticeably slower.</p>
+
+    <h2>8 ways to cool a hot Mac down</h2>
+    <ol>
+      <li><b>Quit the app causing it.</b> One runaway app (a stuck browser tab, a build, a Docker container) is the most common cause. Thermo's Heat tab names it.</li>
+      <li><b>Move to a cooler room.</b> Yes, it works: a Mac can only cool to a little above room temperature. An air-conditioned room lowers both idle and peak temperatures, especially on fanless MacBook Airs.</li>
+      <li><b>Use a hard, flat surface.</b> Beds, sofas and laps block airflow. A laptop stand helps even more.</li>
+      <li><b>Keep the vents clear</b> and don't cover the keyboard area on Airs.</li>
+      <li><b>Unplug the charger for a while</b> if the battery is warm; charging adds heat.</li>
+      <li><b>Close video and 3D:</b> tabs playing video, games and 3D apps keep the GPU busy.</li>
+      <li><b>Lower screen brightness</b> and disconnect displays you're not using.</li>
+      <li><b>Restart</b> if nothing obvious is busy; a stuck background process may be the cause.</li>
+    </ol>
+    <p>Thermo shows a cooldown estimate and tells you when it's back to normal, so you know whether to wait or close something.</p>
+
+    <h2>Other Mac temperature apps</h2>
+    <p>Good tools, depending on what you need:</p>
+    <div class="tbl"><table>
+      <tr><th>App</th><th>Price</th><th>Best for</th></tr>
+      <tr><td><b>Thermo</b></td><td>Free, open source</td><td>Per-part temperatures at the notch, what's causing the heat and what to close, battery health, history, alerts, and AI-agent access</td></tr>
+      <tr><td>Stats</td><td>Free, open source</td><td>Many menu-bar modules: CPU, GPU, disk, network, sensors</td></tr>
+      <tr><td>iStat Menus</td><td>Paid</td><td>Very detailed menu-bar stats and notifications</td></tr>
+      <tr><td>Macs Fan Control</td><td>Free / paid Pro</td><td>Reading sensors and manually controlling fans on Macs with fans</td></tr>
+      <tr><td>Fanny</td><td>Free</td><td>A simple fan speed and CPU temperature widget</td></tr>
+    </table></div>
+
+    <h2>FAQ</h2>
+    <h3>Can a hot Mac get damaged?</h3>
+    <p>Rarely. Apple chips protect themselves by slowing down, and shut down if needed. Heat mainly costs speed and, over years, battery health. Keeping the battery cool is the best long-term habit.</p>
+    <h3>Why is my MacBook Air hotter than a Pro?</h3>
+    <p>The Air has no fan, so it relies on slowing the chip to cool. A cooler room and a hard surface make a bigger difference on an Air.</p>
+    <h3>Can my AI coding assistant check the temperature?</h3>
+    <p>With Thermo, yes. Its built-in MCP server lets Claude, Codex, Cursor and others check heat and memory before heavy jobs and wait for the Mac to cool. See the <a href="agents.html">agent guide</a>.</p>
+
+    <div class="tldr" style="margin-top:56px;text-align:center">
+      <p style="font-size:20px;margin-bottom:18px"><b>See your Mac's exact temperature in 10 seconds.</b></p>
+      <div class="btns" style="justify-content:center"><a class="btn primary" href="./#install">Get Thermo free</a><a class="btn" href="https://github.com/simarpreetsingh-019/Thermo">★ Star on GitHub</a></div>
+    </div>
+  </article>
+</section>
+
+<footer><div class="wrap">
+  <span>Thermo · MIT License · Made by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></span>
+  <span><a href="./">Home</a> · <a href="agents.html">AI agents</a> · <a href="https://github.com/simarpreetsingh-019/Thermo">GitHub</a></span>
+</div></footer>
+<script src="site.js"></script>
+</body>
+</html>

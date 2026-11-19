@@ -13,7 +13,7 @@ A tiny, live system monitor that lives **in your MacBook's notch**, or floats an
 It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you **what's slowing down, which app is causing it, how long cooling will take, and what to close**.
 
 <p align="center"><img src="docs/demo.gif" width="720" alt="Thermo demo: notch gauges, expanded panel, apps list and heat advisor"></p>
-<p align="center">📖 <a href="https://simarpreetsingh-019.github.io/Thermo/"><b>Guide and docs</b></a> · 🎬 <a href="docs/launch.mp4"><b>Watch the full launch video (1080p, 32 s)</b></a></p>
+<p align="center">📖 <a href="https://simarpreetsingh-019.github.io/Thermo/"><b>Website</b></a> · 🌡️ <a href="https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html"><b>How to check your Mac's temperature</b></a> · 🤖 <a href="https://simarpreetsingh-019.github.io/Thermo/agents.html"><b>AI agents</b></a> · 🎬 <a href="docs/launch.mp4"><b>Watch the full launch video (1080p, 32 s)</b></a></p>
 
 - **Notch HUD:** glowing ring gauges beside the notch. Hover to expand, click 📌 to pin.
 - **Pull it out:** drag the notch down and it becomes a floating widget. Drop it back at the top centre to re-dock.
