@@ -52,6 +52,7 @@ Before installing anything, it checks that the zip matches the release's SHA-256
 ```bash
 git clone https://github.com/simarpreetsingh-019/Thermo && cd Thermo && ./build.sh --install
 ```
+Add `--no-connect` to leave out the CLI JSON output, MCP server and local API (about 0.3 MB smaller).
 
 Requires macOS 13+. It's a universal app (Apple Silicon and Intel), and Intel Macs read temperatures from the SMC (less tested there).
 
