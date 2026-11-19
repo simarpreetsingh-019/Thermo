@@ -34,4 +34,6 @@ grep -q 'binary "#{appdir}/Thermo.app/Contents/Resources/thermo"' "$TAP/Casks/th
   binary "#{appdir}/Thermo.app/Contents/Resources/thermo", target: "thermo"|' "$TAP/Casks/thermo.rb"
 git -C "$TAP" commit -qam "thermo $V" && git -C "$TAP" push -q
 rm -rf "$TAP"
+# Keep the GitHub Action tag (`uses: …/Thermo@v1`) on the newest release.
+git fetch -q --tags -f && git tag -f v1 "v$V" >/dev/null && git push -q -f origin v1
 echo "Released Thermo $V — https://github.com/$REPO/releases/tag/v$V"
