@@ -33,6 +33,8 @@ It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you 
 brew install --cask simarpreetsingh-019/thermo/thermo
 ```
 
+Homebrew also adds a small `thermo` command: `thermo restart`, `thermo update`, `thermo version`, `thermo help`.
+
 **Direct download:** grab `Thermo.zip` from [Releases](https://github.com/simarpreetsingh-019/Thermo/releases), unzip it, and drag it into Applications.
 Thermo isn't notarized yet, so on first launch right-click → **Open**, or run:
 ```bash

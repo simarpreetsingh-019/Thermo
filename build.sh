@@ -14,6 +14,7 @@ lipo -create build/th-arm64 build/th-x86_64 -output "$APP/Contents/MacOS/Thermo"
 rm build/th-*
 swift tools/make_icon.swift build/Thermo.iconset
 iconutil -c icns build/Thermo.iconset -o "$APP/Contents/Resources/Thermo.icns"
+cp tools/thermo "$APP/Contents/Resources/thermo"   # `thermo` command, linked onto the PATH by the Homebrew cask
 rm -rf build/Thermo.iconset
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -25,7 +26,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleExecutable</key><string>Thermo</string>
   <key>CFBundleIconFile</key><string>Thermo</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.5.0</string>
+  <key>CFBundleShortVersionString</key><string>1.5.1</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
   <key>NSHumanReadableCopyright</key><string>© 2026 Simarpreet Singh · simarpreetsingh-019.github.io · MIT License</string>

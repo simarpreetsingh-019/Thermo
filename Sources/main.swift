@@ -70,17 +70,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ n: Notification) {
         NSApp.setActivationPolicy(.accessory)
         _ = Updater.shared   // starts the daily update check
+        if CommandLine.arguments.contains("--version") {
+            print("Thermo \(Updater.shared.current)"); exit(0)
+        }
         if let i = CommandLine.arguments.firstIndex(of: "--set-login"), i + 1 < CommandLine.arguments.count {
             setOpenAtLogin(CommandLine.arguments[i + 1] == "on")   // `Thermo --set-login on|off`
             print("Open at login:", SMAppService.mainApp.status == .enabled ? "on" : "off (\(SMAppService.mainApp.status.rawValue))")
             exit(0)
         }
-        Updater.shared.announceLaunch()
+        let busy = Updater.shared.announceLaunch()
+        if settings.mode == .notch && !UserDefaults.standard.bool(forKey: "notchTipShown") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + (busy ? 30 : 4)) {
+                guard self.settings.mode == .notch else { return }
+                UserDefaults.standard.set(true, forKey: "notchTipShown")
+                Toasts.shared.notchTip(settings: self.settings)
+            }
+        }
         if let i = CommandLine.arguments.firstIndex(of: "--test-toast"), i + 1 < CommandLine.arguments.count {
             let notes = "- Smoother menu-bar dropdown\n- Gauges fit the notch\n- **Update notifications**"
+            DispatchQueue.main.asyncAfter(deadline: .now() + 16) { NSApp.terminate(nil) }
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 switch CommandLine.arguments[i + 1] {
                 case "welcome": Toasts.shared.welcome()
+                case "notch": Toasts.shared.notchTip(settings: self.settings)
                 case "update": Toasts.shared.updateAvailable(Release(version: "9.9.9", notes: notes, zipURL: URL(string: "https://github.com")!, shaURL: URL(string: "https://github.com")!, pageURL: URL(string: "https://github.com")!))
                 default: Toasts.shared.whatsNew(version: Updater.shared.current, notes: notes)
                 }

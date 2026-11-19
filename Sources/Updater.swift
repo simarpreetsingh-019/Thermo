@@ -108,7 +108,8 @@ final class Updater: ObservableObject {
     }
 
     /// First launch → welcome card; first launch after an update → "what's new" card for this version.
-    func announceLaunch() {
+    @discardableResult
+    func announceLaunch() -> Bool {
         let d = UserDefaults.standard
         let last = d.string(forKey: "lastSeenVersion")
         d.set(current, forKey: "lastSeenVersion")
@@ -117,6 +118,7 @@ final class Updater: ObservableObject {
         } else if last != current {
             fetchNotes(for: current) { notes in Toasts.shared.whatsNew(version: self.current, notes: notes) }
         }
+        return last != current   // true when a welcome / what's-new card is showing
     }
 
     func fetchNotes(for version: String, _ done: @escaping (String) -> Void) {
@@ -132,7 +134,7 @@ final class Updater: ObservableObject {
     /// `Thermo --update-now`: check and install without prompting (used from the command line / for testing).
     func updateNow() {
         check(userInitiated: true) { [weak self] r in
-            if let r { self?.install(r) } else { print(self?.status ?? "No update"); NSApp.terminate(nil) }
+            if let r { self?.install(r) } else { print(self?.status ?? "No update") }   // no update: keep running normally
         }
     }
 

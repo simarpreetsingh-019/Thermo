@@ -50,7 +50,7 @@ struct NotchRoot: View {
         let leftW: CGFloat = side == .right ? 0 : side == .left ? allW : leftItems
         let rightW: CGFloat = side == .left ? 0 : side == .right ? allW : rightItems
         let gap = notchWidth + 12   // keep 6 pt clear on each side of the physical notch
-        let lp: CGFloat = leftW > 0 ? leftW + 12 : 8, rp: CGFloat = rightW > 0 ? rightW + 12 : 8   // + outer margin
+        let lp: CGFloat = leftW > 0 ? leftW + 10 : 6, rp: CGFloat = rightW > 0 ? rightW + 10 : 6   // + outer margin
         // Shift the strip so the reserved gap sits exactly over the notch even when the sides differ in width.
         let shift: CGFloat = open ? 0 : (rp - lp) / 2
         let w = open ? Self.panelSize.width : gap + lp + rp

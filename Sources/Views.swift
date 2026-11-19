@@ -6,7 +6,7 @@ import ServiceManagement
 
 // MARK: - Model
 
-enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", memory = "Memory", thermal = "Heat" }
+enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", memory = "Memory", thermal = "Heat", inbox = "Alerts" }
 enum DisplayMode: String, CaseIterable { case notch = "Around the notch", floating = "Floating (movable)", menuBar = "Menu bar only" }
 enum Orientation: String, CaseIterable { case horizontal = "Horizontal", vertical = "Vertical" }
 enum NotchSide: String, CaseIterable { case both = "Both sides", left = "Left of notch", right = "Right of notch" }
@@ -210,7 +210,7 @@ struct ExpandedPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 4) {
-                ForEach(Tab.allCases, id: \.self) { t in
+                ForEach(Tab.allCases.filter { $0 != .inbox }, id: \.self) { t in
                     Button { withAnimation(.easeOut(duration: 0.2)) { m.tab = t } } label: {
                         HStack(spacing: 4) {
                             Text(t.rawValue)
@@ -239,6 +239,7 @@ struct ExpandedPanel: View {
                 if showPin {
                     iconButton(m.pinned ? "pin.fill" : "pin", help: m.pinned ? "Unpin" : "Keep open") { m.pinned.toggle() }
                 }
+                InboxButton(m: m)
                 SettingsMenu(settings: settings)
                 if let onCollapse { iconButton("chevron.up", help: "Collapse", action: onCollapse) }
             }
@@ -248,6 +249,7 @@ struct ExpandedPanel: View {
                 case .apps: AppsTab(m: m)
                 case .thermal: ThermalTab(m: m)
                 case .memory: MemoryTab(m: m)
+                case .inbox: InboxTab(m: m)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

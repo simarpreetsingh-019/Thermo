@@ -1,0 +1,32 @@
+#!/bin/sh
+# `thermo` command-line helper. Homebrew installs it alongside Thermo.app.
+APP="/Applications/Thermo.app"
+[ -d "$APP" ] || APP="$HOME/Applications/Thermo.app"
+BIN="$APP/Contents/MacOS/Thermo"
+[ -x "$BIN" ] || { echo "Thermo.app not found in /Applications" >&2; exit 1; }
+
+case "${1:-open}" in
+  open)                 open "$APP" ;;
+  quit)                 pkill -x Thermo || echo "Thermo isn't running" ;;
+  restart)              pkill -x Thermo; sleep 1; open "$APP" ;;
+  version|-v|--version) "$BIN" --version ;;
+  update)
+    pkill -x Thermo; sleep 1
+    open "$APP" --args --update-now   # launched by macOS, so closing the terminal doesn't stop it
+    echo "Checking for updates… Thermo relaunches by itself (on the new version if there is one)." ;;
+  help|-h|--help)
+    cat <<HELP
+thermo: live CPU, RAM, GPU and temperature in your Mac's notch
+
+  thermo            open Thermo
+  thermo quit       quit Thermo
+  thermo restart    restart Thermo
+  thermo update     check for an update and install it
+  thermo version    show the installed version
+  thermo help       show this help
+
+Made by Simarpreet Singh · github.com/simarpreetsingh-019/Thermo
+HELP
+    ;;
+  *) echo "Unknown command: $1 (try: thermo help)" >&2; exit 1 ;;
+esac

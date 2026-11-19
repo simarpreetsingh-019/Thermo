@@ -26,6 +26,10 @@ Made by **Simarpreet Singh** · [simarpreetsingh-019.github.io](https://simarpre
 TAP=$(mktemp -d)
 gh repo clone "$TAP_REPO" "$TAP" -- -q
 sed -i '' -E "s/^  version \".*\"/  version \"$V\"/; s/^  sha256 \".*\"/  sha256 \"$SHA\"/" "$TAP/Casks/thermo.rb"
+# The `thermo` command (shipped inside the app since 1.5.1): let Homebrew put it on the PATH.
+grep -q 'binary "#{appdir}/Thermo.app/Contents/Resources/thermo"' "$TAP/Casks/thermo.rb" || \
+  sed -i '' 's|^  app "Thermo.app"$|  app "Thermo.app"\
+  binary "#{appdir}/Thermo.app/Contents/Resources/thermo", target: "thermo"|' "$TAP/Casks/thermo.rb"
 git -C "$TAP" commit -qam "thermo $V" && git -C "$TAP" push -q
 rm -rf "$TAP"
 echo "Released Thermo $V — https://github.com/$REPO/releases/tag/v$V"
