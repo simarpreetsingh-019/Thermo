@@ -341,6 +341,9 @@ struct SettingsMenu: View {
                     NSPasteboard.general.clearContents(); NSPasteboard.general.setString(LocalAPI.shared.token, forType: .string)
                 }.disabled(!LocalAPI.shared.enabled)
                 Button("Reset API token") { LocalAPI.shared.resetToken() }.disabled(!LocalAPI.shared.enabled)
+                Button(CommandInstaller.installed ? "thermo command installed ✓" : "Install thermo command in Terminal…") {
+                    CommandInstaller.install()
+                }.disabled(CommandInstaller.installed)
                 Divider()
                 Button("Connect AI tools and apps…") { open("https://simarpreetsingh-019.github.io/Thermo/#connect") }
             }

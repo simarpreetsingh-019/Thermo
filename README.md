@@ -30,6 +30,8 @@ It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you 
 
 ## Install
 
+> **Downloading the zip?** macOS will warn that it can't verify Thermo. That's normal for free apps not notarized by Apple. [Here's how to open it safely](#first-launch-why-macos-warns-you) (one click in System Settings).
+
 **Homebrew**
 ```bash
 brew install --cask simarpreetsingh-019/thermo/thermo
@@ -44,9 +46,9 @@ curl -fsSL https://raw.githubusercontent.com/simarpreetsingh-019/Thermo/main/ins
 ```bash
 bash install.sh
 ```
-Before installing anything, it checks that the zip matches the release's SHA-256 checksum, that the GitHub attestation is valid (if you have the `gh` CLI), and that the app's signature and bundle ID are intact. If any check fails, nothing is installed.
+It can also add the `thermo` Terminal command (it asks first). Before installing anything, it checks that the zip matches the release's SHA-256 checksum, that the GitHub attestation is valid (if you have the `gh` CLI), and that the app's signature and bundle ID are intact. If any check fails, nothing is installed.
 
-**Direct download:** grab `Thermo.zip` from [Releases](https://github.com/simarpreetsingh-019/Thermo/releases), unzip it, and drag it into Applications. See [first launch](#first-launch-why-macos-warns-you) below.
+**Direct download:** grab `Thermo.zip` from [Releases](https://github.com/simarpreetsingh-019/Thermo/releases), unzip it, and drag it into Applications. See [first launch](#first-launch-why-macos-warns-you) below. For the `thermo` Terminal command, use ⚙ → Connections → **Install thermo command**.
 
 **Build from source** (needs Xcode Command Line Tools):
 ```bash
@@ -155,16 +157,29 @@ How it stays light:
 | Per-app usage | `proc_pid_rusage`; helper processes are grouped under their parent app |
 | Throttling | `ProcessInfo.thermalState` |
 
-## Creator
+## About the creator
 
-Thermo is designed and built by **Simarpreet Singh**.
+Thermo is designed and built by **Simarpreet Singh**, an independent developer who makes small, fast tools for Mac.
 
 - 🌐 Portfolio: [simarpreetsingh-019.github.io](https://simarpreetsingh-019.github.io)
 - 🐦 X / Twitter: [@simarpreet_019](https://x.com/simarpreet_019)
-- ✉️ Email: [simarpreetsingh.019@gmail.com](mailto:simarpreetsingh.019@gmail.com)
 - 💻 GitHub: [@simarpreetsingh-019](https://github.com/simarpreetsingh-019)
+- ✉️ Email: [simarpreetsingh.019@gmail.com](mailto:simarpreetsingh.019@gmail.com)
 
-Ideas, bugs or a feature you'd love? [Open an issue](https://github.com/simarpreetsingh-019/Thermo/issues), fork it, or send a pull request. Contributions are welcome!
+Open to collaborations, freelance work and opportunities. Say hi!
+
+## Support Thermo
+
+Thermo is free. If it helps you:
+- ⭐ **[Star the repo](https://github.com/simarpreetsingh-019/Thermo)**, it helps others find it
+- 📣 Share it on X, Reddit or with your team
+- 🐞 [Report a bug](https://github.com/simarpreetsingh-019/Thermo/issues/new?template=bug.yml) or 💡 [suggest an upgrade](https://github.com/simarpreetsingh-019/Thermo/issues/new?template=feedback.yml)
+
+## Contributing
+
+Pull requests are welcome: fixes, sensors, agent integrations, docs, and help bringing Thermo to Windows and Linux. Start with the **[contributing guide](CONTRIBUTING.md)**; security issues go through [SECURITY.md](SECURITY.md).
+
+<a href="https://github.com/simarpreetsingh-019/Thermo/graphs/contributors"><img src="https://contrib.rocks/image?repo=simarpreetsingh-019/Thermo" alt="Contributors"></a>
 
 ## Credits and similar projects
 

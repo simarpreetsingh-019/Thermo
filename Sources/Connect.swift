@@ -366,6 +366,26 @@ enum MCPServer {
     }
 }
 
+// MARK: - `thermo` Terminal command for people who didn't use Homebrew
+
+/// Links the bundled `thermo` script into /usr/local/bin (on the default PATH). macOS asks for an admin
+/// password, like VS Code's "Install 'code' command". Homebrew installs it automatically instead.
+enum CommandInstaller {
+    static let link = "/usr/local/bin/thermo"
+    static var installed: Bool { ["/usr/local/bin/thermo", "/opt/homebrew/bin/thermo"].contains { FileManager.default.fileExists(atPath: $0) } }
+
+    static func install() {
+        let src = Bundle.main.bundlePath + "/Contents/Resources/thermo"
+        guard FileManager.default.fileExists(atPath: src), !src.contains("'"), !src.contains("\"") else { NSSound.beep(); return }
+        var err: NSDictionary?
+        NSAppleScript(source: "do shell script \"mkdir -p /usr/local/bin && ln -sf '\(src)' \(link)\" with administrator privileges")?.executeAndReturnError(&err)
+        if err == nil {
+            Toasts.shared.show(ToastContent(icon: "terminal.fill", tint: .mint, title: "thermo command installed",
+                subtitle: "Open a new Terminal window and try: thermo status · thermo temps · thermo help", autoHide: 15, keepInInbox: false))
+        }
+    }
+}
+
 // MARK: - Local HTTP API (opt-in, while the app runs)
 
 /// Read-only JSON over http://127.0.0.1:47615. Every data request needs the token from

@@ -70,7 +70,7 @@ footer{padding:32px 0 48px;color:var(--mut);font-size:14px;text-align:center;bor
 <body>
 <nav><div class="wrap">
   <a class="brand" href="#"><img src="icon.png" alt="">Thermo</a>
-  <a href="#install">Install</a><a href="#use">Use</a><a href="#connect">AI agents</a><a href="#api">API</a><a href="#actions">CI</a><a href="#security">Security</a><a href="#roadmap">Roadmap</a>
+  <a href="#install">Install</a><a href="#use">Use</a><a href="#connect">AI agents</a><a href="#api">API</a><a href="#actions">CI</a><a href="#security">Security</a><a href="#roadmap">Roadmap</a><a href="#about">About</a>
   <a href="https://github.com/simarpreetsingh-019/Thermo">GitHub</a>
 </div></nav>
 
@@ -133,7 +133,7 @@ gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo</
     <tr><td><code>thermo wait-cool --target 70</code></td><td>Waits until the Mac cools, then returns</td></tr>
     <tr><td><code>thermo open | quit | restart | update | version</code></td><td>Control the app</td></tr>
   </table>
-  <p>Without Homebrew the same commands work through the app: <code>/Applications/Thermo.app/Contents/MacOS/Thermo --cli status</code>.</p>
+  <p>Homebrew adds the <code>thermo</code> command automatically. Installed from the zip? Use ⚙ → Connections → <b>Install thermo command in Terminal</b> (asks for your password once), or say yes when the installer script offers it. You can also call the app directly: <code>/Applications/Thermo.app/Contents/MacOS/Thermo --cli status</code>.</p>
   <h3>Gate your own scripts</h3>
   <pre><code>thermo headroom --kind gpu --memory-gb 12 || thermo wait-cool --target 70
 python train.py</code></pre>
@@ -238,6 +238,17 @@ curl -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:47615/v1/headroom?kind=
     <li>Listing in MCP registries and more agent integrations.</li>
     <li>Ideas? <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new/choose">Open an issue</a>.</li>
   </ul>
+</div></section>
+
+<section id="about"><div class="wrap">
+  <h2>About and contributing</h2>
+  <p>Thermo is designed and built by <b>Simarpreet Singh</b>, an independent developer making small, fast tools for Mac. Open to collaborations and opportunities.</p>
+  <div class="grid">
+    <div class="card"><b>Connect</b><p><a href="https://simarpreetsingh-019.github.io">Portfolio</a> · <a href="https://x.com/simarpreet_019">X @simarpreet_019</a> · <a href="https://github.com/simarpreetsingh-019">GitHub</a></p></div>
+    <div class="card"><b>Support Thermo</b><p><a href="https://github.com/simarpreetsingh-019/Thermo">⭐ Star the repo</a> and share it. Stars help people and AI agents find it.</p></div>
+    <div class="card"><b>Report or suggest</b><p><a href="https://github.com/simarpreetsingh-019/Thermo/issues/new?template=bug.yml">Report a bug</a> · <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new?template=feedback.yml">Suggest an upgrade</a></p></div>
+    <div class="card"><b>Contribute</b><p>Pull requests welcome: fixes, sensors, integrations, Windows/Linux. Read the <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/CONTRIBUTING.md">contributing guide</a>.</p></div>
+  </div>
 </div></section>
 
 <footer class="wrap">

@@ -54,6 +54,17 @@ ditto "$APP" "$DEST/Thermo.app"
 # first launch. The checks above did the verifying, so clear the download flag, as Homebrew does.
 xattr -dr com.apple.quarantine "$DEST/Thermo.app" 2>/dev/null || true
 say "✓ Installed to $DEST/Thermo.app"
+
+# Optional: the `thermo` Terminal command (Homebrew adds it automatically; here we ask first).
+if ! command -v thermo >/dev/null 2>&1 && [ -t 0 ]; then
+  printf "Add the \`thermo\` Terminal command (thermo status, thermo temps…)? It asks for your password. [y/N] "
+  read -r ans
+  case "$ans" in y|Y|yes)
+    sudo mkdir -p /usr/local/bin && sudo ln -sf "$DEST/Thermo.app/Contents/Resources/thermo" /usr/local/bin/thermo \
+      && say "✓ thermo command added (open a new Terminal window)" || say "• Skipped: couldn't add the command";;
+  *) say "• Skipped. Add it later in Thermo: ⚙ → Connections → Install thermo command";;
+  esac
+fi
 open "$DEST/Thermo.app"
 say ""
 say "🌡️  Thermo is running: look beside your notch or in the menu bar."
