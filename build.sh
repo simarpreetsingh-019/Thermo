@@ -26,7 +26,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleExecutable</key><string>Thermo</string>
   <key>CFBundleIconFile</key><string>Thermo</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.5.1</string>
+  <key>CFBundleShortVersionString</key><string>1.6.0</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
   <key>NSHumanReadableCopyright</key><string>© 2026 Simarpreet Singh · simarpreetsingh-019.github.io · MIT License</string>

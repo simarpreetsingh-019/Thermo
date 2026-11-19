@@ -22,8 +22,10 @@ It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you 
 - **Memory tab:** shows real memory pressure and swap (not just "% used"), how much you could free, and the biggest apps with one-click quit. No fake "RAM cleaning".
 - **Smart alerts:** a small card appears if your Mac stays hot, memory stays tight, or an app gets stuck at high CPU, with a one-click fix.
 - **Health summary:** one line telling you if all is good, or what to close.
-- **Heat tab:** heat level, what's affected (throttling, slower builds, dropped frames), the top culprit apps (including the project folder for `node`/`python` processes), a cooldown estimate, and one-click quit.
+- **Heat tab:** heat level, separate temperatures for CPU performance and efficiency cores, GPU, memory, SSD, battery, Wi-Fi and palm rest (read from the SMC, no admin rights), what's affected (throttling, slower builds, dropped frames), the top culprit apps (including the project folder for `node`/`python` processes), a cooldown estimate, and one-click quit.
 - **Apps tab:** top apps by CPU or memory, with quit buttons.
+- **Battery tab** (MacBooks): health as a percentage of the original capacity, condition, cycle count against the rated 1000, charge rate or drain in watts, time left, and a 24-hour charge graph. Thermo logs health once a day, so you can see how it changes over time.
+- **History tab:** CPU, memory, GPU and temperature graphs for the last hour or 24 hours, with a shared hover crosshair to see what happened at any moment.
 - **No sudo, no kernel extensions, no dependencies.** It reads sensors through public and stable macOS APIs.
 
 ## Install
@@ -35,18 +37,47 @@ brew install --cask simarpreetsingh-019/thermo/thermo
 
 Homebrew also adds a small `thermo` command: `thermo restart`, `thermo update`, `thermo version`, `thermo help`.
 
-**Direct download:** grab `Thermo.zip` from [Releases](https://github.com/simarpreetsingh-019/Thermo/releases), unzip it, and drag it into Applications.
-Thermo isn't notarized yet, so on first launch right-click → **Open**, or run:
+**No Homebrew? Use the installer script.** It downloads the latest release, checks it, and installs it. Read it first, it's short:
 ```bash
-xattr -dr com.apple.quarantine /Applications/Thermo.app
+curl -fsSL https://raw.githubusercontent.com/simarpreetsingh-019/Thermo/main/install.sh -o install.sh
 ```
+```bash
+bash install.sh
+```
+Before installing anything, it checks that the zip matches the release's SHA-256 checksum, that the GitHub attestation is valid (if you have the `gh` CLI), and that the app's signature and bundle ID are intact. If any check fails, nothing is installed.
+
+**Direct download:** grab `Thermo.zip` from [Releases](https://github.com/simarpreetsingh-019/Thermo/releases), unzip it, and drag it into Applications. See [first launch](#first-launch-why-macos-warns-you) below.
 
 **Build from source** (needs Xcode Command Line Tools):
 ```bash
 git clone https://github.com/simarpreetsingh-019/Thermo && cd Thermo && ./build.sh --install
 ```
 
-Requires macOS 13+. It's a universal app (Apple Silicon and Intel), but temperature sensors are read on Apple Silicon only.
+Requires macOS 13+. It's a universal app (Apple Silicon and Intel), and Intel Macs read temperatures from the SMC (less tested there).
+
+## First launch: why macOS warns you
+
+If you downloaded the zip, macOS will say it **can't verify** that Thermo is free of malware. That's expected, and it's macOS doing its job: Apple only vouches for apps from developers in its paid program who send every build to Apple for scanning (notarization). Thermo is a free open-source side project and isn't notarized yet. The warning means "Apple hasn't checked this", not "this is harmful".
+
+To open it once (macOS remembers your choice):
+1. Double-click Thermo and click **Done** on the warning.
+2. Open **System Settings → Privacy & Security**, scroll down, and click **Open Anyway** next to Thermo.
+3. Confirm with your password or Touch ID.
+
+On macOS 14 and earlier, right-click Thermo → **Open** also works. Homebrew and the installer script verify the download themselves, so they skip this step.
+
+### Check your download yourself
+
+You don't have to take our word for it:
+- **Checksum:** compare the result with the SHA-256 in the release notes.
+  ```bash
+  shasum -a 256 ~/Downloads/Thermo.zip
+  ```
+- **Attestation:** GitHub signs a record of every release zip. This confirms the file was published by this repository and hasn't been swapped (needs the [GitHub CLI](https://cli.github.com)):
+  ```bash
+  gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo
+  ```
+- **Source:** the full code is here; build it yourself with `./build.sh` if you prefer.
 
 ## Updates
 
@@ -105,7 +136,7 @@ MIT
 
 ## Security
 
-- **No telemetry, no admin rights.** Thermo reads local system statistics and saves its own preferences. Its only network request is a daily update check against GitHub Releases, which sends nothing about you or your Mac. You can turn it off with ⚙ → "Check for updates automatically".
+- **No telemetry, no admin rights.** Thermo reads local system statistics and saves its own preferences plus a 24-hour history file (about 60 KB, in `~/Library/Application Support/Thermo`). Its only network request is a daily update check against GitHub Releases, which sends nothing about you or your Mac. You can turn it off with ⚙ → "Check for updates automatically".
 - **Updates are verified:** the downloaded zip must match the SHA-256 checksum published with the release, and the app inside must pass `codesign --verify` and carry Thermo's bundle ID before it replaces the installed copy.
 - **Stopping processes:** apps are asked to quit normally, so they can prompt you to save. Background processes are stopped only after you confirm, and only if they belong to your user account. System-critical ones (loginwindow, Dock, WindowServer and others) are never offered. Each process is re-checked just before it's stopped, so a recycled process ID can't hit the wrong program.
 - **Click-outside detection** watches only *that* a mouse click happened, never where or in which app, and never keystrokes. It needs no Accessibility permission.

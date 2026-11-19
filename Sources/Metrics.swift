@@ -3,6 +3,7 @@
 import Foundation
 import IOKit
 import Darwin
+import SwiftUI
 
 struct Snapshot {
     var cpu: Double = 0
@@ -16,6 +17,7 @@ struct Snapshot {
     var batteryTemp: Double? = nil
     var thermalState: ProcessInfo.ThermalState = .nominal
     var memPressure: MemPressure = .normal
+    var parts: [TempPart] = []
     var ramPct: Double { ramTotal > 0 ? ramUsed / ramTotal * 100 : 0 }
     var hottest: Double? { [cpuTemp, gpuTemp].compactMap { $0 }.max() }
 }
@@ -23,6 +25,7 @@ struct Snapshot {
 final class Sampler {
     private var prevTicks: [UInt32]? = nil
     private let temps = TempReader()
+    private let smc = SMCReader()
     let totalRAM = Double(ProcessInfo.processInfo.physicalMemory)
 
     func sample() -> Snapshot {
@@ -39,6 +42,18 @@ final class Sampler {
         s.gpuTemp = hottest { $0.contains("gpu") }
         s.ssdTemp = hottest { $0.contains("nand") || $0.contains("ssd") }
         s.batteryTemp = hottest { $0.contains("batt") || $0.contains("gas gauge") }
+        // Prefer the SMC's per-component sensors when present: they split CPU, GPU, SSD, battery and more.
+        s.parts = smc.parts()
+        func part(_ n: String) -> Double? { s.parts.first { $0.id == n }?.value }
+        if let p = [part("CPU performance cores"), part("CPU efficiency cores")].compactMap({ $0 }).max() { s.cpuTemp = p }
+        if let g = part("GPU") { s.gpuTemp = g }
+        if let d = part("SSD") { s.ssdTemp = d }
+        if let b = part("Battery") { s.batteryTemp = b }
+        if s.parts.isEmpty {   // no SMC access: show what the HID sensors give
+            s.parts = [("CPU", "cpu", s.cpuTemp, 80.0, 95.0), ("GPU", "cube.transparent", s.gpuTemp, 80, 95),
+                       ("SSD", "internaldrive", s.ssdTemp, 60, 70), ("Battery", "battery.75percent", s.batteryTemp, 40, 45)]
+                .compactMap { n, i, v, w, h in v.map { TempPart(id: n, icon: i, value: $0, warm: w, hot: h, sensors: 1) } }
+        }
         s.thermalState = ProcessInfo.processInfo.thermalState
         s.memPressure = MemPressure.read()
         return s
@@ -137,4 +152,87 @@ final class TempReader {
         }
         return out
     }
+}
+
+// MARK: - Per-component temperatures (1.6)
+
+struct TempPart: Identifiable {
+    let id: String          // component name
+    let icon: String
+    let value: Double       // hottest sensor in the group
+    let warm: Double, hot: Double
+    let sensors: Int
+    var color: Color { value >= hot ? .red : value >= warm ? .orange : .green }
+}
+
+/// Reads temperature keys from the System Management Controller. User-level access, no admin rights.
+/// Keys are discovered once at launch; each sample reads only the cached temperature keys.
+final class SMCReader {
+    private var conn: io_connect_t = 0
+    private var keys: [(key: UInt32, size: Int, type: UInt32, group: Int)] = []
+
+    // Component groups by SMC key prefix (Apple Silicon and Intel conventions).
+    static let groups: [(name: String, icon: String, warm: Double, hot: Double, match: (String) -> Bool)] = [
+        ("CPU performance cores", "cpu", 80, 95, { $0.hasPrefix("Tp") || $0.hasPrefix("TC") || $0.hasPrefix("Tc") }),
+        ("CPU efficiency cores", "leaf.fill", 80, 95, { $0.hasPrefix("Te") }),
+        ("GPU", "cube.transparent", 80, 95, { $0.hasPrefix("Tg") || $0.hasPrefix("TG") }),
+        ("Memory", "memorychip", 75, 90, { $0.hasPrefix("Tm") || $0.hasPrefix("TM") }),
+        ("SSD", "internaldrive", 60, 70, { $0.hasPrefix("TH") }),
+        ("Battery", "battery.75percent", 40, 45, { $0.hasPrefix("TB") }),
+        ("Wi-Fi", "wifi", 70, 85, { $0.hasPrefix("TW") }),
+        ("Palm rest", "hand.raised.fill", 38, 43, { $0 == "Ts0P" || $0 == "Ts1P" }),
+    ]
+
+    init() {
+        let svc = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("AppleSMC"))
+        guard svc != 0 else { return }
+        defer { IOObjectRelease(svc) }
+        guard IOServiceOpen(svc, mach_task_self_, 0, &conn) == KERN_SUCCESS else { conn = 0; return }
+        let count = read(Self.fourcc("#KEY"), size: 4).map { $0.reduce(0) { $0 << 8 | Int($1) } } ?? 0
+        for i in 0..<min(count, 6000) {
+            var b = Self.blank(); b[42] = 8; Self.put(&b, 44, UInt32(i))
+            guard let o = call(b) else { continue }
+            let k = Self.get(o, 0), name = Self.name(k)
+            guard name.hasPrefix("T"), let g = Self.groups.firstIndex(where: { $0.match(name) }),
+                  let (size, type) = info(k), (Self.name(type) == "flt " && size == 4) || (Self.name(type) == "sp78" && size == 2)
+            else { continue }
+            keys.append((k, size, type, g))
+        }
+    }
+
+    var available: Bool { !keys.isEmpty }
+
+    func parts() -> [TempPart] {
+        var vals = [[Double]](repeating: [], count: Self.groups.count)
+        for k in keys {
+            guard let d = read(k.key, size: k.size) else { continue }
+            let v: Double = Self.name(k.type) == "flt "
+                ? Double(d.withUnsafeBytes { $0.loadUnaligned(as: Float.self) })
+                : Double(Int16(bitPattern: UInt16(d[0]) << 8 | UInt16(d[1]))) / 256
+            if v > 5 && v < 130 { vals[k.group].append(v) }
+        }
+        return Self.groups.enumerated().compactMap { i, g in
+            vals[i].max().map { TempPart(id: g.name, icon: g.icon, value: $0, warm: g.warm, hot: g.hot, sensors: vals[i].count) }
+        }
+    }
+
+    // SMCKeyData_t is an 80-byte struct: key @0, keyInfo.dataSize @28, dataType @32, result @40, data8 @42, data32 @44, bytes @48.
+    private func call(_ input: [UInt8]) -> [UInt8]? {
+        var i = input, o = [UInt8](repeating: 0, count: 80), n = 80
+        return IOConnectCallStructMethod(conn, 2, &i, 80, &o, &n) == KERN_SUCCESS && o[40] == 0 ? o : nil
+    }
+    private func info(_ key: UInt32) -> (Int, UInt32)? {
+        var b = Self.blank(); Self.put(&b, 0, key); b[42] = 9
+        return call(b).map { (Int(Self.get($0, 28)), Self.get($0, 32)) }
+    }
+    private func read(_ key: UInt32, size: Int) -> [UInt8]? {
+        guard conn != 0 else { return nil }
+        var b = Self.blank(); Self.put(&b, 0, key); Self.put(&b, 28, UInt32(size)); b[42] = 5
+        return call(b).map { Array($0[48..<48 + size]) }
+    }
+    private static func blank() -> [UInt8] { [UInt8](repeating: 0, count: 80) }
+    private static func put(_ b: inout [UInt8], _ off: Int, _ v: UInt32) { for j in 0..<4 { b[off + j] = UInt8(truncatingIfNeeded: v >> (8 * UInt32(j))) } }
+    private static func get(_ b: [UInt8], _ off: Int) -> UInt32 { (0..<4).reduce(0) { $0 | UInt32(b[off + $1]) << (8 * UInt32($1)) } }
+    private static func fourcc(_ s: String) -> UInt32 { s.utf8.reduce(0) { $0 << 8 | UInt32($1) } }
+    private static func name(_ k: UInt32) -> String { String(bytes: [24, 16, 8, 0].map { UInt8(truncatingIfNeeded: k >> $0) }, encoding: .ascii) ?? "" }
 }

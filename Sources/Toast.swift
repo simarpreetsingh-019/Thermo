@@ -15,7 +15,7 @@ struct ToastContent {
     var subtitle: String
     var bullets: [String] = []
     var actions: [ToastAction] = []
-    var autoHide: Double? = nil
+    var autoHide: Double? = 45     // every card leaves on its own; it stays in the 🔔 inbox
     var keepInInbox = true
 }
 
@@ -27,6 +27,7 @@ final class ToastModel: ObservableObject {
 struct ToastView: View {
     @ObservedObject var model: ToastModel
     var close: () -> Void
+    var hover: (Bool) -> Void = { _ in }
     var body: some View {
         if let c = model.content {
             VStack(alignment: .leading, spacing: 8) {
@@ -73,6 +74,7 @@ struct ToastView: View {
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.1)))
             .shadow(color: .black.opacity(0.4), radius: 14, y: 6)
             .foregroundStyle(.white)
+            .onHover(perform: hover)   // reading it? keep it up
             .offset(x: model.shown ? 0 : 380)
             .opacity(model.shown ? 1 : 0)
             .padding(20)
@@ -94,7 +96,8 @@ final class Toasts {
             p.isOpaque = false; p.backgroundColor = .clear; p.hasShadow = false; p.isReleasedWhenClosed = false
             p.level = .statusBar + 2
             p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
-            let host = NSHostingView(rootView: ToastView(model: model, close: { [weak self] in self?.hide() }))
+            let host = NSHostingView(rootView: ToastView(model: model, close: { [weak self] in self?.hide() },
+                                                         hover: { [weak self] on in self?.hovering(on) }))
             host.sizingOptions = []
             p.contentView = host
             panel = p
@@ -107,12 +110,21 @@ final class Toasts {
         model.shown = false
         p.orderFrontRegardless()
         DispatchQueue.main.async { withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) { self.model.shown = true } }
+        scheduleHide(after: c.autoHide)
+    }
+
+    private func scheduleHide(after t: Double?) {
         hideWork?.cancel()
-        if let t = c.autoHide {
-            let w = DispatchWorkItem { [weak self] in self?.hide() }
-            hideWork = w
-            DispatchQueue.main.asyncAfter(deadline: .now() + t, execute: w)
-        }
+        guard let t else { return }
+        let w = DispatchWorkItem { [weak self] in self?.hide() }
+        hideWork = w
+        DispatchQueue.main.asyncAfter(deadline: .now() + t, execute: w)
+    }
+
+    /// Pause the countdown while the pointer is on the card; give 8 s more after it leaves.
+    private func hovering(_ on: Bool) {
+        guard model.shown, model.content?.autoHide != nil else { return }
+        if on { hideWork?.cancel() } else { scheduleHide(after: 8) }
     }
 
     func hide() {

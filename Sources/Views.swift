@@ -6,7 +6,7 @@ import ServiceManagement
 
 // MARK: - Model
 
-enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", memory = "Memory", thermal = "Heat", inbox = "Alerts" }
+enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", memory = "Memory", thermal = "Heat", battery = "Battery", history = "History", inbox = "Alerts" }
 enum DisplayMode: String, CaseIterable { case notch = "Around the notch", floating = "Floating (movable)", menuBar = "Menu bar only" }
 enum Orientation: String, CaseIterable { case horizontal = "Horizontal", vertical = "Vertical" }
 enum NotchSide: String, CaseIterable { case both = "Both sides", left = "Left of notch", right = "Right of notch" }
@@ -42,6 +42,7 @@ final class Monitor: ObservableObject {
     @Published var tab: Tab = .overview
     @Published var sortByMemory = false
     @Published var blink = false
+    @Published var battery = BatteryInfo.read()
     private var tempSamples: [(t: Date, temp: Double)] = []
     private let sampler = Sampler()
     private let procs = ProcSampler()
@@ -64,10 +65,12 @@ final class Monitor: ObservableObject {
             // The per-process scan is the costliest step: run it every tick only while the
             // Apps/Heat list is on screen, otherwise every 4th tick (8 s) to keep advice fresh.
             self.ticks += 1
-            let listVisible = self.expanded && self.tab != .overview
+            let listVisible = self.expanded && [.apps, .memory, .thermal].contains(self.tab)
             let a: [AppUsage]? = (listVisible || self.ticks % 4 == 1) ? self.procs.sample() : nil
             DispatchQueue.main.async {
                 self.snap = s
+                if self.ticks % 15 == 0 { self.battery = BatteryInfo.read() }   // every 30 s
+                History.shared.add(s, battery: self.battery)
                 if let a { self.apps = a }
                 self.cpuHist = Array((self.cpuHist + [s.cpu]).suffix(40))
                 self.gpuHist = Array((self.gpuHist + [s.gpu ?? 0]).suffix(40))
@@ -210,19 +213,22 @@ struct ExpandedPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 4) {
-                ForEach(Tab.allCases.filter { $0 != .inbox }, id: \.self) { t in
+                ForEach(Tab.allCases.filter { $0 != .inbox && ($0 != .battery || m.battery.present) }, id: \.self) { t in
                     Button { withAnimation(.easeOut(duration: 0.2)) { m.tab = t } } label: {
                         HStack(spacing: 4) {
                             Text(t.rawValue)
                             if t == .thermal && m.advice.level >= .warm {
                                 Circle().fill(levelColor(m.advice.level)).frame(width: 6, height: 6)
                             }
+                            if t == .battery && m.battery.needsService {
+                                Circle().fill(Color.red).frame(width: 6, height: 6)
+                            }
                             if t == .memory && (m.memAdvice.pressure > .normal || m.memAdvice.swapping) {
                                 Circle().fill(m.memAdvice.pressure.color).frame(width: 6, height: 6)
                             }
                         }
                         .font(.system(size: 11, weight: .semibold))
-                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .padding(.horizontal, 8).padding(.vertical, 4)
                         .background(Capsule().fill(m.tab == t ? .white.opacity(0.18) : .clear))
                         .contentShape(Capsule())
                     }.buttonStyle(.plain)
@@ -249,6 +255,8 @@ struct ExpandedPanel: View {
                 case .apps: AppsTab(m: m)
                 case .thermal: ThermalTab(m: m)
                 case .memory: MemoryTab(m: m)
+                case .battery: BatteryTab(m: m)
+                case .history: HistoryTab(m: m)
                 case .inbox: InboxTab(m: m)
                 }
             }
@@ -258,7 +266,7 @@ struct ExpandedPanel: View {
             }
         }
         .padding(14)
-        .frame(width: 440, height: 210)
+        .frame(width: 480, height: 210)
         .foregroundStyle(.white)
     }
 
@@ -503,6 +511,12 @@ struct ThermalTab: View {
                         Spark(values: m.tempHist, color: heat(m.snap.hottest ?? 0), lo: 30, hi: 100).frame(width: 70, height: 16)
                     }
                 }
+                if !m.snap.parts.isEmpty {
+                    section("TEMPERATURES")
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible())], spacing: 4) {
+                        ForEach(m.snap.parts) { PartRow(p: $0) }
+                    }
+                }
                 if !a.affected.isEmpty {
                     section("WHAT'S AFFECTED")
                     ForEach(a.affected, id: \.self) { bullet($0) }
@@ -528,6 +542,23 @@ struct ThermalTab: View {
             Text("•").foregroundStyle(.secondary)
             Text(t).font(.system(size: 11)).fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+struct PartRow: View {
+    let p: TempPart
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: p.icon).font(.system(size: 10)).foregroundStyle(p.color).frame(width: 14)
+            Text(p.id).font(.system(size: 10)).lineLimit(1).minimumScaleFactor(0.8)
+            Spacer(minLength: 4)
+            Bar(value: min(max((p.value - 25) / (p.hot - 25) * 100, 0), 100), color: p.color).frame(width: 34)
+            Text("\(Int(p.value.rounded()))°").font(.system(size: 11, weight: .bold, design: .rounded)).monospacedDigit()
+                .foregroundStyle(p.color).frame(width: 28, alignment: .trailing)
+        }
+        .padding(.horizontal, 7).padding(.vertical, 4)
+        .background(RoundedRectangle(cornerRadius: 6).fill(.white.opacity(0.06)))
+        .help("\(p.id): hottest of \(p.sensors) sensor\(p.sensors == 1 ? "" : "s"). Warm from \(Int(p.warm))°, hot from \(Int(p.hot))°.")
     }
 }
 

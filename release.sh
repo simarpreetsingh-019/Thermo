@@ -18,6 +18,8 @@ gh release create "v$V" build/Thermo.zip build/Thermo.zip.sha256 --repo "$REPO" 
 
 **SHA-256:** \`$SHA\`
 
+**Downloading the zip?** macOS will warn that it can't verify Thermo, because it isn't notarized by Apple yet. Here's [how to open it and verify the download yourself](https://github.com/$REPO#first-launch-why-macos-warns-you). No Homebrew? The [installer script](https://github.com/$REPO#install) checks everything for you.
+
 Already have Thermo? It updates itself — look for the orange **Update** button in the panel, or run \`brew upgrade --cask thermo\`.
 
 Made by **Simarpreet Singh** · [simarpreetsingh-019.github.io](https://simarpreetsingh-019.github.io) · [@simarpreet_019](https://x.com/simarpreet_019)
