@@ -19,6 +19,9 @@ It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you 
 - **Pull it out:** drag the notch down and it becomes a floating widget. Drop it back at the top centre to re-dock.
 - **Floating mode** for Macs without a notch: drag it anywhere, with magnetic edges, a corner snap, and a horizontal or vertical layout.
 - **Menu bar mode**, if you prefer.
+- **Memory tab:** shows real memory pressure and swap (not just "% used"), how much you could free, and the biggest apps with one-click quit. No fake "RAM cleaning".
+- **Smart alerts:** a small card appears if your Mac stays hot, memory stays tight, or an app gets stuck at high CPU, with a one-click fix.
+- **Health summary:** one line telling you if all is good, or what to close.
 - **Heat tab:** heat level, what's affected (throttling, slower builds, dropped frames), the top culprit apps (including the project folder for `node`/`python` processes), a cooldown estimate, and one-click quit.
 - **Apps tab:** top apps by CPU or memory, with quit buttons.
 - **No sudo, no kernel extensions, no dependencies.** It reads sensors through public and stable macOS APIs.

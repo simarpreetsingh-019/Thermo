@@ -103,6 +103,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard let m = self?.monitor, m.expanded else { return }
             withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { m.pinned = false; m.expanded = false }
         }
+        // "Details" on an alert card opens the panel wherever Thermo lives.
+        NotificationCenter.default.addObserver(forName: .showPanel, object: nil, queue: .main) { [weak self] _ in
+            guard let self else { return }
+            switch self.settings.mode {
+            case .menuBar: if !self.dropdown.shown { self.togglePopover() }
+            default: withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { self.monitor.pinned = true; self.monitor.expanded = true }
+            }
+        }
         NotificationCenter.default.addObserver(forName: .detachFromNotch, object: nil, queue: .main) { [weak self] _ in
             let p = NSEvent.mouseLocation
             UserDefaults.standard.set(NSStringFromPoint(NSPoint(x: p.x - 80, y: p.y - 30)), forKey: "floatOrigin")
@@ -237,6 +245,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         var parts = ["CPU \(Int(s.cpu))%", "RAM \(Int(s.ramPct))%"]
         if let g = s.gpu { parts.append("GPU \(Int(g))%") }
         if let t = s.hottest { parts.append((monitor.advice.level >= .hot ? "⚠︎ " : "") + "\(Int(t))°") }
+        b.toolTip = healthSummary(monitor).text
         b.attributedTitle = NSAttributedString(string: parts.joined(separator: "  "),
             attributes: [.font: NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium)])
     }

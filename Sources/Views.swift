@@ -6,7 +6,7 @@ import ServiceManagement
 
 // MARK: - Model
 
-enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", thermal = "Heat" }
+enum Tab: String, CaseIterable { case overview = "Overview", apps = "Apps", memory = "Memory", thermal = "Heat" }
 enum DisplayMode: String, CaseIterable { case notch = "Around the notch", floating = "Floating (movable)", menuBar = "Menu bar only" }
 enum Orientation: String, CaseIterable { case horizontal = "Horizontal", vertical = "Vertical" }
 enum NotchSide: String, CaseIterable { case both = "Both sides", left = "Left of notch", right = "Right of notch" }
@@ -36,6 +36,7 @@ final class Monitor: ObservableObject {
     @Published var tempHist: [Double] = []
     @Published var apps: [AppUsage] = []
     @Published var advice = ThermalAdvice()
+    @Published var memAdvice = MemoryAdvice()
     @Published var expanded = false
     @Published var pinned = false
     @Published var tab: Tab = .overview
@@ -75,6 +76,8 @@ final class Monitor: ObservableObject {
                     self.tempSamples = (self.tempSamples + [(Date(), t)]).filter { $0.t > Date().addingTimeInterval(-120) }
                 }
                 self.advice = Advisor.advise(s, apps: self.apps, history: self.tempSamples)
+                self.memAdvice = MemoryAdvisor.advise(s, apps: self.apps)
+                AlertEngine.shared.evaluate(self)
                 if self.advice.level >= .hot { self.blink.toggle() }
             }
         }
@@ -115,11 +118,12 @@ struct Spark: View {
 
 struct Bar: View {
     let value: Double
+    var color: Color? = nil
     var body: some View {
         GeometryReader { g in
             ZStack(alignment: .leading) {
                 Capsule().fill(.white.opacity(0.12))
-                Capsule().fill(load(value)).frame(width: g.size.width * min(value, 100) / 100)
+                Capsule().fill(color ?? load(value)).frame(width: g.size.width * min(value, 100) / 100)
             }
         }.frame(height: 5)
     }
@@ -213,6 +217,9 @@ struct ExpandedPanel: View {
                             if t == .thermal && m.advice.level >= .warm {
                                 Circle().fill(levelColor(m.advice.level)).frame(width: 6, height: 6)
                             }
+                            if t == .memory && (m.memAdvice.pressure > .normal || m.memAdvice.swapping) {
+                                Circle().fill(m.memAdvice.pressure.color).frame(width: 6, height: 6)
+                            }
                         }
                         .font(.system(size: 11, weight: .semibold))
                         .padding(.horizontal, 10).padding(.vertical, 4)
@@ -240,6 +247,7 @@ struct ExpandedPanel: View {
                 case .overview: OverviewTab(m: m)
                 case .apps: AppsTab(m: m)
                 case .thermal: ThermalTab(m: m)
+                case .memory: MemoryTab(m: m)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -306,6 +314,9 @@ struct SettingsMenu: View {
             }
             Toggle("Also show in menu bar", isOn: $settings.menuBarItem)
                 .disabled(settings.mode == .menuBar)
+            Toggle("Smart alerts (heat, memory, stuck apps)", isOn: Binding(
+                get: { AlertEngine.shared.enabled },
+                set: { AlertEngine.shared.enabled = $0; settings.objectWillChange.send() }))
             Toggle("Open at login", isOn: Binding(
                 get: { SMAppService.mainApp.status == .enabled },
                 set: { on in setOpenAtLogin(on); settings.objectWillChange.send() }))
@@ -339,15 +350,31 @@ struct SettingsMenu: View {
 struct OverviewTab: View {
     @ObservedObject var m: Monitor
     var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            tiles
+            let h = healthSummary(m)
+            HStack(spacing: 6) {
+                Circle().fill([Color.green, .orange, .red][h.level]).frame(width: 7, height: 7)
+                Text(h.text).font(.system(size: 11, weight: .medium)).lineLimit(1)
+            }
+        }
+    }
+
+    var tiles: some View {
         let s = m.snap
-        HStack(spacing: 8) {
+        return HStack(spacing: 8) {
             HoverCard(action: { m.sortByMemory = false; m.tab = .apps }) {
                 tile("CPU", pct(s.cpu), bar: s.cpu, sub: "\(ProcessInfo.processInfo.activeProcessorCount) cores · tap for apps") {
                     Spark(values: m.cpuHist, color: .cyan).frame(height: 30)
                 }
             }
-            HoverCard(action: { m.sortByMemory = true; m.tab = .apps }) {
-                tile("MEMORY", gb(s.ramUsed), bar: s.ramPct, sub: "of \(gb(s.ramTotal))\nswap \(gb(s.swap))") { EmptyView() }
+            HoverCard(action: { m.tab = .memory }) {
+                tile("MEMORY", gb(s.ramUsed), bar: s.ramPct, barColor: s.memPressure.color, sub: "of \(gb(s.ramTotal))\nswap \(gb(s.swap))") {
+                    HStack(spacing: 4) {
+                        Circle().fill(s.memPressure.color).frame(width: 6, height: 6)
+                        Text("Pressure: \(s.memPressure.title)").font(.system(size: 9, weight: .semibold))
+                    }
+                }
             }
             HoverCard(action: nil) {
                 tile("GPU", s.gpu.map(pct) ?? "N/A", bar: s.gpu, sub: "utilization") {
@@ -368,11 +395,11 @@ struct OverviewTab: View {
         }
     }
 
-    func tile<V: View>(_ title: String, _ value: String, bar: Double?, sub: String, @ViewBuilder extra: () -> V) -> some View {
+    func tile<V: View>(_ title: String, _ value: String, bar: Double?, barColor: Color? = nil, sub: String, @ViewBuilder extra: () -> V) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title).font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary)
             Text(value).font(.system(size: 18, weight: .bold, design: .rounded)).monospacedDigit().lineLimit(1).minimumScaleFactor(0.7)
-            if let bar { Bar(value: bar) }
+            if let bar { Bar(value: bar, color: barColor) }
             extra()
             Spacer(minLength: 0)
             Text(sub).font(.system(size: 9)).foregroundStyle(.secondary)
@@ -567,7 +594,7 @@ func headline(_ m: Monitor) -> OrbReading {
     if m.advice.level >= .warm, let t = s.hottest {
         return OrbReading(label: "TEMP", text: "\(Int(t))°", fraction: (t - 30) / 70, color: heat(t))
     }
-    if s.ramPct >= 85 { return OrbReading(label: "RAM", text: "\(Int(s.ramPct))", fraction: s.ramPct / 100, color: load(s.ramPct)) }
+    if s.memPressure >= .warning { return OrbReading(label: "RAM", text: "\(Int(s.ramPct))", fraction: s.ramPct / 100, color: s.memPressure.color) }
     let gpu = s.gpu ?? 0
     let (label, v, tint) = gpu > s.cpu ? ("GPU", gpu, Metric.gpu.tint) : ("CPU", s.cpu, Metric.cpu.tint)
     return OrbReading(label: label, text: "\(Int(v))", fraction: v / 100, color: v >= 60 ? load(v) : tint)
@@ -597,6 +624,6 @@ struct Orb: View {
         .frame(width: size, height: size)
         .scaleEffect(alert && m.blink ? 1.08 : 1)
         .animation(.easeInOut(duration: 0.7), value: m.blink)
-        .help("\(r.label) \(r.text) — click for details")
+        .help("\(healthSummary(m).text)\n\(r.label) \(r.text): click for details")
     }
 }

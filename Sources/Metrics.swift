@@ -15,6 +15,7 @@ struct Snapshot {
     var ssdTemp: Double? = nil
     var batteryTemp: Double? = nil
     var thermalState: ProcessInfo.ThermalState = .nominal
+    var memPressure: MemPressure = .normal
     var ramPct: Double { ramTotal > 0 ? ramUsed / ramTotal * 100 : 0 }
     var hottest: Double? { [cpuTemp, gpuTemp].compactMap { $0 }.max() }
 }
@@ -39,6 +40,7 @@ final class Sampler {
         s.ssdTemp = hottest { $0.contains("nand") || $0.contains("ssd") }
         s.batteryTemp = hottest { $0.contains("batt") || $0.contains("gas gauge") }
         s.thermalState = ProcessInfo.processInfo.thermalState
+        s.memPressure = MemPressure.read()
         return s
     }
 
