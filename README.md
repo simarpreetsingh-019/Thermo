@@ -112,7 +112,7 @@ claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp
 - **Claude Code plugin** (MCP server + skill): `/plugin marketplace add simarpreetsingh-019/Thermo`, then `/plugin install thermo@thermo`
 - **Codex, Cursor, VS Code, Claude Desktop, others:** [integrations/](integrations/README.md)
 - **Your own app:** one-file clients for [Python](clients/thermo_client.py), [JavaScript](clients/thermo.mjs) and [Swift](clients/Thermo.swift)
-- **Local HTTP API:** opt-in (⚙ → Connections), `127.0.0.1:47615`, read-only, token-protected. [Endpoints](https://simarpreetsingh-019.github.io/Thermo/#api)
+- **Local HTTP API:** opt-in (⚙ → Connections), `127.0.0.1:47615`, read-only, token-protected. [Endpoints](https://simarpreetsingh-019.github.io/Thermo/agents.html#api)
 - **GitHub Actions:** `uses: simarpreetsingh-019/Thermo@v1` on macOS runners. [Details](integrations/README.md#github-actions)
 
 ## Roadmap

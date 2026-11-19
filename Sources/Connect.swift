@@ -453,7 +453,7 @@ final class LocalAPI: ObservableObject {
 
     private func writeInfo() {
         let info: [String: Any] = ["url": "http://127.0.0.1:\(Self.port)", "token": token, "version": Report.version,
-                                   "docs": "https://simarpreetsingh-019.github.io/Thermo/#api"]
+                                   "docs": "https://simarpreetsingh-019.github.io/Thermo/agents.html#api"]
         let f = Self.infoFile
         try? FileManager.default.createDirectory(at: f.deletingLastPathComponent(), withIntermediateDirectories: true)
         FileManager.default.createFile(atPath: f.path, contents: Data(Report.json(info).utf8), attributes: [.posixPermissions: 0o600])

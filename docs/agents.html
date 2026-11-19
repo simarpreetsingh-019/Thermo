@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thermo MCP server: let AI agents check your Mac's heat, memory and GPU</title>
+<meta name="description" content="Connect Claude Code, Claude Desktop, Codex, Cursor, VS Code or any MCP client to Thermo. Agents check headroom before heavy jobs, wait for the Mac to cool, and read temperatures, processes, battery and history. Plus CLI, local API, clients and a GitHub Action.">
+<meta name="keywords" content="mcp server mac, mac temperature mcp, claude code mcp macos, codex mcp, cursor mcp, ai agent gpu headroom, check mac temperature api, macos system monitor api, thermo mcp">
+<meta name="theme-color" content="#050506">
+<link rel="canonical" href="https://simarpreetsingh-019.github.io/Thermo/agents.html">
+<link rel="icon" href="icon.png">
+<meta property="og:title" content="Thermo for AI agents: an MCP server for your Mac's heat and load">
+<meta property="og:description" content="One line to connect Claude, Codex, Cursor or any MCP client. Agents check headroom before heavy work and wait for the Mac to cool.">
+<meta property="og:url" content="https://simarpreetsingh-019.github.io/Thermo/agents.html">
+<meta property="og:image" content="https://simarpreetsingh-019.github.io/Thermo/icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Connect AI agents to Thermo (MCP server for macOS)",
+ "about":"Thermo MCP server: check_headroom, wait_until_cool, get_status, get_temperatures, get_top_processes, get_battery, get_history",
+ "author":{"@type":"Person","name":"Simarpreet Singh"},"url":"https://simarpreetsingh-019.github.io/Thermo/agents.html"}
+</script>
+<link rel="stylesheet" href="style.css">
+<style>
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  @media (max-width:900px){.split{grid-template-columns:1fr}}
+  .tool{display:grid;grid-template-columns:240px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+  .tool:last-child{border-bottom:0}
+  .tool code.n{font-size:16px;color:var(--fg);background:none;padding:0}
+  .tool .args{color:var(--dim);font-size:13px;margin-top:6px;font-family:ui-monospace,Menlo,monospace}
+  .tool p{margin:0;color:var(--mut)}
+  @media (max-width:700px){.tool{grid-template-columns:1fr;gap:6px}}
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:800px){.flow{grid-template-columns:1fr}}
+  .flow .card .big{font-size:56px}
+  .verdict{display:inline-block;font:700 13px ui-monospace,Menlo,monospace;padding:3px 10px;border-radius:99px;margin-right:6px}
+  .v-go{background:rgba(46,230,166,.14);color:var(--cool)}.v-wait{background:rgba(255,176,32,.14);color:var(--warm)}.v-no{background:rgba(255,79,139,.14);color:var(--pink)}
+  .faq details{border-bottom:1px solid var(--line);padding:18px 0}
+  .faq summary{cursor:pointer;font-weight:600;font-size:18px;list-style:none}
+  .faq summary::after{content:"+";float:right;color:var(--dim)}
+  .faq details[open] summary::after{content:"–"}
+  .faq p{color:var(--mut);margin:10px 0 0}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="./"><img src="icon.png" alt="">Thermo <span style="color:var(--dim);font-weight:500">for agents</span></a>
+  <div class="links">
+    <a href="#setup">Setup</a><a href="#tools">Tools</a><a href="#cli">CLI</a><a href="#api">API &amp; clients</a><a href="#actions">GitHub Actions</a><a href="#faq">FAQ</a>
+  </div>
+  <a class="btn primary cta" href="#setup">Connect</a>
+</div></nav>
+
+<section class="hero center">
+  <div class="glow" style="background:radial-gradient(closest-side,rgba(56,214,255,.2),transparent 70%),radial-gradient(closest-side at 70% 40%,rgba(169,139,255,.2),transparent 70%)"></div>
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--cyan)">MCP server · CLI · Local API</div>
+    <h1>Agents that know<br><span class="grad">when to wait.</span></h1>
+    <p class="lede">Thermo gives Claude, Codex, Cursor and any MCP client live access to your Mac's heat, memory, GPU and battery. Before a heavy job, your agent asks one question: <i>is there room right now?</i></p>
+    <div class="btns">
+      <a class="btn primary" href="#setup">Connect in one line</a>
+      <a class="btn" href="./#install">Install Thermo first</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="term rv">
+      <div class="bar"><i></i><i></i><i></i><span>claude — ~/projects/video-render</span></div>
+      <div class="body" data-script='[
+        ["u","Render the 4K export and run the full test suite",700],
+        ["fn","⏺ thermo · check_headroom(kind: \"gpu\")",900],
+        ["wait","  ⏳ wait — The GPU is already 92% busy. The Mac is hot (88°C).",500],
+        ["c","     tips: Wait for it to cool below about 70°C · Closing Blender would help (180% CPU)",900],
+        ["a","Blender is still using the GPU and your Mac is hot. I will run the tests first (CPU only), then render once it cools.",900],
+        ["fn","⏺ thermo · check_headroom(kind: \"cpu\")",700],
+        ["ok","  ✓ go — The Mac has room for a heavy cpu job.",600],
+        ["a","Running tests… 412 passed.",900],
+        ["fn","⏺ thermo · wait_until_cool(target_celsius: 72, timeout_seconds: 600)",1500],
+        ["ok","  ✓ Cooled to 71°C after 2m 08s",500],
+        ["a","Cool enough now. Starting the 4K render.",400]
+      ]'></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">How it works</div>
+      <h2>One question. Three answers.</h2>
+    </div>
+    <div class="flow">
+      <div class="card rv"><span class="verdict v-go">go</span><h3 style="margin-top:14px">Start the job</h3><p>Cool, enough free memory, GPU and CPU have room.</p></div>
+      <div class="card rv"><span class="verdict v-wait">wait</span><h3 style="margin-top:14px">Hold on</h3><p>Hot, busy or tight on memory. The agent explains why, offers <code>wait_until_cool</code>, and names what to close (it never quits apps without asking).</p></div>
+      <div class="card rv"><span class="verdict v-no">no</span><h3 style="margin-top:14px">Don't start</h3><p>Not enough memory even after closing big apps. Try a smaller batch or model.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="setup" style="background:radial-gradient(60% 50% at 50% 30%,rgba(169,139,255,.07),transparent)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Setup</div>
+      <h2>Connect in one line.</h2>
+      <p class="lede">The MCP server is built into the Thermo app. Nothing else to install. <a href="./#install">Install Thermo</a>, then pick your tool.</p>
+    </div>
+    <div class="rv">
+      <div class="seg" data-group="mcp">
+        <button aria-selected="true" data-t="cc">Claude Code</button><button aria-selected="false" data-t="cd">Claude Desktop</button><button aria-selected="false" data-t="codex">Codex</button><button aria-selected="false" data-t="cursor">Cursor</button><button aria-selected="false" data-t="vscode">VS Code</button><button aria-selected="false" data-t="ws">Windsurf</button><button aria-selected="false" data-t="any">Any MCP client</button>
+      </div>
+      <div class="pane on" data-group="mcp" data-t="cc">
+        <div class="split">
+          <div><h3>Plugin (recommended)</h3><p>MCP server plus a skill that tells Claude when to check headroom and how to act on it.</p>
+<pre>/plugin marketplace add simarpreetsingh-019/Thermo
+/plugin install thermo@thermo</pre></div>
+          <div><h3>MCP server only</h3><p>One command in your terminal. Add <code>--scope user</code> to use it in every project.</p>
+<pre>claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp</pre></div>
+        </div>
+      </div>
+      <div class="pane" data-group="mcp" data-t="cd">
+        <p>Settings → Developer → <b>Edit Config</b>, add this to <code>claude_desktop_config.json</code>, then restart Claude.</p>
+<pre>{
+  "mcpServers": {
+    "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] }
+  }
+}</pre>
+      </div>
+      <div class="pane" data-group="mcp" data-t="codex">
+<pre>codex mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp</pre>
+        <p>Or in <code>~/.codex/config.toml</code>:</p>
+<pre>[mcp_servers.thermo]
+command = "/Applications/Thermo.app/Contents/MacOS/Thermo"
+args = ["--mcp"]</pre>
+        <p>Optional: copy the <a href="https://github.com/simarpreetsingh-019/Thermo/tree/main/plugins/thermo/skills/thermo">Thermo skill</a> to <code>~/.codex/skills/thermo/</code>, or paste the <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/codex/AGENTS.md">AGENTS.md snippet</a> into your project.</p>
+      </div>
+      <div class="pane" data-group="mcp" data-t="cursor">
+        <p>Add to <code>~/.cursor/mcp.json</code> (all projects) or <code>.cursor/mcp.json</code> (one project):</p>
+<pre>{
+  "mcpServers": {
+    "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] }
+  }
+}</pre>
+        <p>Optional rule: save <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/cursor/thermo.mdc">thermo.mdc</a> into <code>.cursor/rules/</code>.</p>
+      </div>
+      <div class="pane" data-group="mcp" data-t="vscode">
+        <p>GitHub Copilot agent mode. Add <code>.vscode/mcp.json</code>:</p>
+<pre>{
+  "servers": {
+    "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] }
+  }
+}</pre>
+      </div>
+      <div class="pane" data-group="mcp" data-t="ws">
+        <p>Windsurf → Settings → Cascade → MCP servers → <b>View raw config</b> (<code>~/.codeium/windsurf/mcp_config.json</code>):</p>
+<pre>{
+  "mcpServers": {
+    "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] }
+  }
+}</pre>
+      </div>
+      <div class="pane" data-group="mcp" data-t="any">
+        <div class="tbl"><table>
+          <tr><th>Setting</th><th>Value</th></tr>
+          <tr><td>Transport</td><td><code>stdio</code></td></tr>
+          <tr><td>Command</td><td><code>/Applications/Thermo.app/Contents/MacOS/Thermo</code></td></tr>
+          <tr><td>Arguments</td><td><code>["--mcp"]</code></td></tr>
+          <tr><td>Installed in ~/Applications?</td><td><code>~/Applications/Thermo.app/Contents/MacOS/Thermo</code></td></tr>
+        </table></div>
+        <p>Works with Zed, Cline, Continue, Goose, LM Studio and any client that speaks MCP.</p>
+      </div>
+      <p style="margin-top:22px;color:var(--dim)">Then try: <i style="color:var(--fg)">"Is my Mac cool enough to train this model? If not, wait until it is."</i></p>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Tools</div>
+      <h2>Seven tools. All read-only.</h2>
+      <p class="lede">Thermo never changes anything on your Mac through MCP. It reads and reports.</p>
+    </div>
+    <div class="rv">
+      <div class="tool"><div><code class="n">check_headroom</code><div class="args">kind: any | gpu | cpu | memory<br>memory_gb: number</div></div><p><b style="color:var(--fg)">Call this before heavy work.</b> Returns <span class="verdict v-go">go</span><span class="verdict v-wait">wait</span><span class="verdict v-no">no</span> with reasons, tips and which apps to close.</p></div>
+      <div class="tool"><div><code class="n">wait_until_cool</code><div class="args">target_celsius: 40–100 (70)<br>timeout_seconds: 5–1800 (300)</div></div><p>Blocks until the Mac reaches the target temperature, or the timeout passes.</p></div>
+      <div class="tool"><div><code class="n">get_status</code></div><p>CPU, GPU, memory and pressure, hottest temperature, throttling, battery, and a one-line health summary.</p></div>
+      <div class="tool"><div><code class="n">get_temperatures</code></div><p>Every part: CPU performance and efficiency cores, GPU, memory, SSD, battery, Wi-Fi, palm rest, each with ok / warm / hot.</p></div>
+      <div class="tool"><div><code class="n">get_top_processes</code><div class="args">limit: 1–50 (8)<br>sort_by: cpu | memory</div></div><p>Busiest apps, with project folders for dev tools like <code>node</code> and <code>python</code>.</p></div>
+      <div class="tool"><div><code class="n">get_battery</code></div><p>Health %, condition, cycles, charge, charging state, watts and time left.</p></div>
+      <div class="tool"><div><code class="n">get_history</code><div class="args">range: 1h | 24h</div></div><p>Per-minute CPU, memory, GPU, temperature and battery, with averages, peaks and the daily battery-health log.</p></div>
+    </div>
+    <h3 style="margin:40px 0 12px" class="rv">Example: <code>check_headroom</code> response</h3>
+<pre class="rv">{
+  "verdict": "wait",
+  "ok": false,
+  "kind": "gpu",
+  "advice": "Better to wait: The Mac is hot (91°C); a heavy job now would run slower.",
+  "reasons": ["The Mac is hot (91°C); a heavy job now would run slower."],
+  "tips": ["Wait for it to cool below about 70°C (use wait_until_cool / `thermo wait-cool`)."],
+  "close_candidates": [{ "name": "Chrome", "cpu_percent": 84.2, "memory_mb": 3120, "pid": 812 }],
+  "now": { "cpu_percent": 71.4, "gpu_percent": 63, "memory_available_gb": 7.8, "memory_pressure": "normal", "hottest_c": 91.2 }
+}</pre>
+  </div>
+</section>
+
+<section id="cli">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Command line</div>
+      <h2>For scripts and humans.</h2>
+      <p class="lede">The same readings in Terminal. Plain text for you, <code>--json</code> for scripts. Homebrew adds <code>thermo</code> automatically; zip users: ⚙ → Connections → Install thermo command.</p>
+    </div>
+    <div class="split rv">
+      <div class="tbl"><table>
+        <tr><th>Command</th><th>Gives you</th></tr>
+        <tr><td><code>thermo status</code></td><td>Overview and health line</td></tr>
+        <tr><td><code>thermo temps</code></td><td>Every part's temperature</td></tr>
+        <tr><td><code>thermo apps --sort memory</code></td><td>Busiest apps</td></tr>
+        <tr><td><code>thermo battery</code></td><td>Health, cycles, watts</td></tr>
+        <tr><td><code>thermo history --range 24h</code></td><td>Averages and peaks</td></tr>
+        <tr><td><code>thermo headroom --kind gpu</code></td><td>Exit <b>0</b> go · <b>3</b> wait · <b>4</b> no</td></tr>
+        <tr><td><code>thermo wait-cool --target 70</code></td><td>Waits, then returns</td></tr>
+        <tr><td><code>thermo mcp</code></td><td>Starts the MCP server</td></tr>
+      </table></div>
+      <div>
+        <h3 style="margin-bottom:10px">Gate any script</h3>
+<pre><span class="c"># wait for room before training</span>
+thermo headroom --kind gpu --memory-gb 12 \
+  || thermo wait-cool --target 70
+python train.py</pre>
+        <h3 style="margin:22px 0 10px">Without Homebrew</h3>
+<pre>/Applications/Thermo.app/Contents/MacOS/Thermo --cli status --json</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="api">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Your own apps</div>
+      <h2>Three lines in any language.</h2>
+      <p class="lede">Copy one file. Each client uses the local API when it's on, and the CLI otherwise. Same JSON either way.</p>
+    </div>
+    <div class="rv">
+      <div class="seg" data-group="lang"><button aria-selected="true" data-t="py">Python</button><button aria-selected="false" data-t="js">JavaScript</button><button aria-selected="false" data-t="sw">Swift</button><button aria-selected="false" data-t="http">HTTP</button></div>
+      <div class="pane on" data-group="lang" data-t="py"><p><a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/clients/thermo_client.py">thermo_client.py</a>, standard library only.</p>
+<pre>from thermo_client import Thermo
+t = Thermo()
+if t.headroom(kind="gpu", memory_gb=8)["verdict"] != "go":
+    t.wait_until_cool(target=70)</pre></div>
+      <div class="pane" data-group="lang" data-t="js"><p><a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/clients/thermo.mjs">thermo.mjs</a>, Node 18+, no dependencies.</p>
+<pre>import { Thermo } from "./thermo.mjs";
+const t = new Thermo();
+if ((await t.headroom({ kind: "gpu", memoryGb: 8 })).verdict !== "go")
+  await t.waitUntilCool({ target: 70 });</pre></div>
+      <div class="pane" data-group="lang" data-t="sw"><p><a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/clients/Thermo.swift">Thermo.swift</a>, Foundation only.</p>
+<pre>let t = ThermoClient()
+let h = try await t.headroom(kind: "gpu", memoryGB: 8)
+if h["verdict"] as? String != "go" { _ = try await t.waitUntilCool(target: 70) }</pre></div>
+      <div class="pane" data-group="lang" data-t="http">
+        <p>Turn it on in Thermo: ⚙ → Connections → <b>Local API for other apps</b>. Localhost only, read-only, token-protected; requests from web pages are refused.</p>
+<pre>TOKEN=$(python3 -c "import json,os;print(json.load(open(os.path.expanduser('~/Library/Application Support/Thermo/api.json')))['token'])")
+curl -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:47615/v1/headroom?kind=gpu&amp;memory_gb=8"</pre>
+        <div class="tbl" style="margin-top:16px"><table>
+          <tr><th>Endpoint</th><th>Same as</th></tr>
+          <tr><td><code>/v1/status</code></td><td><code>get_status</code></td></tr>
+          <tr><td><code>/v1/temperatures</code></td><td><code>get_temperatures</code></td></tr>
+          <tr><td><code>/v1/processes?limit=8&amp;sort=cpu</code></td><td><code>get_top_processes</code></td></tr>
+          <tr><td><code>/v1/battery</code></td><td><code>get_battery</code></td></tr>
+          <tr><td><code>/v1/history?range=24h</code></td><td><code>get_history</code></td></tr>
+          <tr><td><code>/v1/headroom?kind=gpu&amp;memory_gb=8</code></td><td><code>check_headroom</code></td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="actions">
+  <div class="wrap split">
+    <div class="rv">
+      <div class="eyebrow">GitHub Actions</div>
+      <h2 style="margin:10px 0 18px">Check your Mac runners.</h2>
+      <p class="lede" style="font-size:18px">Writes a load and temperature table to the job summary, outputs <code>verdict</code>, and can wait for the runner to cool or fail the step. Best on self-hosted Mac runners.</p>
+    </div>
+<pre class="rv">jobs:
+  render:
+    runs-on: [self-hosted, macOS]
+    steps:
+      - uses: simarpreetsingh-019/Thermo@v1
+        id: thermo
+        with:
+          kind: gpu          <span class="c"># any | gpu | cpu | memory</span>
+          memory-gb: 6
+          wait-cool: 75      <span class="c"># optional</span>
+          fail-on: no        <span class="c"># never | wait | no</span>
+      - run: ./render.sh</pre>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap faq" style="max-width:820px">
+    <div class="sec-head rv"><div class="eyebrow">FAQ</div><h2>Good questions.</h2></div>
+    <details class="rv"><summary>Does the agent get access to my files or apps?</summary><p>No. All seven tools are read-only system readings. Thermo can't open, change or quit anything through MCP. App names and project folder names are included in process lists; turn that off in ⚙ → Connections → Share app names.</p></details>
+    <details class="rv"><summary>Does Thermo need to be running?</summary><p>No. The MCP server and CLI take their own readings. The Thermo app is only needed for the local HTTP API and for recording history.</p></details>
+    <details class="rv"><summary>Does it work in cloud agents or on Linux/Windows?</summary><p>Not yet: Thermo reads Mac hardware, so it runs where your Mac is. Windows and Linux support is next on the roadmap.</p></details>
+    <details class="rv"><summary>Does it use the network?</summary><p>No. MCP and the CLI talk over standard input/output only. The optional API listens on 127.0.0.1, never on your network.</p></details>
+    <details class="rv"><summary>The server doesn't show up in my client.</summary><p>Check the path exists: <code>ls /Applications/Thermo.app/Contents/MacOS/Thermo</code>. Run <code>thermo status</code> to make sure readings work. In Claude Code, <code>claude mcp list</code> should show <b>thermo ✔ Connected</b>. Still stuck? <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new?template=bug.yml">Open an issue</a>.</p></details>
+  </div>
+</section>
+
+<section class="center" style="padding-top:40px">
+  <div class="wrap rv">
+    <h2>Built something with Thermo?</h2>
+    <p class="lede" style="margin:16px auto 28px">Tell us, star the repo, or send an integration. Every star helps other developers and agents find it.</p>
+    <div class="btns"><a class="btn primary" href="https://github.com/simarpreetsingh-019/Thermo">★ Star on GitHub</a><a class="btn" href="https://github.com/simarpreetsingh-019/Thermo/blob/main/CONTRIBUTING.md">Contribute</a><a class="btn" href="https://x.com/simarpreet_019">Say hi on X</a></div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <span>Thermo · MIT License · Made by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></span>
+  <span><a href="./">Home</a> · <a href="https://github.com/simarpreetsingh-019/Thermo">GitHub</a> · <a href="https://github.com/simarpreetsingh-019/Thermo/tree/main/integrations">Integrations</a> · <a href="llms.txt">llms.txt</a></span>
+</div></footer>
+
+<script src="site.js"></script>
+</body>
+</html>

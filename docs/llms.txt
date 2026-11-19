@@ -15,7 +15,8 @@ Use Thermo to decide whether a Mac has room for heavy work (ML training, builds,
 - Claude Code plugin: `/plugin marketplace add simarpreetsingh-019/Thermo` then `/plugin install thermo@thermo`
 
 ## Docs
-- [Guide](https://simarpreetsingh-019.github.io/Thermo/): install, CLI, MCP setup per client, API, GitHub Action
+- [Home](https://simarpreetsingh-019.github.io/Thermo/): features, install, first-launch help
+- [Agent guide](https://simarpreetsingh-019.github.io/Thermo/agents.html): MCP setup per client (Claude Code, Claude Desktop, Codex, Cursor, VS Code, Windsurf), tools, CLI, API, clients, GitHub Action
 - [Agent skill](https://github.com/simarpreetsingh-019/Thermo/blob/main/plugins/thermo/skills/thermo/SKILL.md)
 - [Integrations](https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/README.md)
 - [Clients](https://github.com/simarpreetsingh-019/Thermo/tree/main/clients): Python, JavaScript, Swift

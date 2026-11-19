@@ -1,7 +1,7 @@
 # Connect Thermo to agents and apps
 
 Thermo must be installed on the Mac (`brew install --cask simarpreetsingh-019/thermo/thermo`, or the
-[installer script](../README.md#install)). Full guide: https://simarpreetsingh-019.github.io/Thermo/#connect
+[installer script](../README.md#install)). Full guide: https://simarpreetsingh-019.github.io/Thermo/agents.html
 
 The MCP server is the Thermo app itself: `/Applications/Thermo.app/Contents/MacOS/Thermo --mcp`.
 

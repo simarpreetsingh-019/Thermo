@@ -345,7 +345,7 @@ struct SettingsMenu: View {
                     CommandInstaller.install()
                 }.disabled(CommandInstaller.installed)
                 Divider()
-                Button("Connect AI tools and apps…") { open("https://simarpreetsingh-019.github.io/Thermo/#connect") }
+                Button("Connect AI tools and apps…") { open("https://simarpreetsingh-019.github.io/Thermo/agents.html") }
             }
             #endif
             Divider()

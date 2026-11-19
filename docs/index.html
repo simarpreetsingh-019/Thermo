@@ -7,11 +7,12 @@
 <meta name="description" content="Thermo is a free, open-source macOS app that shows live CPU, GPU, RAM and per-component temperatures beside your MacBook's notch, with battery health, history, smart alerts, a CLI, a local API and an MCP server for AI agents.">
 <meta name="keywords" content="Thermo, mac temperature monitor, macbook notch app, cpu temperature mac, gpu temperature mac, apple silicon temperature, battery health mac, mcp server, ai agent mac monitoring, menu bar system monitor">
 <meta name="author" content="Simarpreet Singh">
+<meta name="theme-color" content="#050506">
 <link rel="canonical" href="https://simarpreetsingh-019.github.io/Thermo/">
 <link rel="icon" href="icon.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Thermo: live Mac heat, load and battery in your notch">
-<meta property="og:description" content="Free, open-source. CPU, GPU, RAM and per-part temperatures beside the notch, plus a CLI, local API and MCP server for AI agents.">
+<meta property="og:title" content="Thermo: your Mac's heat, load and battery, beside the notch">
+<meta property="og:description" content="Free and open source. CPU, GPU, RAM and every temperature at a glance, plus an MCP server so AI agents can check your Mac before heavy work.">
 <meta property="og:url" content="https://simarpreetsingh-019.github.io/Thermo/">
 <meta property="og:image" content="https://simarpreetsingh-019.github.io/Thermo/icon.png">
 <meta name="twitter:card" content="summary">
@@ -19,253 +20,297 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Thermo","operatingSystem":"macOS 13+",
  "applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
- "description":"Live CPU, GPU, RAM and temperature monitor for the MacBook notch, with battery health, history, CLI, local API and MCP server.",
+ "description":"Live CPU, GPU, RAM and temperature monitor for the MacBook notch, with battery health, history, CLI, local API and MCP server for AI agents.",
  "url":"https://simarpreetsingh-019.github.io/Thermo/","downloadUrl":"https://github.com/simarpreetsingh-019/Thermo/releases/latest",
  "license":"https://opensource.org/licenses/MIT","author":{"@type":"Person","name":"Simarpreet Singh","url":"https://simarpreetsingh-019.github.io"}}
 </script>
-<style>
-:root{--bg:#fbfaf8;--fg:#1c1b1a;--mut:#6b6762;--card:#fff;--line:#e8e4de;--acc:#e8590c;--acc2:#0b7285;--code:#f3f0eb}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111;--fg:#eceae6;--mut:#9a958e;--card:#1a1a1a;--line:#2b2a28;--acc:#ff8a3d;--acc2:#3bc9db;--code:#1f1e1c}}
-:root[data-theme="dark"]{--bg:#111;--fg:#eceae6;--mut:#9a958e;--card:#1a1a1a;--line:#2b2a28;--acc:#ff8a3d;--acc2:#3bc9db;--code:#1f1e1c}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif}
-a{color:var(--acc2)}
-.wrap{max-width:960px;margin:0 auto;padding:0 16px}
-nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:18px;align-items:center;height:52px;overflow-x:auto;white-space:nowrap}
-nav a{color:var(--mut);text-decoration:none;font-size:14px}nav a:hover{color:var(--fg)}
-nav .brand{color:var(--fg);font-weight:700;display:flex;gap:8px;align-items:center;margin-right:auto}
-nav img{width:24px;height:24px}
-header{padding:56px 0 24px;text-align:center}
-header img.logo{width:96px;height:96px}
-h1{font-size:clamp(30px,5vw,46px);line-height:1.15;margin:12px 0}
-.lede{color:var(--mut);font-size:18px;max-width:640px;margin:0 auto 24px}
-.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-block;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600;border:1px solid var(--line);color:var(--fg)}
-.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
-.hero-media{margin:32px auto 0;max-width:820px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-.hero-media img{display:block;width:100%;height:auto}
-section{padding:40px 0;border-top:1px solid var(--line)}
-h2{font-size:28px;margin:0 0 8px}h3{font-size:18px;margin:24px 0 6px}
-.sub{color:var(--mut);margin:0 0 20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-.card b{display:block;margin-bottom:4px}.card p{margin:0;color:var(--mut);font-size:14px}
-pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font:13.5px/1.5 ui-monospace,"SF Mono",Menlo,monospace;margin:8px 0 14px}
-code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.92em}
-p code,li code,td code{background:var(--code);padding:1px 5px;border-radius:5px}
-.copy{position:absolute;top:6px;right:6px;font-size:12px;padding:3px 9px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer}
-table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 16px;display:block;overflow-x:auto}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--mut);font-weight:600}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
-.tabs button{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px}
-.tabs button[aria-selected="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
-.panel{display:none}.panel.on{display:block}
-.note{border-left:3px solid var(--acc);padding:6px 12px;color:var(--mut);background:var(--card);border-radius:0 8px 8px 0}
-.road li{margin:4px 0}
-footer{padding:32px 0 48px;color:var(--mut);font-size:14px;text-align:center;border-top:1px solid var(--line)}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <nav><div class="wrap">
-  <a class="brand" href="#"><img src="icon.png" alt="">Thermo</a>
-  <a href="#install">Install</a><a href="#use">Use</a><a href="#connect">AI agents</a><a href="#api">API</a><a href="#actions">CI</a><a href="#security">Security</a><a href="#roadmap">Roadmap</a><a href="#about">About</a>
-  <a href="https://github.com/simarpreetsingh-019/Thermo">GitHub</a>
+  <a class="brand" href="./"><img src="icon.png" alt="">Thermo</a>
+  <div class="links">
+    <a href="#features">Features</a><a href="#temps-sec">Sensors</a><a href="agents.html">For AI agents</a><a href="#install">Install</a><a href="#privacy">Privacy</a><a href="#about">About</a>
+  </div>
+  <a class="btn primary cta" href="#install">Download</a>
 </div></nav>
 
-<header class="wrap">
-  <img class="logo" src="icon.png" alt="Thermo app icon">
-  <h1>Your Mac's heat, load and battery,<br>right beside the notch.</h1>
-  <p class="lede">Thermo is a free, open-source macOS app that shows live CPU, GPU, memory and temperatures, tells you what's slowing your Mac and what to close, and lets your apps and AI agents ask "is there room for this heavy job?"</p>
-  <div class="btns">
-    <a class="btn primary" href="#install">Install free</a>
-    <a class="btn" href="#connect">Connect an AI agent</a>
-    <a class="btn" href="https://github.com/simarpreetsingh-019/Thermo">★ Star on GitHub</a>
+<section class="hero center">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="eyebrow">Free · Open source · macOS</div>
+    <h1>Your Mac.<br><span class="grad">Every degree.</span></h1>
+    <p class="lede">Thermo lives around your MacBook's notch and shows CPU, GPU, memory and every temperature at a glance. When it heats up, it tells you why, and what to close.</p>
+    <div class="btns">
+      <a class="btn primary" href="#install">Download for Mac</a>
+      <a class="btn" href="agents.html">Connect your AI agent →</a>
+    </div>
+
+    <div class="mac rv">
+      <div class="lid"><div class="screen">
+        <div class="menubar"><div><span></span><span>Finder</span><span>File</span><span>Edit</span><span>View</span></div><div><span>Wi-Fi</span><span>100%</span><span>9:41</span></div></div>
+        <div class="win"><div class="tb"><i></i><i></i><i></i></div><div class="tx"><span class="d">~/projects/llm-finetune</span>
+<span class="g">$</span> python train.py --epochs 3
+<span class="d">Loading dataset… 48,210 samples</span>
+Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
+<div class="prog"><i></i></div>Epoch 2/3 <span class="o">GPU 91%</span>  loss 0.972
+<span class="d">eta 06:41</span></div></div>
+        <div class="win win2"><div class="tb"><i></i><i></i><i></i></div><div class="tx"><b>Thermo</b><span class="o">Warming up</span><br>Training (python) is the main heat source. Still at full speed.</div></div>
+        <div class="dock"><i style="--c:linear-gradient(#5ac8fa,#007aff)"></i><i style="--c:linear-gradient(#ffd60a,#ff9f0a)"></i><i style="--c:linear-gradient(#34c759,#248a3d)"></i><i style="--c:linear-gradient(#2c2c2e,#000)"></i><i style="--c:linear-gradient(#ff6b2c,#ff4f8b)"></i><i style="--c:linear-gradient(#bf5af2,#5e5ce6)"></i><i style="--c:linear-gradient(#e5e5ea,#aeaeb2)"></i></div>
+        <div class="hud" title="Hover or click">
+          <div class="side">
+            <div class="ring" data-live="cpu" style="--c:var(--cyan)"></div>
+            <div class="ring" data-live="ram" style="--c:var(--violet)"></div>
+          </div>
+          <div class="side r">
+            <div class="ring" data-live="gpu" style="--c:var(--cool)"></div>
+            <span class="t" data-live="temp">52°</span>
+          </div>
+          <div class="panel">
+            <div class="tabs"><b>Overview</b><span>Apps</span><span>Memory</span><span>Heat</span><span>Battery</span><span>History</span></div>
+            <div class="row">
+              <div class="tile">CPU<b data-live="cpu">23%</b><div class="bar"><i data-live="cpu" style="--c:var(--cyan)"></i></div></div>
+              <div class="tile">Memory<b data-live="ram">61%</b><div class="bar"><i data-live="ram" style="--c:var(--violet)"></i></div></div>
+              <div class="tile">GPU<b data-live="gpu">34%</b><div class="bar"><i data-live="gpu" style="--c:var(--cool)"></i></div></div>
+              <div class="tile">Heat<b data-live="temp">52°</b><div class="bar"><i data-live="temp" style="--c:var(--warm)"></i></div></div>
+            </div>
+            <div class="health">All good: cool, plenty of memory</div>
+          </div>
+        </div>
+      </div></div>
+      <div class="base"></div>
+      <div class="caption">Live demo. Hover the notch.</div>
+    </div>
   </div>
-  <div class="hero-media"><img src="demo.gif" alt="Thermo expanding from the MacBook notch to show CPU, GPU, memory and temperature" width="820" height="460" loading="eager"></div>
-</header>
+</section>
 
-<section><div class="wrap">
-  <h2>What it does</h2>
-  <p class="sub">About 16 MB of memory and 2–3% of one CPU core. No admin rights, no kernel extensions, no telemetry.</p>
-  <div class="grid">
-    <div class="card"><b>Notch HUD</b><p>Glowing gauges beside the notch. Hover to expand, drag down to float. Menu-bar mode for Macs without a notch.</p></div>
-    <div class="card"><b>Every temperature</b><p>CPU performance and efficiency cores, GPU, memory, SSD, battery, Wi-Fi and palm rest, each with its own safe range.</p></div>
-    <div class="card"><b>Heat advisor</b><p>What's causing the heat, what slows down, how long to cool, and one-click quit.</p></div>
-    <div class="card"><b>Memory advisor</b><p>Real memory pressure and swap, not just "% used". No fake RAM cleaning.</p></div>
-    <div class="card"><b>Battery health</b><p>Health %, condition, cycles, watts in or out, time left, and a daily health log.</p></div>
-    <div class="card"><b>History</b><p>CPU, memory, GPU and temperature graphs for the last hour or 24 hours.</p></div>
-    <div class="card"><b>Smart alerts</b><p>A small card when your Mac stays hot, memory stays tight, or an app gets stuck.</p></div>
-    <div class="card"><b>For agents and apps</b><p>CLI with JSON, an MCP server, a local API, and Python, JavaScript and Swift helpers.</p></div>
+<section style="padding-top:40px">
+  <div class="wrap rv">
+    <div class="stats">
+      <div><b class="grad">16 MB</b><span>of memory, about the size of one photo</span></div>
+      <div><b>~2%</b><span>of one CPU core while running</span></div>
+      <div><b>0</b><span>telemetry, admin rights or kernel extensions</span></div>
+      <div><b>$0</b><span>free and MIT-licensed, forever</span></div>
+    </div>
   </div>
-</div></section>
+</section>
 
-<section id="install"><div class="wrap">
-  <h2>Install</h2>
-  <p class="sub">macOS 13 or later. Apple Silicon and Intel.</p>
-  <h3>Homebrew (recommended)</h3>
-  <pre><code>brew install --cask simarpreetsingh-019/thermo/thermo</code></pre>
-  <p>This also adds the <code>thermo</code> command.</p>
-  <h3>No Homebrew: installer script</h3>
-  <p>It downloads the latest release and checks the SHA-256 checksum, GitHub attestation (if you have <code>gh</code>) and code signature before installing. If any check fails, nothing is installed. Read it first, it's short.</p>
-  <pre><code>curl -fsSL https://raw.githubusercontent.com/simarpreetsingh-019/Thermo/main/install.sh -o install.sh</code></pre>
-  <pre><code>bash install.sh</code></pre>
-  <h3>Direct download</h3>
-  <p>Get <code>Thermo.zip</code> from <a href="https://github.com/simarpreetsingh-019/Thermo/releases/latest">Releases</a>, unzip, and drag Thermo into Applications.</p>
-  <p class="note"><b>Why macOS warns you:</b> Thermo is free and open source but not yet notarized by Apple (that needs a paid developer account), so macOS says it can't verify it. That means "Apple hasn't checked this", not "this is harmful". To open it once: double-click Thermo, click <b>Done</b>, then go to <b>System Settings → Privacy &amp; Security</b> and click <b>Open Anyway</b>. On macOS 14 and earlier, right-click → <b>Open</b> works too.</p>
-  <h3>Check your download yourself</h3>
-  <pre><code>shasum -a 256 ~/Downloads/Thermo.zip                 # compare with the release notes
-gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo</code></pre>
-</div></section>
-
-<section id="use"><div class="wrap">
-  <h2>Use it by hand</h2>
-  <p class="sub">The app is the main way to use Thermo. The <code>thermo</code> command gives the same readings in Terminal. Add <code>--json</code> to any reading for machine-readable output.</p>
-  <table>
-    <tr><th>Command</th><th>What you get</th></tr>
-    <tr><td><code>thermo status</code></td><td>CPU, GPU, memory, heat, battery and a one-line health summary</td></tr>
-    <tr><td><code>thermo temps</code></td><td>Temperature of each part</td></tr>
-    <tr><td><code>thermo apps --sort memory</code></td><td>Busiest apps by CPU or memory</td></tr>
-    <tr><td><code>thermo battery</code></td><td>Health, cycles, charge, watts, time left</td></tr>
-    <tr><td><code>thermo history --range 24h</code></td><td>Averages and peaks for 1 or 24 hours</td></tr>
-    <tr><td><code>thermo headroom --kind gpu --memory-gb 8</code></td><td>Room for a heavy job? Exit code 0 go, 3 wait, 4 no</td></tr>
-    <tr><td><code>thermo wait-cool --target 70</code></td><td>Waits until the Mac cools, then returns</td></tr>
-    <tr><td><code>thermo open | quit | restart | update | version</code></td><td>Control the app</td></tr>
-  </table>
-  <p>Homebrew adds the <code>thermo</code> command automatically. Installed from the zip? Use ⚙ → Connections → <b>Install thermo command in Terminal</b> (asks for your password once), or say yes when the installer script offers it. You can also call the app directly: <code>/Applications/Thermo.app/Contents/MacOS/Thermo --cli status</code>.</p>
-  <h3>Gate your own scripts</h3>
-  <pre><code>thermo headroom --kind gpu --memory-gb 12 || thermo wait-cool --target 70
-python train.py</code></pre>
-</div></section>
-
-<section id="connect"><div class="wrap">
-  <h2>Connect an AI agent</h2>
-  <p class="sub">Thermo includes an MCP server, so any MCP-compatible agent can check your Mac before heavy work. It's the app itself, no extra install: <code>/Applications/Thermo.app/Contents/MacOS/Thermo --mcp</code>.</p>
-  <div class="tabs" role="tablist">
-    <button role="tab" aria-selected="true" data-t="claude">Claude Code</button>
-    <button role="tab" aria-selected="false" data-t="desktop">Claude Desktop</button>
-    <button role="tab" aria-selected="false" data-t="codex">Codex</button>
-    <button role="tab" aria-selected="false" data-t="cursor">Cursor</button>
-    <button role="tab" aria-selected="false" data-t="vscode">VS Code</button>
-    <button role="tab" aria-selected="false" data-t="other">Other MCP clients</button>
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow">Everything at a glance</div>
+      <h2>Small on screen.<br>Big on answers.</h2>
+      <p class="lede">Not just numbers. Thermo explains what's happening and what to do about it.</p>
+    </div>
+    <div class="bento">
+      <div class="tile-b s4 rv">
+        <div class="k">Heat advisor</div>
+        <h3>Knows why your Mac is hot.</h3>
+        <p>Shows the apps causing it (even which project a <code>node</code> or <code>python</code> process belongs to), what's slowing down, and how long it'll take to cool. One click to quit.</p>
+        <div class="viz"><svg class="spark" data-seed="7" data-color="#ff6b2c"></svg></div>
+      </div>
+      <div class="tile-b s2 rv">
+        <div class="k">Battery</div>
+        <div class="big grad">100%</div>
+        <h3 style="margin-top:12px">Battery health</h3>
+        <p>Health, cycles, watts in or out, time left, and a daily health log.</p>
+      </div>
+      <div class="tile-b s2 rv">
+        <div class="k">Memory</div>
+        <h3>Real memory pressure.</h3>
+        <p>Pressure and swap the way macOS sees them. No fake "RAM cleaning", just what to close.</p>
+        <div class="viz"><svg class="spark" data-seed="3" data-color="#a98bff"></svg></div>
+      </div>
+      <div class="tile-b s2 rv">
+        <div class="k">Smart alerts</div>
+        <h3>Taps you only when it matters.</h3>
+        <p>A small card if your Mac stays hot, memory stays tight, or an app gets stuck. Kept in an inbox, gone in 45 s.</p>
+      </div>
+      <div class="tile-b s2 rv">
+        <div class="k">History</div>
+        <h3>24 hours, minute by minute.</h3>
+        <p>CPU, memory, GPU and heat graphs with a shared hover line.</p>
+        <div class="viz"><svg class="spark" data-seed="11" data-color="#38d6ff"></svg></div>
+      </div>
+      <div class="tile-b s3 rv">
+        <div class="k">Any Mac</div>
+        <h3>Notch, floating, or menu bar.</h3>
+        <p>Around the notch on MacBooks. Drag it down to float anywhere, with magnetic corners. Or keep it in the menu bar. Apple Silicon and Intel.</p>
+      </div>
+      <div class="tile-b s3 rv">
+        <div class="k">Built for agents</div>
+        <h3>Your AI can check your Mac.</h3>
+        <p>An MCP server, a CLI with JSON, and a local API. Agents ask "is there room for this job?" before training, building or rendering.</p>
+        <div class="viz"><a class="btn hot" href="agents.html">See the agent guide →</a></div>
+      </div>
+    </div>
   </div>
-  <div class="panel on" id="p-claude">
-    <p>Plugin with the MCP server and a skill that tells Claude when to check headroom:</p>
-    <pre><code>/plugin marketplace add simarpreetsingh-019/Thermo
-/plugin install thermo@thermo</code></pre>
-    <p>Or the MCP server only:</p>
-    <pre><code>claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp</code></pre>
+</section>
+
+<section id="temps-sec" style="background:linear-gradient(180deg,transparent,rgba(255,107,44,.05),transparent)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Every sensor</div>
+      <h2>Not one temperature.<br><span class="grad">Every part.</span></h2>
+      <p class="lede">Read straight from your Mac's hardware controller, no admin rights. Each part is judged against its own safe range.</p>
+    </div>
+    <div class="temps rv" id="temps">
+      <div class="p" data-v="66" data-hot="95"><span>CPU performance cores</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="55" data-hot="95"><span>CPU efficiency cores</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="58" data-hot="95"><span>GPU</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="48" data-hot="90"><span>Memory</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="45" data-hot="70"><span>SSD</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="36" data-hot="45"><span>Battery</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="50" data-hot="85"><span>Wi-Fi</span><div class="bar"><i></i></div><b>–</b></div>
+      <div class="p" data-v="31" data-hot="43"><span>Palm rest</span><div class="bar"><i></i></div><b>–</b></div>
+    </div>
   </div>
-  <div class="panel" id="p-desktop"><p>Settings → Developer → Edit Config, then add:</p>
-    <pre><code>{ "mcpServers": { "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] } } }</code></pre></div>
-  <div class="panel" id="p-codex">
-    <pre><code>codex mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp</code></pre>
-    <p>Optional: add the <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/codex/AGENTS.md">AGENTS.md snippet</a>, or copy the <a href="https://github.com/simarpreetsingh-019/Thermo/tree/main/plugins/thermo/skills/thermo">skill</a> to <code>~/.codex/skills/thermo/</code>.</p></div>
-  <div class="panel" id="p-cursor"><p>Add to <code>~/.cursor/mcp.json</code>:</p>
-    <pre><code>{ "mcpServers": { "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] } } }</code></pre>
-    <p>Optional rule: <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/cursor/thermo.mdc">thermo.mdc</a> → <code>.cursor/rules/</code>.</p></div>
-  <div class="panel" id="p-vscode"><p><code>.vscode/mcp.json</code>:</p>
-    <pre><code>{ "servers": { "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] } } }</code></pre></div>
-  <div class="panel" id="p-other"><p>Windsurf, Zed, Cline and any other MCP client: command <code>/Applications/Thermo.app/Contents/MacOS/Thermo</code>, arguments <code>["--mcp"]</code>, transport stdio.</p></div>
-  <h3>Tools the agent gets</h3>
-  <table>
-    <tr><th>Tool</th><th>Returns</th></tr>
-    <tr><td><code>check_headroom</code></td><td>go / wait / no before a heavy GPU, CPU or memory job, with reasons and what to close</td></tr>
-    <tr><td><code>wait_until_cool</code></td><td>Waits until the Mac reaches a target temperature</td></tr>
-    <tr><td><code>get_status</code></td><td>CPU, GPU, memory, heat, throttling, battery, health summary</td></tr>
-    <tr><td><code>get_temperatures</code></td><td>Each part with ok / warm / hot</td></tr>
-    <tr><td><code>get_top_processes</code></td><td>Busiest apps by CPU or memory</td></tr>
-    <tr><td><code>get_battery</code></td><td>Health, cycles, charge, watts</td></tr>
-    <tr><td><code>get_history</code></td><td>Per-minute history for 1 or 24 hours</td></tr>
-  </table>
-  <p>Try asking: <i>"Is my Mac cool enough to fine-tune this model? If not, wait until it is."</i></p>
-</div></section>
+</section>
 
-<section id="api"><div class="wrap">
-  <h2>Use it from your own app</h2>
-  <p class="sub">Copy one file: <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/clients/thermo_client.py">Python</a>, <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/clients/thermo.mjs">JavaScript</a> or <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/clients/Thermo.swift">Swift</a>. Each uses the local API when it's on and the command line otherwise.</p>
-  <pre><code>from thermo_client import Thermo
-t = Thermo()
-h = t.headroom(kind="gpu", memory_gb=8)
-if h["verdict"] != "go":
-    print(h["advice"]); t.wait_until_cool(target=70)</code></pre>
-  <h3>Local HTTP API</h3>
-  <p>Off by default. Turn it on in Thermo: ⚙ → Connections → <b>Local API for other apps</b>. It listens only on <code>127.0.0.1:47615</code>, is read-only, and every data request needs the token stored in <code>~/Library/Application Support/Thermo/api.json</code> (readable only by you).</p>
-  <pre><code>TOKEN=$(python3 -c "import json,os;print(json.load(open(os.path.expanduser('~/Library/Application Support/Thermo/api.json')))['token'])")
-curl -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:47615/v1/headroom?kind=gpu&amp;memory_gb=8"</code></pre>
-  <table>
-    <tr><th>Endpoint</th><th>Same as</th></tr>
-    <tr><td><code>GET /v1/status</code></td><td><code>thermo status --json</code></td></tr>
-    <tr><td><code>GET /v1/temperatures</code></td><td><code>thermo temps --json</code></td></tr>
-    <tr><td><code>GET /v1/processes?limit=8&amp;sort=cpu|memory</code></td><td><code>thermo apps --json</code></td></tr>
-    <tr><td><code>GET /v1/battery</code></td><td><code>thermo battery --json</code></td></tr>
-    <tr><td><code>GET /v1/history?range=1h|24h</code></td><td><code>thermo history --json</code></td></tr>
-    <tr><td><code>GET /v1/headroom?kind=gpu&amp;memory_gb=8</code></td><td><code>thermo headroom --json</code></td></tr>
-  </table>
-</div></section>
-
-<section id="actions"><div class="wrap">
-  <h2>GitHub Actions</h2>
-  <p class="sub">Report a macOS runner's load and temperatures in the job summary, and gate heavy steps.</p>
-  <pre><code>- uses: simarpreetsingh-019/Thermo@v1
-  id: thermo
-  with:
-    kind: gpu          # any | gpu | cpu | memory
-    memory-gb: 6
-    fail-on: never     # never | wait | no
-    wait-cool: ""      # e.g. 70 to wait until the runner cools
-- run: echo "Verdict: ${{ steps.thermo.outputs.verdict }}"</code></pre>
-  <p>Best on self-hosted Mac runners; hosted runners are virtual machines and may not expose every sensor.</p>
-</div></section>
-
-<section id="security"><div class="wrap">
-  <h2>Security and privacy</h2>
-  <ul>
-    <li>No telemetry and no admin rights. The only network request is a daily update check against GitHub Releases.</li>
-    <li>Updates must match the published SHA-256, pass <code>codesign --verify</code> and carry Thermo's bundle ID.</li>
-    <li>The CLI and MCP server open no network ports. The local API is opt-in, bound to 127.0.0.1, token-protected, read-only, and refuses requests from web pages.</li>
-    <li>App names and project folders are shared with other tools only if you allow it (⚙ → Connections → Share app names).</li>
-    <li>Apps are only quit when you click, and system processes are never offered.</li>
-  </ul>
-</div></section>
-
-<section id="roadmap"><div class="wrap">
-  <h2>Roadmap</h2>
-  <ul class="road">
-    <li><b>Windows and Linux:</b> the CLI, API and MCP server on other platforms, with a tray app. Planned next.</li>
-    <li>Apple notarization, so downloads open without a warning.</li>
-    <li>Listing in MCP registries and more agent integrations.</li>
-    <li>Ideas? <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new/choose">Open an issue</a>.</li>
-  </ul>
-</div></section>
-
-<section id="about"><div class="wrap">
-  <h2>About and contributing</h2>
-  <p>Thermo is designed and built by <b>Simarpreet Singh</b>, an independent developer making small, fast tools for Mac. Open to collaborations and opportunities.</p>
-  <div class="grid">
-    <div class="card"><b>Connect</b><p><a href="https://simarpreetsingh-019.github.io">Portfolio</a> · <a href="https://x.com/simarpreet_019">X @simarpreet_019</a> · <a href="https://github.com/simarpreetsingh-019">GitHub</a></p></div>
-    <div class="card"><b>Support Thermo</b><p><a href="https://github.com/simarpreetsingh-019/Thermo">⭐ Star the repo</a> and share it. Stars help people and AI agents find it.</p></div>
-    <div class="card"><b>Report or suggest</b><p><a href="https://github.com/simarpreetsingh-019/Thermo/issues/new?template=bug.yml">Report a bug</a> · <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new?template=feedback.yml">Suggest an upgrade</a></p></div>
-    <div class="card"><b>Contribute</b><p>Pull requests welcome: fixes, sensors, integrations, Windows/Linux. Read the <a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/CONTRIBUTING.md">contributing guide</a>.</p></div>
+<section>
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow">See it in action</div>
+      <h2>Hover. Expand. Done.</h2>
+    </div>
+    <div class="frame rv"><img src="demo.gif" alt="Thermo expanding from the MacBook notch to show CPU, GPU, memory and temperature" loading="lazy" width="1120" height="630"></div>
+    <p class="center" style="color:var(--dim);margin-top:18px"><a href="https://github.com/simarpreetsingh-019/Thermo/raw/main/docs/launch.mp4">Watch the launch video (32 s) →</a></p>
   </div>
-</div></section>
+</section>
 
-<footer class="wrap">
-  Made by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a> · <a href="https://x.com/simarpreet_019">@simarpreet_019</a> · MIT licensed ·
-  <a href="https://github.com/simarpreetsingh-019/Thermo">★ Star Thermo on GitHub</a>
-</footer>
+<section id="agents" style="background:radial-gradient(60% 50% at 50% 50%,rgba(56,214,255,.08),transparent)">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow" style="color:var(--cyan)">New in 1.7 · MCP server</div>
+      <h2>Give your AI agent<br><span class="grad">a thermometer.</span></h2>
+      <p class="lede">Claude, Codex, Cursor and any MCP client can check your Mac before heavy work, wait for it to cool, and tell you what to close.</p>
+    </div>
+    <div class="term rv">
+      <div class="bar"><i></i><i></i><i></i><span>claude — ~/projects/llm-finetune</span></div>
+      <div class="body" data-script='[
+        ["u","Fine-tune the model on the new dataset",700],
+        ["fn","⏺ thermo · check_headroom(kind: \"gpu\", memory_gb: 12)",900],
+        ["wait","  ⏳ wait — The Mac is hot (91°C). Only 7.8 GB free; the job needs 12 GB.",500],
+        ["c","     close_candidates: Chrome (3.1 GB), Docker (2.4 GB)",900],
+        ["a","Your Mac is running hot and is short on memory. Want me to wait until it cools? Closing Chrome would free 3.1 GB.",900],
+        ["u","Yes, I closed Chrome. Wait for it to cool.",700],
+        ["fn","⏺ thermo · wait_until_cool(target_celsius: 70)",1600],
+        ["ok","  ✓ Cooled to 68°C after 94 s",500],
+        ["fn","⏺ thermo · check_headroom(kind: \"gpu\", memory_gb: 12)",800],
+        ["ok","  ✓ go — The Mac has room for a heavy gpu job.",700],
+        ["a","All clear. Starting training now…",400]
+      ]'></div>
+    </div>
+    <div class="marquee rv" style="margin-top:40px">
+      <div class="track">
+        <span class="chip"><i style="--c:#ff6b2c"></i>Claude Code</span><span class="chip"><i style="--c:#ffb020"></i>Claude Desktop</span><span class="chip"><i style="--c:#2ee6a6"></i>Codex</span><span class="chip"><i style="--c:#38d6ff"></i>Cursor</span><span class="chip"><i style="--c:#a98bff"></i>VS Code</span><span class="chip"><i style="--c:#ff4f8b"></i>Windsurf</span><span class="chip"><i style="--c:#2ee6a6"></i>Zed</span><span class="chip"><i style="--c:#ffb020"></i>GitHub Actions</span><span class="chip"><i style="--c:#38d6ff"></i>Python</span><span class="chip"><i style="--c:#a98bff"></i>Node.js</span><span class="chip"><i style="--c:#ff6b2c"></i>Swift</span><span class="chip"><i style="--c:#2ee6a6"></i>Any MCP client</span>
+        <span class="chip" aria-hidden="true"><i style="--c:#ff6b2c"></i>Claude Code</span><span class="chip" aria-hidden="true"><i style="--c:#ffb020"></i>Claude Desktop</span><span class="chip" aria-hidden="true"><i style="--c:#2ee6a6"></i>Codex</span><span class="chip" aria-hidden="true"><i style="--c:#38d6ff"></i>Cursor</span><span class="chip" aria-hidden="true"><i style="--c:#a98bff"></i>VS Code</span><span class="chip" aria-hidden="true"><i style="--c:#ff4f8b"></i>Windsurf</span><span class="chip" aria-hidden="true"><i style="--c:#2ee6a6"></i>Zed</span><span class="chip" aria-hidden="true"><i style="--c:#ffb020"></i>GitHub Actions</span><span class="chip" aria-hidden="true"><i style="--c:#38d6ff"></i>Python</span><span class="chip" aria-hidden="true"><i style="--c:#a98bff"></i>Node.js</span><span class="chip" aria-hidden="true"><i style="--c:#ff6b2c"></i>Swift</span><span class="chip" aria-hidden="true"><i style="--c:#2ee6a6"></i>Any MCP client</span>
+      </div>
+    </div>
+    <div class="center rv" style="margin-top:44px">
+      <pre style="display:inline-block;text-align:left;padding-right:80px;max-width:100%">claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp</pre>
+      <div class="btns" style="margin-top:24px"><a class="btn primary" href="agents.html">Set up your agent →</a></div>
+    </div>
+  </div>
+</section>
 
-<script>
-document.querySelectorAll('pre').forEach(p => {
-  const b = document.createElement('button'); b.className = 'copy'; b.textContent = 'Copy';
-  b.onclick = () => { navigator.clipboard.writeText(p.innerText.replace(/\nCopy$/, '')).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1200); }); };
-  p.appendChild(b);
-});
-document.querySelectorAll('.tabs button').forEach(t => t.onclick = () => {
-  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === t));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === 'p-' + t.dataset.t));
-});
-</script>
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow">Install</div>
+      <h2>Ready in ten seconds.</h2>
+      <p class="lede">macOS 13 or later. Apple Silicon and Intel.</p>
+    </div>
+    <div class="rv" style="max-width:820px;margin:0 auto">
+      <div class="center"><div class="seg" data-group="inst">
+        <button aria-selected="true" data-t="brew">Homebrew</button><button aria-selected="false" data-t="script">Installer script</button><button aria-selected="false" data-t="zip">Download zip</button>
+      </div></div>
+      <div class="pane on" data-group="inst" data-t="brew">
+        <pre>brew install --cask simarpreetsingh-019/thermo/thermo</pre>
+        <p>Recommended. Adds the <code>thermo</code> Terminal command too, and skips the macOS warning because Homebrew verifies the download.</p>
+      </div>
+      <div class="pane" data-group="inst" data-t="script">
+        <pre>curl -fsSL https://raw.githubusercontent.com/simarpreetsingh-019/Thermo/main/install.sh -o install.sh
+bash install.sh</pre>
+        <p>No Homebrew needed. Checks the SHA-256 checksum, GitHub attestation and code signature before installing anything, and offers to add the <code>thermo</code> command. Read it first, it's short.</p>
+      </div>
+      <div class="pane" data-group="inst" data-t="zip">
+        <p style="margin-top:0">Get <code>Thermo.zip</code> from <a href="https://github.com/simarpreetsingh-019/Thermo/releases/latest">GitHub Releases</a>, unzip, and drag Thermo into Applications.</p>
+        <div class="note">
+          <b>macOS will say it can't verify Thermo.</b> That's normal: Thermo is free and open source but not yet notarized by Apple (a paid program). It means "Apple hasn't checked this", not "this is harmful". To open it once:
+          <ol class="steps">
+            <li>Double-click Thermo and click <b>Done</b>.</li>
+            <li>Open <b>System Settings → Privacy &amp; Security</b> and scroll down.</li>
+            <li>Click <b>Open Anyway</b> next to Thermo, then confirm with Touch ID or your password.</li>
+          </ol>
+          macOS remembers your choice. On macOS 14 and earlier, right-click → <b>Open</b> also works. For the <code>thermo</code> command, use ⚙ → Connections → <b>Install thermo command</b>.
+        </div>
+        <p>Want to check the download yourself?</p>
+        <pre>shasum -a 256 ~/Downloads/Thermo.zip   <span class="c"># compare with the release notes</span>
+gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow" style="color:var(--cool)">Privacy</div>
+      <h2>Your Mac's data<br>stays on your Mac.</h2>
+    </div>
+    <div class="cards">
+      <div class="card rv"><h3>No telemetry</h3><p>The only network request is a daily update check against GitHub Releases. It sends nothing about you.</p></div>
+      <div class="card rv"><h3>No admin rights</h3><p>Public macOS APIs only. No kernel extensions, no helper tools, no passwords.</p></div>
+      <div class="card rv"><h3>Verified updates</h3><p>Every update must match its SHA-256 checksum and pass a code-signature check before it's installed.</p></div>
+      <div class="card rv"><h3>Locked-down API</h3><p>Off by default. Localhost only, read-only, token-protected, and it refuses requests from web pages.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Roadmap</div>
+      <h2>Where Thermo is going.</h2>
+    </div>
+    <div class="road">
+      <div class="card rv"><span class="tag now">Shipped</span><h3>Agents and CLI</h3><p>MCP server, CLI with JSON, local API, Python/JS/Swift clients, GitHub Action.</p></div>
+      <div class="card rv"><span class="tag next">Next</span><h3>Windows and Linux</h3><p>CLI, API and MCP server on other platforms, then a tray app.</p></div>
+      <div class="card rv"><span class="tag next">Next</span><h3>Notarization</h3><p>Signed by Apple, so downloads open without a warning.</p></div>
+      <div class="card rv"><span class="tag later">Later</span><h3>Your idea</h3><p><a href="https://github.com/simarpreetsingh-019/Thermo/issues/new/choose">Suggest a feature</a> or send a pull request.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="creator rv">
+      <div>
+        <div class="eyebrow">Made by</div>
+        <h2 style="margin:10px 0 16px">Simarpreet Singh</h2>
+        <p class="lede" style="font-size:18px">Independent developer building small, fast tools for Mac. Thermo is free and open source. If it helps you, a star helps others (and AI agents) find it.</p>
+        <div class="btns" style="margin-top:26px">
+          <a class="btn primary" href="https://github.com/simarpreetsingh-019/Thermo">★ Star on GitHub</a>
+          <a class="btn" href="https://github.com/simarpreetsingh-019/Thermo/blob/main/CONTRIBUTING.md">Contribute</a>
+        </div>
+      </div>
+      <div class="links-list">
+        <a href="https://simarpreetsingh-019.github.io">Portfolio <span>simarpreetsingh-019.github.io</span></a>
+        <a href="https://x.com/simarpreet_019">X <span>@simarpreet_019</span></a>
+        <a href="https://github.com/simarpreetsingh-019">GitHub <span>@simarpreetsingh-019</span></a>
+        <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new/choose">Feedback <span>bug or idea</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <span>Thermo · MIT License · Made by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></span>
+  <span><a href="agents.html">AI agents</a> · <a href="https://github.com/simarpreetsingh-019/Thermo">GitHub</a> · <a href="https://github.com/simarpreetsingh-019/Thermo/releases">Releases</a> · <a href="llms.txt">llms.txt</a></span>
+</div></footer>
+
+<script src="site.js"></script>
 </body>
 </html>
