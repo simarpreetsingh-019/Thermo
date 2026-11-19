@@ -72,6 +72,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ n: Notification) {
         NSApp.setActivationPolicy(.accessory)
         _ = Updater.shared   // starts the daily update check
+        #if !NO_CONNECT
+        LocalAPI.shared.monitor = monitor
+        if LocalAPI.shared.enabled { LocalAPI.shared.start() }
+        #endif
         if CommandLine.arguments.contains("--version") {
             print("Thermo \(Updater.shared.current)"); exit(0)
         }
@@ -264,6 +268,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             attributes: [.font: NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium)])
     }
 }
+
+// Command-line and MCP modes run without any UI and exit.
+#if !NO_CONNECT
+if let code = CLI.run(CommandLine.arguments) { exit(code) }
+#else
+if CommandLine.arguments.contains("--cli") || CommandLine.arguments.contains("--mcp") {
+    FileHandle.standardError.write(Data("This Thermo build has no CLI/MCP support (built with --no-connect).\n".utf8)); exit(1)
+}
+#endif
 
 let app = NSApplication.shared
 let delegate = AppDelegate()

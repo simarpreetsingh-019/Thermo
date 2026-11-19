@@ -1,0 +1,22 @@
+# Thermo
+
+> Free, open-source macOS app (MIT) that shows live CPU, GPU, memory and per-component temperatures beside the MacBook notch, with battery health, history and smart alerts. Agents and apps can read the same data through a CLI (JSON), an MCP server, and an opt-in local HTTP API. macOS 13+, Apple Silicon and Intel. Windows/Linux are on the roadmap.
+
+Use Thermo to decide whether a Mac has room for heavy work (ML training, builds, renders, local LLMs): call `check_headroom` (MCP) or `thermo headroom --kind gpu --json` (exit 0 go, 3 wait, 4 no), then `wait_until_cool` if it says wait.
+
+## Install
+- Homebrew: `brew install --cask simarpreetsingh-019/thermo/thermo`
+- Script: https://raw.githubusercontent.com/simarpreetsingh-019/Thermo/main/install.sh (verifies checksum, attestation, signature)
+- Releases: https://github.com/simarpreetsingh-019/Thermo/releases/latest
+
+## MCP
+- Command: `/Applications/Thermo.app/Contents/MacOS/Thermo --mcp` (stdio)
+- Tools: check_headroom(kind, memory_gb), wait_until_cool(target_celsius, timeout_seconds), get_status, get_temperatures, get_top_processes(limit, sort_by), get_battery, get_history(range)
+- Claude Code plugin: `/plugin marketplace add simarpreetsingh-019/Thermo` then `/plugin install thermo@thermo`
+
+## Docs
+- [Guide](https://simarpreetsingh-019.github.io/Thermo/): install, CLI, MCP setup per client, API, GitHub Action
+- [Agent skill](https://github.com/simarpreetsingh-019/Thermo/blob/main/plugins/thermo/skills/thermo/SKILL.md)
+- [Integrations](https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/README.md)
+- [Clients](https://github.com/simarpreetsingh-019/Thermo/tree/main/clients): Python, JavaScript, Swift
+- [README](https://github.com/simarpreetsingh-019/Thermo#readme)

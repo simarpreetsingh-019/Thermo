@@ -1,0 +1,10 @@
+{
+  "name": "thermo",
+  "description": "Live Mac CPU, GPU, memory, temperatures and battery for agents; checks headroom before heavy jobs.",
+  "version": "1.7.0",
+  "author": { "name": "Simarpreet Singh", "url": "https://simarpreetsingh-019.github.io" },
+  "homepage": "https://simarpreetsingh-019.github.io/Thermo/",
+  "repository": "https://github.com/simarpreetsingh-019/Thermo",
+  "license": "MIT",
+  "keywords": ["macos", "temperature", "gpu", "monitoring", "thermal", "battery", "mcp"]
+}

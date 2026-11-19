@@ -34,6 +34,11 @@ final class History: ObservableObject {
         }
     }
 
+    /// Re-read the file (used by the command line and MCP server, which don't record history themselves).
+    func reload() {
+        if let d = try? Data(contentsOf: file), let s = try? JSONDecoder().decode(Saved.self, from: d) { points = s.points; healthLog = s.health }
+    }
+
     /// Called every sample (2 s); folds samples into the current minute.
     func add(_ s: Snapshot, battery: BatteryInfo) {
         let minute = Int(Date().timeIntervalSince1970 / 60)

@@ -2,13 +2,15 @@
 # Builds Thermo.app (universal: Apple Silicon + Intel).
 #   ./build.sh            build into ./build
 #   ./build.sh --install  build and copy to /Applications, then open it
+#   ./build.sh --no-connect  leave out the CLI JSON output, MCP server and local API (Sources/Connect.swift)
 set -euo pipefail
+FLAGS=(); [[ " $* " == *" --no-connect "* ]] && FLAGS=(-D NO_CONNECT) && echo "Building without connections (CLI/MCP/API)"
 cd "$(dirname "$0")"
 APP=build/Thermo.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 for arch in arm64 x86_64; do
-  swiftc -O -target "$arch-apple-macos13.0" Sources/*.swift -o "build/th-$arch" 2> >(grep -v "ld: warning" >&2)
+  swiftc -O ${FLAGS[@]+"${FLAGS[@]}"} -target "$arch-apple-macos13.0" Sources/*.swift -o "build/th-$arch" 2> >(grep -v "ld: warning" >&2)
 done
 lipo -create build/th-arm64 build/th-x86_64 -output "$APP/Contents/MacOS/Thermo"
 rm build/th-*
@@ -34,7 +36,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 PLIST
 codesign --force --options runtime -s - "$APP"   # ad-hoc + hardened runtime
 echo "Built $APP"
-if [[ "${1:-}" == "--install" ]]; then
+if [[ " $* " == *" --install "* ]]; then
   pkill -x Thermo || true
   rm -rf /Applications/Thermo.app
   cp -R "$APP" /Applications/

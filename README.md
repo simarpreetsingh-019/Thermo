@@ -13,7 +13,7 @@ A tiny, live system monitor that lives **in your MacBook's notch**, or floats an
 It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you **what's slowing down, which app is causing it, how long cooling will take, and what to close**.
 
 <p align="center"><img src="docs/demo.gif" width="720" alt="Thermo demo: notch gauges, expanded panel, apps list and heat advisor"></p>
-<p align="center">🎬 <a href="docs/launch.mp4"><b>Watch the full launch video (1080p, 32 s)</b></a></p>
+<p align="center">📖 <a href="https://simarpreetsingh-019.github.io/Thermo/"><b>Guide and docs</b></a> · 🎬 <a href="docs/launch.mp4"><b>Watch the full launch video (1080p, 32 s)</b></a></p>
 
 - **Notch HUD:** glowing ring gauges beside the notch. Hover to expand, click 📌 to pin.
 - **Pull it out:** drag the notch down and it becomes a floating widget. Drop it back at the top centre to re-dock.
@@ -35,7 +35,7 @@ It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you 
 brew install --cask simarpreetsingh-019/thermo/thermo
 ```
 
-Homebrew also adds a small `thermo` command: `thermo restart`, `thermo update`, `thermo version`, `thermo help`.
+Homebrew also adds the `thermo` command: `thermo status`, `thermo temps`, `thermo headroom`, `thermo help` and more (see [Use from Terminal](#use-from-terminal)).
 
 **No Homebrew? Use the installer script.** It downloads the latest release, checks it, and installs it. Read it first, it's short:
 ```bash
@@ -78,6 +78,45 @@ You don't have to take our word for it:
   gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo
   ```
 - **Source:** the full code is here; build it yourself with `./build.sh` if you prefer.
+
+## Use from Terminal
+
+Add `--json` to any reading for machine-readable output. Without Homebrew, use `/Applications/Thermo.app/Contents/MacOS/Thermo --cli <command>`.
+
+| Command | What you get |
+|---|---|
+| `thermo status` | CPU, GPU, memory, heat, battery and a one-line health summary |
+| `thermo temps` | temperature of each part |
+| `thermo apps --sort memory` | busiest apps |
+| `thermo battery` | health, cycles, charge, watts |
+| `thermo history --range 24h` | averages and peaks |
+| `thermo headroom --kind gpu --memory-gb 8` | room for a heavy job? exit 0 go, 3 wait, 4 no |
+| `thermo wait-cool --target 70` | wait until the Mac cools |
+
+```bash
+thermo headroom --kind gpu --memory-gb 12 || thermo wait-cool --target 70
+python train.py
+```
+
+## Connect AI agents and apps
+
+Thermo includes an **MCP server**, so Claude, Codex, Cursor, VS Code and any MCP client can check your Mac before heavy work (training, builds, renders, local LLMs). Tools: `check_headroom`, `wait_until_cool`, `get_status`, `get_temperatures`, `get_top_processes`, `get_battery`, `get_history`.
+
+```bash
+claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp
+```
+
+- **Claude Code plugin** (MCP server + skill): `/plugin marketplace add simarpreetsingh-019/Thermo`, then `/plugin install thermo@thermo`
+- **Codex, Cursor, VS Code, Claude Desktop, others:** [integrations/](integrations/README.md)
+- **Your own app:** one-file clients for [Python](clients/thermo_client.py), [JavaScript](clients/thermo.mjs) and [Swift](clients/Thermo.swift)
+- **Local HTTP API:** opt-in (⚙ → Connections), `127.0.0.1:47615`, read-only, token-protected. [Endpoints](https://simarpreetsingh-019.github.io/Thermo/#api)
+- **GitHub Actions:** `uses: simarpreetsingh-019/Thermo@v1` on macOS runners. [Details](integrations/README.md#github-actions)
+
+## Roadmap
+
+- **Windows and Linux support:** the CLI, API and MCP server first, then a tray app
+- Apple notarization, so downloads open without a warning
+- More agent integrations and MCP registry listings
 
 ## Updates
 
@@ -139,5 +178,6 @@ MIT
 - **No telemetry, no admin rights.** Thermo reads local system statistics and saves its own preferences plus a 24-hour history file (about 60 KB, in `~/Library/Application Support/Thermo`). Its only network request is a daily update check against GitHub Releases, which sends nothing about you or your Mac. You can turn it off with ⚙ → "Check for updates automatically".
 - **Updates are verified:** the downloaded zip must match the SHA-256 checksum published with the release, and the app inside must pass `codesign --verify` and carry Thermo's bundle ID before it replaces the installed copy.
 - **Stopping processes:** apps are asked to quit normally, so they can prompt you to save. Background processes are stopped only after you confirm, and only if they belong to your user account. System-critical ones (loginwindow, Dock, WindowServer and others) are never offered. Each process is re-checked just before it's stopped, so a recycled process ID can't hit the wrong program.
+- **Connections:** the CLI and MCP server open no network ports. The local API is off by default; when on, it listens only on 127.0.0.1, is read-only, needs a token stored in a file only you can read, and refuses requests from web pages and foreign host names. App names and project folders are shared with other tools only while ⚙ → Connections → "Share app names" is on.
 - **Click-outside detection** watches only *that* a mouse click happened, never where or in which app, and never keystrokes. It needs no Accessibility permission.
 - The app is ad-hoc signed with the hardened runtime. It isn't notarized yet; each release lists its SHA-256 checksum so you can verify the download.
