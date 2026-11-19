@@ -4,6 +4,8 @@
 //   • Local HTTP API                     opt-in, read-only, 127.0.0.1 only, token required (while the app runs)
 // All three return the same JSON shapes, built here.
 
+#if !NO_CONNECT   // `./build.sh --no-connect` leaves this whole file out
+
 import AppKit
 import Foundation
 import Network
@@ -502,3 +504,5 @@ final class LocalAPI: ObservableObject {
         }
     }
 }
+
+#endif

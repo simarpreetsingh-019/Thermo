@@ -330,6 +330,7 @@ struct SettingsMenu: View {
             Toggle("Open at login", isOn: Binding(
                 get: { SMAppService.mainApp.status == .enabled },
                 set: { on in setOpenAtLogin(on); settings.objectWillChange.send() }))
+            #if !NO_CONNECT
             Menu("Connections (apps & AI)") {
                 Toggle("Local API for other apps", isOn: Binding(
                     get: { LocalAPI.shared.enabled },
@@ -343,6 +344,7 @@ struct SettingsMenu: View {
                 Divider()
                 Button("Connect AI tools and apps…") { open("https://simarpreetsingh-019.github.io/Thermo/#connect") }
             }
+            #endif
             Divider()
             Button("Check for Updates…") { Updater.shared.check(userInitiated: true) }
             Toggle("Check for updates automatically", isOn: Binding(
