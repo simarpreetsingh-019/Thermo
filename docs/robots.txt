@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://simarpreetsingh-019.github.io/Thermo/sitemap.xml

@@ -1,6 +1,6 @@
 #!/bin/sh
 # `thermo` command-line helper. Homebrew installs it alongside Thermo.app.
-APP="/Applications/Thermo.app"
+APP="${THERMO_APP:-/Applications/Thermo.app}"
 [ -d "$APP" ] || APP="$HOME/Applications/Thermo.app"
 BIN="$APP/Contents/MacOS/Thermo"
 [ -x "$BIN" ] || { echo "Thermo.app not found in /Applications" >&2; exit 1; }
@@ -14,6 +14,9 @@ case "${1:-open}" in
     pkill -x Thermo; sleep 1
     open "$APP" --args --update-now   # launched by macOS, so closing the terminal doesn't stop it
     echo "Checking for updates… Thermo relaunches by itself (on the new version if there is one)." ;;
+  status|temps|temperatures|apps|processes|battery|history|headroom|wait-cool|api)
+    exec "$BIN" --cli "$@" ;;
+  mcp)                  exec "$BIN" --mcp ;;
   help|-h|--help)
     cat <<HELP
 thermo: live CPU, RAM, GPU and temperature in your Mac's notch
@@ -24,6 +27,20 @@ thermo: live CPU, RAM, GPU and temperature in your Mac's notch
   thermo update     check for an update and install it
   thermo version    show the installed version
   thermo help       show this help
+
+Readings (add --json for machine-readable output):
+  thermo status                  CPU, GPU, memory, heat, battery, health line
+  thermo temps                   temperature of each part (CPU cores, GPU, SSD…)
+  thermo apps [--sort memory] [--limit 8]   busiest apps
+  thermo battery                 health, cycles, charge, watts
+  thermo history [--range 24h]   averages and peaks (1h or 24h)
+  thermo headroom [--kind gpu|cpu|memory] [--memory-gb 8]
+                                 room for a heavy job? exit 0 go, 3 wait, 4 no
+  thermo wait-cool [--target 70] [--timeout 600]   wait until the Mac cools
+  thermo api                     local API address and token (if turned on)
+  thermo mcp                     MCP server for AI agents (stdio)
+
+Guide: https://simarpreetsingh-019.github.io/Thermo/
 
 Made by Simarpreet Singh · github.com/simarpreetsingh-019/Thermo
 HELP

@@ -330,6 +330,19 @@ struct SettingsMenu: View {
             Toggle("Open at login", isOn: Binding(
                 get: { SMAppService.mainApp.status == .enabled },
                 set: { on in setOpenAtLogin(on); settings.objectWillChange.send() }))
+            Menu("Connections (apps & AI)") {
+                Toggle("Local API for other apps", isOn: Binding(
+                    get: { LocalAPI.shared.enabled },
+                    set: { LocalAPI.shared.enabled = $0; settings.objectWillChange.send() }))
+                Toggle("Share app names with other tools", isOn: Binding(
+                    get: { Sharing.processes }, set: { Sharing.processes = $0; settings.objectWillChange.send() }))
+                Button("Copy API token") {
+                    NSPasteboard.general.clearContents(); NSPasteboard.general.setString(LocalAPI.shared.token, forType: .string)
+                }.disabled(!LocalAPI.shared.enabled)
+                Button("Reset API token") { LocalAPI.shared.resetToken() }.disabled(!LocalAPI.shared.enabled)
+                Divider()
+                Button("Connect AI tools and apps…") { open("https://simarpreetsingh-019.github.io/Thermo/#connect") }
+            }
             Divider()
             Button("Check for Updates…") { Updater.shared.check(userInitiated: true) }
             Toggle("Check for updates automatically", isOn: Binding(

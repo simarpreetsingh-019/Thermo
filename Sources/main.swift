@@ -72,6 +72,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ n: Notification) {
         NSApp.setActivationPolicy(.accessory)
         _ = Updater.shared   // starts the daily update check
+        LocalAPI.shared.monitor = monitor
+        if LocalAPI.shared.enabled { LocalAPI.shared.start() }
         if CommandLine.arguments.contains("--version") {
             print("Thermo \(Updater.shared.current)"); exit(0)
         }
@@ -264,6 +266,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             attributes: [.font: NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium)])
     }
 }
+
+// Command-line and MCP modes run without any UI and exit.
+if let code = CLI.run(CommandLine.arguments) { exit(code) }
 
 let app = NSApplication.shared
 let delegate = AppDelegate()

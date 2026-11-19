@@ -1,0 +1,34 @@
+name: Thermo Mac check
+description: Report CPU, GPU, memory and temperatures of a macOS runner, and optionally gate a heavy step on available headroom.
+author: Simarpreet Singh
+branding: { icon: thermometer, color: orange }
+inputs:
+  kind:        { description: "Resource the next step leans on: any, gpu, cpu or memory", default: any }
+  memory-gb:   { description: "Memory the next step needs, in GB (optional)", default: "0" }
+  fail-on:     { description: "Fail the step on this verdict or worse: no, wait, or never", default: never }
+  wait-cool:   { description: "If set (°C), wait until the runner cools to this before continuing", default: "" }
+outputs:
+  verdict: { description: "go, wait or no", value: "${{ steps.check.outputs.verdict }}" }
+  status:  { description: "Full status JSON", value: "${{ steps.check.outputs.status }}" }
+runs:
+  using: composite
+  steps:
+    - name: Install Thermo
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" != "macOS" ]; then echo "::error::Thermo runs on macOS runners only (Windows/Linux are on the roadmap)"; exit 1; fi
+        [ -x /Applications/Thermo.app/Contents/MacOS/Thermo ] || bash "$GITHUB_ACTION_PATH/install.sh"
+        pkill -x Thermo || true   # only the command line is needed on a runner
+    - name: Check
+      id: check
+      shell: bash
+      env: { KIND: "${{ inputs.kind }}", MEM: "${{ inputs.memory-gb }}", FAIL_ON: "${{ inputs.fail-on }}", COOL: "${{ inputs.wait-cool }}" }
+      run: |
+        T=/Applications/Thermo.app/Contents/MacOS/Thermo
+        [ -n "$COOL" ] && $T --cli wait-cool --target "$COOL" --timeout 900 || true
+        STATUS=$($T --cli status --json)
+        set +e; HEAD=$($T --cli headroom --kind "$KIND" --memory-gb "$MEM" --json); set -e
+        VERDICT=$(echo "$HEAD" | python3 -c 'import sys,json;print(json.load(sys.stdin)["verdict"])')
+        { echo "verdict=$VERDICT"; echo "status<<EOF"; echo "$STATUS"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+        { echo "### 🌡️ Thermo: $VERDICT"; echo; $T --cli status; echo; $T --cli temps; echo; echo "$HEAD" | python3 -c 'import sys,json;print(json.load(sys.stdin)["advice"])'; } >> "$GITHUB_STEP_SUMMARY"
+        case "$FAIL_ON:$VERDICT" in no:no|wait:wait|wait:no) echo "::error::Thermo headroom: $VERDICT"; exit 1;; esac

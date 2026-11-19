@@ -60,16 +60,18 @@ enum MemoryAdvisor {
 
 struct HealthSummary { let level: Int; let text: String }   // 0 good, 1 attention, 2 problem
 
-func healthSummary(_ m: Monitor) -> HealthSummary {
-    let heat = m.advice.level, mem = m.memAdvice.pressure
-    let runaway = m.apps.filter { $0.cpu >= 150 }.max { $0.cpu < $1.cpu }
+func healthSummary(_ m: Monitor) -> HealthSummary { healthSummary(advice: m.advice, mem: m.memAdvice, apps: m.apps) }
+
+func healthSummary(advice: ThermalAdvice, mem memAdvice: MemoryAdvice, apps: [AppUsage]) -> HealthSummary {
+    let heat = advice.level, mem = memAdvice.pressure
+    let runaway = apps.filter { $0.cpu >= 150 }.max { $0.cpu < $1.cpu }
     func who(_ a: AppUsage?) -> String { a.map { "close \($0.name)\($0.project.map { " (\($0))" } ?? "")" } ?? "" }
 
-    if heat >= .hot && mem >= .warning { return HealthSummary(level: 2, text: "Hot and low on memory: \(who(m.advice.culprits.first ?? m.memAdvice.suggestions.first))") }
-    if heat >= .hot { return HealthSummary(level: 2, text: "Running hot\(m.advice.culprits.first.map { ": " + who($0) } ?? "")") }
-    if mem == .critical { return HealthSummary(level: 2, text: "Out of memory: \(who(m.memAdvice.suggestions.first))") }
+    if heat >= .hot && mem >= .warning { return HealthSummary(level: 2, text: "Hot and low on memory: \(who(advice.culprits.first ?? memAdvice.suggestions.first))") }
+    if heat >= .hot { return HealthSummary(level: 2, text: "Running hot\(advice.culprits.first.map { ": " + who($0) } ?? "")") }
+    if mem == .critical { return HealthSummary(level: 2, text: "Out of memory: \(who(memAdvice.suggestions.first))") }
     if let r = runaway { return HealthSummary(level: 1, text: "\(r.name) is very busy (\(Int(r.cpu))% CPU)") }
-    if mem == .warning { return HealthSummary(level: 1, text: "Memory is tight: \(who(m.memAdvice.suggestions.first))") }
+    if mem == .warning { return HealthSummary(level: 1, text: "Memory is tight: \(who(memAdvice.suggestions.first))") }
     if heat == .warm { return HealthSummary(level: 1, text: "Warming up, still at full speed") }
     return HealthSummary(level: 0, text: "All good: cool, plenty of memory")
 }

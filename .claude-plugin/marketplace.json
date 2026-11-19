@@ -1,0 +1,15 @@
+{
+  "name": "thermo",
+  "description": "Thermo: live Mac load, temperatures, memory and battery for AI agents.",
+  "owner": {
+    "name": "Simarpreet Singh",
+    "url": "https://simarpreetsingh-019.github.io"
+  },
+  "plugins": [
+    {
+      "name": "thermo",
+      "source": "./plugins/thermo",
+      "description": "Live Mac CPU, GPU, memory, temperatures and battery for agents; checks headroom before heavy jobs."
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "thermo": { "command": "/Applications/Thermo.app/Contents/MacOS/Thermo", "args": ["--mcp"] }
+  }
+}

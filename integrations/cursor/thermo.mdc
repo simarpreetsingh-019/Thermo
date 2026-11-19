@@ -1,0 +1,9 @@
+---
+description: Check Mac load and heat with Thermo before heavy jobs (training, builds, renders, local LLMs)
+alwaysApply: false
+---
+Before starting GPU-, CPU- or memory-heavy work on this Mac, call the `thermo` MCP tool `check_headroom`
+(kind gpu/cpu/memory, memory_gb if known). On `wait`, explain the reason and offer `wait_until_cool` or
+closing one of `close_candidates` (never quit apps without asking). On `no`, don't start the job.
+For "why is my Mac slow/hot", use `get_status` then `get_top_processes`.
+Without MCP: `thermo headroom --kind gpu --json` (exit 0 go, 3 wait, 4 no).

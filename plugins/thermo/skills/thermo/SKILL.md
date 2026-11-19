@@ -1,0 +1,53 @@
+---
+name: thermo
+description: Check the Mac's live load, temperatures, memory, battery and history with Thermo, and decide whether there is room before starting heavy work (ML training, large builds, renders, video export, local LLMs, big test suites). Use when the user asks why their Mac is slow, hot or out of memory, or before launching a GPU-, CPU- or memory-heavy job on macOS.
+---
+
+# Thermo: Mac load and heat for agents
+
+Thermo (https://github.com/simarpreetsingh-019/Thermo) reads CPU, GPU, memory pressure, per-component
+temperatures, battery health and a 24-hour history on macOS. Everything is read-only and local.
+
+## Tools
+
+If the `thermo` MCP server is connected, call its tools:
+
+| Tool | Use it to |
+|---|---|
+| `check_headroom` (`kind`: any/gpu/cpu/memory, `memory_gb`) | decide go / wait / no before a heavy job |
+| `wait_until_cool` (`target_celsius`, `timeout_seconds`) | pause until the Mac cools |
+| `get_status` | one-call overview with a health summary |
+| `get_temperatures` | per-part temps: CPU cores, GPU, memory, SSD, battery, Wi-Fi |
+| `get_top_processes` (`limit`, `sort_by`) | find what's using CPU or memory |
+| `get_battery` | health %, cycles, charge, watts |
+| `get_history` (`range`: 1h/24h) | trends, averages and peaks |
+
+Without MCP, use the command line (same JSON with `--json`):
+
+```bash
+thermo headroom --kind gpu --memory-gb 8 --json   # exit 0 go, 3 wait, 4 no
+thermo wait-cool --target 70 --timeout 600
+thermo status --json
+thermo temps --json
+thermo apps --sort memory --json
+```
+
+If `thermo` isn't on the PATH, run `/Applications/Thermo.app/Contents/MacOS/Thermo --cli <command> --json`.
+
+## How to act on results
+
+1. Before a heavy job, call `check_headroom` with the right `kind` (and `memory_gb` if you know it).
+2. `go`: start the job.
+3. `wait`: tell the user the reason in one line. Offer to wait with `wait_until_cool`, or to close one of
+   `close_candidates`. Never quit apps yourself without the user's yes.
+4. `no`: don't start; explain (usually not enough memory) and suggest a smaller batch/model or closing apps.
+5. When the user asks "why is my Mac slow/hot", call `get_status`, then `get_top_processes`, and answer
+   with the top cause in plain words.
+
+## Not installed?
+
+```bash
+brew install --cask simarpreetsingh-019/thermo/thermo
+```
+No Homebrew: `curl -fsSL https://raw.githubusercontent.com/simarpreetsingh-019/Thermo/main/install.sh -o install.sh && bash install.sh`.
+Guide: https://simarpreetsingh-019.github.io/Thermo/
