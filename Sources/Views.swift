@@ -353,6 +353,7 @@ struct SettingsMenu: View {
             Toggle("Check for updates automatically", isOn: Binding(
                 get: { Updater.shared.autoCheck }, set: { Updater.shared.autoCheck = $0 }))
             Button("Send Feedback…") { sendFeedback() }
+            Button("Share Thermo (copy link)") { shareThermo() }
             Menu("About Thermo") {
                 Text("Thermo \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") — by Simarpreet Singh")
                 Button("Portfolio: simarpreetsingh-019.github.io") { open("https://simarpreetsingh-019.github.io") }

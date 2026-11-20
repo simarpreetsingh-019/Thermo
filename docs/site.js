@@ -103,3 +103,19 @@
     new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { run(); o.disconnect(); } }), { threshold: .3 }).observe(t);
   });
 })();
+
+// Share buttons: native share sheet where available (phones, Safari), otherwise copy the link.
+(() => {
+  const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+  const toast = document.createElement('div'); toast.className = 'toast'; document.body.appendChild(toast);
+  const say = t => { toast.textContent = t; toast.classList.add('on'); setTimeout(() => toast.classList.remove('on'), 1800); };
+  document.querySelectorAll('[data-share]').forEach(b => {
+    b.innerHTML = icon + (b.textContent.trim() || 'Share');
+    b.addEventListener('click', async () => {
+      const url = b.dataset.url || location.href.split('#')[0];
+      const data = { title: document.title, text: b.dataset.text || 'Mac stats, right on your notch. Free and open source:', url };
+      if (navigator.share) { try { await navigator.share(data); return; } catch (e) { if (e.name === 'AbortError') return; } }
+      try { await navigator.clipboard.writeText(url); say('Link copied'); } catch { prompt('Copy this link:', url); }
+    });
+  });
+})();

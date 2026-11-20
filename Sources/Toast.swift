@@ -291,3 +291,12 @@ struct InboxRow: View {
         .background(RoundedRectangle(cornerRadius: 8).fill(.white.opacity(open ? 0.1 : 0.05)))
     }
 }
+
+/// Copies the website link and confirms with a small card.
+func shareThermo() {
+    let link = "https://simarpreetsingh-019.github.io/Thermo/"
+    NSPasteboard.general.clearContents()
+    NSPasteboard.general.setString("Thermo: Mac stats, right on your notch. Free and open source: \(link)", forType: .string)
+    Toasts.shared.show(ToastContent(icon: "square.and.arrow.up.fill", tint: .orange, title: "Link copied",
+        subtitle: "Paste it to a friend, your team chat or X. Thanks for spreading the word! 🧡", autoHide: 6, keepInInbox: false))
+}
