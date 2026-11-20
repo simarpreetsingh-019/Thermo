@@ -1,7 +1,7 @@
 {
   "name": "thermo",
   "description": "Live Mac CPU, GPU, memory, temperatures and battery for agents; checks headroom before heavy jobs.",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "author": { "name": "Simarpreet Singh", "url": "https://simarpreetsingh-019.github.io" },
   "homepage": "https://simarpreetsingh-019.github.io/Thermo/",
   "repository": "https://github.com/simarpreetsingh-019/Thermo",
