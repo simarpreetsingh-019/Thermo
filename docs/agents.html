@@ -23,9 +23,7 @@
 <meta name="twitter:image" content="https://simarpreetsingh-019.github.io/Thermo/og-agents.png">
 <meta name="twitter:creator" content="@simarpreet_019">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"TechArticle","headline":"Connect AI agents to Thermo (MCP server for macOS)",
- "about":"Thermo MCP server: check_headroom, wait_until_cool, get_status, get_temperatures, get_top_processes, get_battery, get_history",
- "author":{"@type":"Person","name":"Simarpreet Singh"},"url":"https://simarpreetsingh-019.github.io/Thermo/agents.html"}
+[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Connect AI agents to Thermo (MCP server for macOS)", "about": "Thermo MCP server: check_headroom, wait_until_cool, get_status, get_temperatures, get_top_processes, get_battery, get_history", "author": {"@type": "Person", "name": "Simarpreet Singh", "url": "https://simarpreetsingh-019.github.io", "image": "https://simarpreetsingh-019.github.io/Thermo/creator.jpg", "sameAs": ["https://x.com/simarpreet_019", "https://github.com/simarpreetsingh-019"]}, "url": "https://simarpreetsingh-019.github.io/Thermo/agents.html", "image": "https://simarpreetsingh-019.github.io/Thermo/og-agents.png"}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the agent get access to my files or apps?", "acceptedAnswer": {"@type": "Answer", "text": "No. All seven tools are read-only system readings. Thermo can't open, change or quit anything through MCP. App names and project folder names are included in process lists; turn that off in ⚙ → Connections → Share app names."}}, {"@type": "Question", "name": "Does Thermo need to be running?", "acceptedAnswer": {"@type": "Answer", "text": "No. The MCP server and CLI take their own readings. The Thermo app is only needed for the local HTTP API and for recording history."}}, {"@type": "Question", "name": "Does it work in cloud agents or on Linux/Windows?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet: Thermo reads Mac hardware, so it runs where your Mac is. Windows and Linux support is next on the roadmap."}}, {"@type": "Question", "name": "Does it use the network?", "acceptedAnswer": {"@type": "Answer", "text": "No. MCP and the CLI talk over standard input/output only. The optional API listens on 127.0.0.1, never on your network."}}, {"@type": "Question", "name": "The server doesn't show up in my client.", "acceptedAnswer": {"@type": "Answer", "text": "Check the path exists: ls /Applications/Thermo.app/Contents/MacOS/Thermo. Run thermo status to make sure readings work. In Claude Code, claude mcp list should show thermo ✔ Connected. Still stuck? Open an issue."}}]}, {"@context": "https://schema.org", "@type": "HowTo", "name": "Connect an AI agent to Thermo's MCP server", "step": [{"@type": "HowToStep", "text": "Install Thermo: brew install --cask simarpreetsingh-019/thermo/thermo"}, {"@type": "HowToStep", "text": "Add the MCP server: claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp (or the same command and args in Codex, Cursor, VS Code or any MCP client)"}, {"@type": "HowToStep", "text": "Ask your agent to benchmark a workload: it calls start_benchmark, runs it, then stop_benchmark for CPU/GPU load, heat rise and throttling."}]}]
 </script>
 <link rel="stylesheet" href="style.css">
 <style>
@@ -57,6 +55,7 @@
   <div class="links"><span class="lbl">On this page</span>
     <a href="#setup">Setup</a><a href="#tools">Tools</a><a href="#cli">CLI</a><a href="#api">API &amp; clients</a><a href="#actions">GitHub Actions</a><a href="#faq">FAQ</a>
   </div>
+  <a class="star" href="https://github.com/simarpreetsingh-019/Thermo">★ Star</a>
   <button class="share" data-share data-text="Benchmark your code's CPU, GPU and heat with your AI agent:">Share</button>
   <a class="btn primary cta" href="#setup">Connect</a>
 </div></nav>
@@ -346,17 +345,26 @@ curl -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:47615/v1/headroom?kind=
   </div>
 </section>
 
-<section class="center" style="padding-top:40px">
-  <div class="wrap rv">
-    <h2>Built something with Thermo?</h2>
-    <p class="lede" style="margin:16px auto 28px">Tell us, star the repo, or send an integration. Every star helps other developers and agents find it.</p>
-    <div class="btns"><a class="btn primary" href="https://github.com/simarpreetsingh-019/Thermo">★ Star on GitHub</a><a class="btn" href="https://github.com/simarpreetsingh-019/Thermo/blob/main/CONTRIBUTING.md">Contribute</a><a class="btn" href="https://x.com/simarpreet_019">Say hi on X</a></div>
+<footer class="site" id="about"><div class="wrap">
+  <div class="row">
+    <a class="me" href="https://simarpreetsingh-019.github.io" title="Simarpreet Singh's portfolio">
+      <img src="creator.jpg" alt="Simarpreet Singh" width="44" height="44" loading="lazy">
+      <div><b>Made by Simarpreet Singh</b><span>Independent developer · open to collaborations</span></div>
+    </a>
+    <div class="acts">
+      <a class="pill star" href="https://github.com/simarpreetsingh-019/Thermo">★ Star on GitHub</a>
+      <button class="share" data-share data-url="https://simarpreetsingh-019.github.io/Thermo/">Share</button>
+      <a class="pill" href="https://simarpreetsingh-019.github.io">Portfolio</a>
+      <a class="pill" href="https://x.com/simarpreet_019">X @simarpreet_019</a>
+      <a class="pill" href="https://github.com/simarpreetsingh-019">GitHub</a>
+    </div>
   </div>
-</section>
-
-<footer><div class="wrap">
-  <span>Thermo · MIT License · Made by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></span>
-  <span><a href="./">Home</a> · <a href="https://github.com/simarpreetsingh-019/Thermo">GitHub</a> · <a href="https://github.com/simarpreetsingh-019/Thermo/tree/main/integrations">Integrations</a> · <a href="llms.txt">llms.txt</a></span>
+  <div class="fine">
+    <span>Thermo · free &amp; open source · MIT License</span>
+    <a href="./">Home</a><a href="agents.html">For AI agents</a><a href="mac-temperature.html">How to check Mac temperature</a>
+    <a href="https://github.com/simarpreetsingh-019/Thermo/releases">Releases</a><a href="https://github.com/simarpreetsingh-019/Thermo/blob/main/CONTRIBUTING.md">Contribute</a>
+    <a href="https://github.com/simarpreetsingh-019/Thermo/issues/new/choose">Feedback</a><a href="llms.txt">llms.txt</a>
+  </div>
 </div></footer>
 
 <script src="site.js"></script>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://simarpreetsingh-019.github.io/Thermo/</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://simarpreetsingh-019.github.io/Thermo/agents.html</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html</loc><changefreq>monthly</changefreq></url>
-  <url><loc>https://simarpreetsingh-019.github.io/Thermo/llms.txt</loc></url>
+  <url><loc>https://simarpreetsingh-019.github.io/Thermo/</loc><lastmod>2026-11-20</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://simarpreetsingh-019.github.io/Thermo/agents.html</loc><lastmod>2026-11-20</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://simarpreetsingh-019.github.io/Thermo/llms.txt</loc><lastmod>2026-11-20</lastmod></url>
 </urlset>

@@ -230,3 +230,20 @@ nav .links .lbl{color:var(--dim);font-size:12px;text-transform:uppercase;letter-
 nav .links{white-space:nowrap}
 @media (max-width:1000px){nav .links .lbl{display:none}}
 @media (max-width:900px){nav .links{display:none}}
+/* Compact creator footer */
+footer.site{padding:36px 0 44px;border-top:1px solid var(--line);font-size:14px;color:var(--mut)}
+footer.site .row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
+footer.site .me{display:flex;align-items:center;gap:12px;color:var(--fg)}
+footer.site .me:hover{text-decoration:none}
+footer.site .me img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid transparent;background:var(--grad) border-box}
+footer.site .me b{display:block;font-size:15px}
+footer.site .me span{color:var(--mut);font-size:13px}
+footer.site .acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+footer.site .acts a.pill{padding:6px 13px;border-radius:999px;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:13px}
+footer.site .acts a.pill:hover{text-decoration:none;background:rgba(255,255,255,.08)}
+footer.site .acts a.star{background:var(--fg);color:#000;border-color:var(--fg)}
+footer.site .fine{margin-top:18px;display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--dim);font-size:12.5px}
+footer.site .fine a{color:var(--dim)}
+nav .star{display:inline-flex;align-items:center;gap:6px;font:600 13px -apple-system,sans-serif;padding:6px 13px;border-radius:999px;border:1px solid var(--line2);color:var(--fg)}
+nav .star:hover{text-decoration:none;background:rgba(255,255,255,.08)}
+@media (max-width:600px){nav .star{display:none}}
