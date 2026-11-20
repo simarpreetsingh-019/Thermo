@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.notch{position:absolute;right:60px;top:150px;width:440px;border-radius:0 0 34px 34px;background:#000;padding:22px 26px 26px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 40px 100px rgba(255,107,44,.35)}
+.notch::before{content:"";position:absolute;left:50%;top:0;width:150px;height:30px;transform:translateX(-50%);background:#050506;border-radius:0 0 14px 14px;box-shadow:inset 0 -1px 0 rgba(255,255,255,.08)}
+.rings{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.rings div{display:flex;gap:10px;align-items:center}
+.ring{width:30px;height:30px;border-radius:50%;background:conic-gradient(var(--c) var(--v),rgba(255,255,255,.12) 0);position:relative;filter:drop-shadow(0 0 8px var(--c))}
+.ring::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#000}
+.t{font:700 22px "SF Pro Rounded",-apple-system,sans-serif;color:#2ee6a6}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:rgba(255,255,255,.06);border-radius:16px;padding:14px 16px;font-size:15px;color:#a1a1a6}
+.tile b{display:block;font:700 34px "SF Pro Rounded",-apple-system,sans-serif;color:#fff;margin-top:2px}
+.bar{height:6px;border-radius:6px;background:rgba(255,255,255,.1);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;border-radius:6px}
+.h{margin-top:16px;font-size:16px;color:#2ee6a6}
+</style></head><body><div class="bg"></div><div class="grid"></div><div class="wrap">
+<div class="brand"><img src="../../docs/icon.png">Thermo</div>
+<h1>Mac stats.<br><span class="grad">Right on your notch.</span></h1>
+<div class="sub">Live temperatures, CPU, GPU and memory. Tells you why your Mac is hot and what to close.</div>
+<div class="chips"><span class="chip">Free &amp; open source</span><span class="chip">16 MB</span><span class="chip">MCP for AI agents</span></div>
+</div>
+<div class="notch">
+ <div class="rings"><div><span class="ring" style="--c:#38d6ff;--v:42%"></span><span class="ring" style="--c:#a98bff;--v:63%"></span></div><div><span class="ring" style="--c:#2ee6a6;--v:55%"></span><span class="t">64°</span></div></div>
+ <div class="tiles">
+  <div class="tile">CPU<b>42%</b><div class="bar"><i style="width:42%;background:#38d6ff"></i></div></div>
+  <div class="tile">GPU<b>55%</b><div class="bar"><i style="width:55%;background:#2ee6a6"></i></div></div>
+  <div class="tile">Memory<b>63%</b><div class="bar"><i style="width:63%;background:#a98bff"></i></div></div>
+  <div class="tile">CPU temp<b>64°</b><div class="bar"><i style="width:56%;background:#ffb020"></i></div></div>
+ </div>
+ <div class="h">● Warming up: python (train.py) is the main heat source</div>
+</div>
+<div class="url">simarpreetsingh-019.github.io/Thermo</div>
+</body></html>

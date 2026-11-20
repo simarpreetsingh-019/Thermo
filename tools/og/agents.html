@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.bg{background:radial-gradient(60% 80% at 85% 20%,rgba(56,214,255,.3),transparent 60%),radial-gradient(55% 70% at 10% 110%,rgba(169,139,255,.4),transparent 60%)}
+h1{font-size:54px;max-width:520px}
+.term{position:absolute;right:60px;top:140px;width:560px;background:#0b0b0e;border:1px solid rgba(255,255,255,.14);border-radius:18px;font:17px/1.6 ui-monospace,Menlo,monospace;box-shadow:0 40px 100px rgba(56,214,255,.3)}
+.term .b{display:flex;gap:8px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.term .b i{width:12px;height:12px;border-radius:50%;background:#ff5f57}.term .b i:nth-child(2){background:#febc2e}.term .b i:nth-child(3){background:#28c840}
+.term .x{padding:18px 20px;white-space:pre-wrap}
+.f{color:#a98bff}.o{color:#2ee6a6}.w{color:#ffb020}.d{color:#6e6e73}.u{color:#fff}
+.sub{max-width:520px}
+</style></head><body><div class="bg"></div><div class="grid"></div><div class="wrap">
+<div class="brand"><img src="../../docs/icon.png">Thermo <span style="color:#6e6e73;font-weight:500">MCP</span></div>
+<h1>Benchmark your code's<br><span class="grad">heat and load.</span></h1>
+<div class="sub">Your AI agent measures CPU, GPU and every temperature while your tests and apps run.</div>
+<div class="chips"><span class="chip">Claude</span><span class="chip">Codex</span><span class="chip">Cursor</span><span class="chip">Any MCP client</span></div>
+</div>
+<div class="term"><div class="b"><i></i><i></i><i></i></div><div class="x"><span class="u">› Benchmark the test suite</span>
+<span class="f">⏺ thermo · start_benchmark("pytest")</span>
+<span class="d">⏺ Bash · pytest -n 8</span>
+<span class="d">  1,284 passed in 2m 41s</span>
+<span class="f">⏺ thermo · stop_benchmark()</span>
+<span class="w">  📊 CPU avg 83% · peak 100%
+  heat 46→94°C (+48)
+  throttled 38 s</span>
+<span class="o">  python avg 640% CPU</span></div></div>
+<div class="url">simarpreetsingh-019.github.io/Thermo · AI agents</div>
+</body></html>

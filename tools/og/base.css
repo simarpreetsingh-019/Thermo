@@ -1,0 +1,14 @@
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{background:#050506;color:#f5f5f7;font-family:-apple-system,"SF Pro Display",sans-serif;-webkit-font-smoothing:antialiased;position:relative}
+.bg{position:absolute;inset:0;background:radial-gradient(60% 80% at 85% 20%,rgba(169,139,255,.35),transparent 60%),radial-gradient(55% 70% at 10% 110%,rgba(255,107,44,.45),transparent 60%)}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(80% 80% at 50% 50%,#000,transparent)}
+.wrap{position:absolute;inset:0;padding:64px 70px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:14px;font-size:30px;font-weight:700}
+.brand img{width:52px;height:52px;border-radius:12px}
+.grad{background:linear-gradient(100deg,#ffb020,#ff6b2c 35%,#ff4f8b 65%,#a98bff);-webkit-background-clip:text;color:transparent}
+h1{font-size:62px;line-height:1.04;letter-spacing:-.03em;font-weight:800;margin-top:40px;max-width:600px}
+.sub{font-size:28px;color:#a1a1a6;margin-top:22px;line-height:1.35;max-width:580px}
+.chips{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
+.chip{padding:10px 18px;border-radius:99px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);font-size:20px;font-weight:600}
+.url{position:absolute;right:70px;bottom:64px;font-size:20px;color:#6e6e73}

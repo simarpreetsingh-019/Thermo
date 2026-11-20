@@ -2,6 +2,8 @@
 
 # Thermo
 
+**Mac stats. Right on your notch.**
+
 <p align="center">
   <b>Created by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></b> ·
   <a href="https://x.com/simarpreet_019">@simarpreet_019</a> ·
