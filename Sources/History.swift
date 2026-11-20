@@ -153,20 +153,37 @@ struct HistoryTab: View {
         let r = rangeBox.range
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 4) {
-                Text(caption(r)).font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1)
+                #if !NO_CONNECT
+                ForEach([false, true], id: \.self) { b in
+                    Button { withAnimation(.easeOut(duration: 0.15)) { rangeBox.bench = b } } label: {
+                        Text(b ? "Benchmarks" : "Graphs").font(.system(size: 9, weight: .bold)).padding(.horizontal, 8).padding(.vertical, 2)
+                            .background(Capsule().fill(rangeBox.bench == b ? .white.opacity(0.2) : .white.opacity(0.06)))
+                    }.buttonStyle(.plain)
+                }
+                #endif
+                if !rangeBox.bench {
+                Text(caption(r)).font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1).padding(.leading, 4)
+                }
                 Spacer()
+                if !rangeBox.bench {
                 ForEach(HistRange.allCases, id: \.self) { x in
                     Button { rangeBox.range = x } label: {
                         Text(x.rawValue).font(.system(size: 9, weight: .bold)).padding(.horizontal, 7).padding(.vertical, 2)
                             .background(Capsule().fill(r == x ? .white.opacity(0.2) : .white.opacity(0.06)))
                     }.buttonStyle(.plain)
                 }
+                }
             }
+            #if !NO_CONNECT
+            if rangeBox.bench { BenchList() }
+            #endif
+            if !rangeBox.bench {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible())], spacing: 8) {
                 card("CPU", hist.series(\.cpuV, range: r), .cyan, unit: "%")
                 card("Memory", hist.series(\.ramV, range: r), .blue, unit: "%")
                 card("GPU", hist.series(\.gpuV, range: r), .purple, unit: "%")
                 card("Temp", hist.series(\.temp, range: r), .orange, unit: "°", lo: 30, hi: 105)
+            }
             }
         }
     }
@@ -199,4 +216,4 @@ struct HistoryTab: View {
     }
 }
 
-final class RangeBox: ObservableObject { @Published var range: HistRange = .hour }
+final class RangeBox: ObservableObject { @Published var range: HistRange = .hour; @Published var bench = false }
