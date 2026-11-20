@@ -206,12 +206,14 @@ args = ["--mcp"]</pre>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="eyebrow">Tools</div>
-      <h2>Nine tools. All read-only.</h2>
+      <h2>Eleven tools. All read-only.</h2>
       <p class="lede">Thermo never changes anything on your Mac through MCP. It reads and reports.</p>
     </div>
     <div class="rv">
       <div class="tool"><div><code class="n">start_benchmark</code><div class="args">label: string<br>process: string (optional)<br>interval_seconds: 0.5–10 (1)</div></div><p><b style="color:var(--fg)">Start measuring.</b> Records CPU, GPU, memory and every temperature about once a second while your test, build or app runs. Optionally tracks one process (e.g. <code>node</code>, <code>python</code>).</p></div>
       <div class="tool"><div><code class="n">stop_benchmark</code><div class="args">id: string (optional)</div></div><p>Stops and returns the report: CPU/GPU avg, p95 and peak; memory peak and swap growth; temperature start → peak overall and per part; throttling seconds; the tracked process's CPU and memory.</p></div>
+      <div class="tool"><div><code class="n">compare_benchmarks</code><div class="args">a, b: id or label (default: last two)</div></div><p>Before vs after a code change: every metric for both runs, the change, and a Markdown table ready for your pull request.</p></div>
+      <div class="tool"><div><code class="n">list_benchmarks</code><div class="args">limit: 1–50 (10)</div></div><p>Saved runs with id, label, date and summary.</p></div>
       <div class="tool"><div><code class="n">check_headroom</code><div class="args">kind: any | gpu | cpu | memory<br>memory_gb: number</div></div><p><b style="color:var(--fg)">Call this before heavy work.</b> Returns <span class="verdict v-go">go</span><span class="verdict v-wait">wait</span><span class="verdict v-no">no</span> with reasons, tips and which apps to close.</p></div>
       <div class="tool"><div><code class="n">wait_until_cool</code><div class="args">target_celsius: 40–100 (70)<br>timeout_seconds: 5–1800 (300)</div></div><p>Blocks until the Mac reaches the target temperature, or the timeout passes.</p></div>
       <div class="tool"><div><code class="n">get_status</code></div><p>CPU, GPU, memory and pressure, hottest temperature, throttling, battery, and a one-line health summary.</p></div>
@@ -252,6 +254,7 @@ args = ["--mcp"]</pre>
         <tr><td><code>thermo headroom --kind gpu</code></td><td>Exit <b>0</b> go · <b>3</b> wait · <b>4</b> no</td></tr>
         <tr><td><code>thermo wait-cool --target 70</code></td><td>Waits, then returns</td></tr>
         <tr><td><code>thermo bench -- npm test</code></td><td>Runs a command, reports load, heat rise, throttling</td></tr>
+        <tr><td><code>thermo bench compare --markdown</code></td><td>Before/after table for a PR</td></tr>
         <tr><td><code>thermo mcp</code></td><td>Starts the MCP server</td></tr>
       </table></div>
       <div>

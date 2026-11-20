@@ -316,6 +316,11 @@ enum MCPServer {
             "interval_seconds": ["type": "number", "minimum": 0.5, "maximum": 10, "default": 1]]),
         tool("stop_benchmark", "Stop a recording and get the load report: CPU/GPU avg, p95 and peak, memory peak and swap growth, temperature start→peak (overall and per part), throttling time, and the tracked process's usage.", [
             "id": ["type": "string", "description": "The id from start_benchmark (defaults to the most recent)."]]),
+        tool("list_benchmarks", "List saved benchmark runs (newest first) with id, label, date and summary.", [
+            "limit": ["type": "integer", "minimum": 1, "maximum": 50, "default": 10]]),
+        tool("compare_benchmarks", "Compare two saved benchmark runs (default: the last two), e.g. before and after a code change. Returns each metric for both runs, the change, and a Markdown table ready for a pull request.", [
+            "a": ["type": "string", "description": "Earlier run: id or label (default: second newest)."],
+            "b": ["type": "string", "description": "Later run: id or label (default: newest)."]]),
         tool("wait_until_cool", "Wait until the Mac cools to a target temperature (or the timeout passes) before continuing a heavy job.", [
             "target_celsius": ["type": "number", "minimum": 40, "maximum": 100, "default": 70],
             "timeout_seconds": ["type": "number", "minimum": 5, "maximum": 1800, "default": 300]]),
@@ -373,7 +378,14 @@ enum MCPServer {
             return ["id": b.id, "label": b.label, "recording": true, "next": "Run the workload now, then call stop_benchmark with this id.", "also_running": Benchmarks.running.filter { $0["id"] as? String != b.id }]
         case "stop_benchmark":
             guard let b = Benchmarks.stop(a["id"] as? String) else { return ["error": "No running benchmark with that id. Call start_benchmark first."] }
-            return b.stop()
+            let r = b.stop()
+            BenchStore.save(r, series: b.series)
+            return r
+        case "list_benchmarks":
+            return ["runs": BenchStore.list(limit: Int(num("limit") ?? 10)).map(BenchStore.brief)]
+        case "compare_benchmarks":
+            guard let (x, y) = BenchStore.pair(a["a"] as? String, a["b"] as? String) else { return ["error": "Need two saved benchmarks. Run start_benchmark/stop_benchmark twice first."] }
+            return BenchStore.compare(x, y)
         case "wait_until_cool": return CLI.waitUntilCool(target: num("target_celsius") ?? 70, timeout: min(num("timeout_seconds") ?? 300, 1800))
         default: return nil
         }

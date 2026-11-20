@@ -40,6 +40,8 @@ Readings (add --json for machine-readable output):
   thermo bench [--process NAME] -- <command>
                                  run a command and report CPU/GPU load, heat rise, throttling
   thermo bench --seconds 60      record while you run something yourself
+  thermo bench compare [--markdown]   compare the last two runs (before/after a change)
+  thermo bench list | show --csv      saved runs, export
   thermo api                     local API address and token (if turned on)
   thermo mcp                     MCP server for AI agents (stdio)
 

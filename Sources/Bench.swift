@@ -60,7 +60,17 @@ final class BenchRecorder {
     /// Stops sampling and returns the report.
     func stop() -> [String: Any] {
         lock.lock(); running = false; let s = samples; lock.unlock()
-        return Self.report(label: label, process: process, duration: Date().timeIntervalSince(started), samples: s, ramTotal: ramTotal, interval: interval)
+        var r = Self.report(label: label, process: process, duration: Date().timeIntervalSince(started), samples: s, ramTotal: ramTotal, interval: interval)
+        r["id"] = id
+        r["started_at"] = ISO8601DateFormatter().string(from: started)
+        return r
+    }
+
+    /// Per-sample series for CSV export: seconds, cpu %, gpu %, hottest °C, memory used GB, process cpu %.
+    var series: [[Any]] {
+        lock.lock(); defer { lock.unlock() }
+        return samples.map { [Self.n1($0.t), Self.n1($0.cpu), $0.gpu.map(Self.n1) ?? NSNull(), $0.hottest.map(Self.n1) ?? NSNull(),
+                              Self.n1($0.ramUsed / 1_073_741_824), $0.procCPU.map(Self.n1) ?? NSNull()] }
     }
 
     var elapsed: Double { Date().timeIntervalSince(started) }
@@ -68,7 +78,7 @@ final class BenchRecorder {
 
     // MARK: Report
 
-    private static func n1(_ v: Double) -> NSDecimalNumber { NSDecimalNumber(string: String(format: "%.1f", v)) }
+    static func n1(_ v: Double) -> NSDecimalNumber { NSDecimalNumber(string: String(format: "%.1f", v)) }
     private static func stat(_ v: [Double]) -> Any {
         guard !v.isEmpty else { return NSNull() }
         let avg = v.reduce(0, +) / Double(v.count), sorted = v.sorted()
@@ -159,11 +169,24 @@ enum Benchmarks {
 /// `thermo bench [--label x] [--process name] [--interval 1] [--seconds N] [--json] [-- command args…]`
 enum BenchCLI {
     static func run(_ rest: [String], json: Bool) -> Int32 {
+        switch rest.first {
+        case "list": return BenchStore.cliList(json: json)
+        case "compare": return BenchStore.cliCompare(Array(rest.dropFirst()), json: json)
+        case "show", "export": return BenchStore.cliShow(Array(rest.dropFirst()), json: json)
+        default: break
+        }
         func opt(_ n: String) -> String? { rest.firstIndex(of: n).flatMap { $0 + 1 < rest.count ? rest[$0 + 1] : nil } }
         let cmd = rest.firstIndex(of: "--").map { Array(rest[($0 + 1)...]) } ?? []
         let seconds = Double(opt("--seconds") ?? "")
         guard !cmd.isEmpty || seconds != nil else {
-            FileHandle.standardError.write(Data("Usage: thermo bench [--label NAME] [--process NAME] -- <command…>\n       thermo bench --seconds 60   (record while you run something yourself)\n".utf8))
+            FileHandle.standardError.write(Data("""
+            Usage: thermo bench [--label NAME] [--process NAME] -- <command…>
+                   thermo bench --seconds 60          record while you run something yourself
+                   thermo bench list                  saved runs
+                   thermo bench compare [A] [B]       compare two runs (default: last two); --markdown for a PR table
+                   thermo bench show [ID] --csv|--markdown|--json
+
+            """.utf8))
             return 1
         }
         let label = opt("--label") ?? (cmd.isEmpty ? "\(Int(seconds!)) s recording" : cmd.joined(separator: " "))
@@ -183,6 +206,7 @@ enum BenchCLI {
         }
         var report = rec.stop()
         if !cmd.isEmpty { report["exit_code"] = Int(code) }
+        BenchStore.save(report, series: rec.series)
         print(json ? Report.json(report) : "\n" + BenchRecorder.text(report))
         return code
     }

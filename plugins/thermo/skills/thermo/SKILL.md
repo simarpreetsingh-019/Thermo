@@ -41,7 +41,7 @@ When the user asks how heavy something is, or to compare before/after a change:
 1. `start_benchmark` with a clear `label` and the `process` to track (e.g. `python`, `node`).
 2. Run the workload with your normal shell tool.
 3. `stop_benchmark`, then report the `summary` line plus what matters: peak CPU/GPU, heat rise, throttling seconds.
-4. For comparisons, run both and show the numbers side by side.
+4. For before/after comparisons, benchmark both, then call `compare_benchmarks` (default: last two runs). Its `markdown` field is a ready-made table for a pull request description.
 
 CLI: `thermo bench --process node -- npm test` (add `--json`).
 
