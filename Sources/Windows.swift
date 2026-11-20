@@ -35,7 +35,7 @@ struct NotchRoot: View {
     @ObservedObject var settings: Settings
     let notchWidth: CGFloat, notchHeight: CGFloat
     static let wing: CGFloat = 62
-    static let panelSize = CGSize(width: 460, height: 228)
+    static let panelSize = CGSize(width: 530, height: 228)
 
     var body: some View {
         let open = m.expanded

@@ -214,7 +214,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = item
         // A fixed-size panel of our own instead of NSPopover: the popover re-measured its SwiftUI content on every
         // data refresh and kept jumping between the menu bar and lower down the screen.
-        let size = CGSize(width: 480 + MenuDropdown.pad * 2, height: 210 + MenuDropdown.pad)   // room for the shadow
+        let size = CGSize(width: 510 + MenuDropdown.pad * 2, height: 210 + MenuDropdown.pad)   // room for the shadow
         let host = NSHostingView(rootView: MenuDropdown(state: dropdown, m: monitor, settings: settings))
         host.sizingOptions = []
         host.frame = NSRect(origin: .zero, size: size)

@@ -228,6 +228,7 @@ struct ExpandedPanel: View {
                             }
                         }
                         .font(.system(size: 11, weight: .semibold))
+                        .lineLimit(1).fixedSize()
                         .padding(.horizontal, 8).padding(.vertical, 4)
                         .background(Capsule().fill(m.tab == t ? .white.opacity(0.18) : .clear))
                         .contentShape(Capsule())
@@ -266,7 +267,7 @@ struct ExpandedPanel: View {
             }
         }
         .padding(14)
-        .frame(width: 480, height: 210)
+        .frame(width: 510, height: 210)
         .foregroundStyle(.white)
     }
 

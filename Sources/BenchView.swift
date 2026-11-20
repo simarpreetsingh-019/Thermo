@@ -13,7 +13,8 @@ final class BenchUI: ObservableObject {
     @Published var openID: String?
     @Published var note: String?
 
-    func reload() { runs = BenchStore.list(limit: 20) }
+    var demo = false   // tools/demo.swift supplies its own runs
+    func reload() { if !demo { runs = BenchStore.list(limit: 20) } }
 
     func toggleRecord() {
         if let r = recording {

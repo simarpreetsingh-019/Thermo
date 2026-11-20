@@ -34,6 +34,9 @@ final class History: ObservableObject {
         }
     }
 
+    /// Used by tools/demo.swift to show a full day of sample data.
+    func showDemo(_ p: [HistPoint]) { points = p }
+
     /// Re-read the file (used by the command line and MCP server, which don't record history themselves).
     func reload() {
         if let d = try? Data(contentsOf: file), let s = try? JSONDecoder().decode(Saved.self, from: d) { points = s.points; healthLog = s.health }
@@ -216,4 +219,4 @@ struct HistoryTab: View {
     }
 }
 
-final class RangeBox: ObservableObject { @Published var range: HistRange = .hour; @Published var bench = false }
+final class RangeBox: ObservableObject { static var startInBench = false; @Published var range: HistRange = .hour; @Published var bench = RangeBox.startInBench }

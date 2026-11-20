@@ -9,7 +9,8 @@ import UniformTypeIdentifiers
 
 Offscreen.rendering = true
 let W: CGFloat = 960, H: CGFloat = 540, notchW: CGFloat = 185, notchH: CGFloat = 37
-let FPS = 30.0, DURATION = 32.0
+let FPS = 30.0, DURATION = 41.0
+let INSERT_AT = 11.0, INSERT_LEN = 9.0   // 1.6–1.8 scenes: every part, battery, history, benchmarks
 
 let m = Monitor()
 let settings = Settings(hasNotch: true)
@@ -18,6 +19,24 @@ let ctl = FloatController()
 let iconImage = NSImage(contentsOfFile: "docs/icon.png")
 
 // MARK: - Data
+
+// A full, smooth day of history and two benchmark runs, so those views look real in the video.
+do {
+    let now = Int(Date().timeIntervalSince1970 / 60)
+    History.shared.showDemo((0..<1440).map { i in
+        let x = Double(i), work = (sin(x / 9) + 1) / 2, spike = (1395..<1425).contains(i) ? 0.5 : 0
+        return HistPoint(t: now - 1440 + i, cpu: Float(12 + work * 40 + spike * 70 + sin(x / 7) * 4), ram: Float(58 + work * 12),
+                         gpu: Float(8 + work * 30 + spike * 90), temp: Float(46 + work * 18 + spike * 50 + sin(x / 11) * 2), battery: Float(100 - x / 24))
+    })
+    func run(_ label: String, _ id: String, _ ago: Double, _ summary: String, peak: Double) -> [String: Any] {
+        ["label": label, "id": id, "started_at": ISO8601DateFormatter().string(from: Date().addingTimeInterval(-ago)), "summary": summary,
+         "series": (0..<60).map { i -> [Any] in let k = Double(i) / 59; return [i, 30 + 50 * sin(k * 3) * (peak / 94), 10, 48 + (peak - 48) * min(1, k * 1.6), 11, 300] }]
+    }
+    BenchUI.shared.demo = true
+    BenchUI.shared.runs = [run("pytest · after caching", "b7e2a1c4", 300, "96 s: CPU avg 41% (peak 72%), heat 47→78°C (+31), no throttling, python avg 290% CPU", peak: 78),
+                           run("pytest · before", "a91f03d2", 1500, "161 s: CPU avg 83% (peak 100%), heat 46→94°C (+48), throttled for 38 s, python avg 640% CPU", peak: 94)]
+    BenchUI.shared.openID = "b7e2a1c4"
+}
 
 func icon(_ path: String) -> NSImage? { FileManager.default.fileExists(atPath: path) ? NSWorkspace.shared.icon(forFile: path) : nil }
 func fakeApps(hot: Bool) -> [AppUsage] {[
@@ -43,7 +62,15 @@ func updateData(_ t: Double, heat: Double) {
     let temp = 47 + heat * 43 + n * 1.5
     s.cpuTemp = temp; s.gpuTemp = temp - 4; s.ssdTemp = 34 + heat * 4; s.batteryTemp = 29 + heat * 7
     s.thermalState = heat > 0.85 ? .serious : .nominal
+    s.parts = [("CPU performance cores", "cpu", temp, 80.0, 95.0), ("CPU efficiency cores", "leaf.fill", temp - 11, 80, 95),
+               ("GPU", "cube.transparent", temp - 4, 80, 95), ("Memory", "memorychip", 38 + heat * 12, 75, 90),
+               ("SSD", "internaldrive", 34 + heat * 4, 60, 70), ("Battery", "battery.75percent", 29 + heat * 7, 40, 45),
+               ("Wi-Fi", "wifi", 36 + heat * 8, 70, 85), ("Palm rest", "hand.raised.fill", 27 + heat * 6, 38, 43)]
+        .map { TempPart(id: $0.0, icon: $0.1, value: $0.2, warm: $0.3, hot: $0.4, sensors: 4) }
     m.snap = s
+    var b = BatteryInfo(); b.present = true; b.percent = 82; b.cycles = 142; b.designCap = 4629; b.maxCap = 4398
+    b.watts = -(9 + heat * 14); b.minutesLeft = Int(320 - heat * 180); b.plugged = false
+    m.battery = b
     m.cpuHist = Array((m.cpuHist + [s.cpu]).suffix(40))
     m.gpuHist = Array((m.gpuHist + [s.gpu ?? 0]).suffix(40))
     m.tempHist = Array((m.tempHist + [temp]).suffix(40))
@@ -83,11 +110,44 @@ func path(_ t: Double, _ keys: [(Double, CGPoint)]) -> CGPoint {
 }
 
 let tabY: CGFloat = notchH + 26
-let tabX: [Tab: CGFloat] = [.overview: W / 2 - 170, .apps: W / 2 - 97, .thermal: W / 2 - 40]
+let tabX: [Tab: CGFloat] = [.overview: W / 2 - 192, .apps: W / 2 - 132, .memory: W / 2 - 78, .thermal: W / 2 - 20, .battery: W / 2 + 36, .history: W / 2 + 100]
 let corners = (tl: CGPoint(x: 112, y: 75), br: CGPoint(x: W - 112, y: H - 52), bl: CGPoint(x: 112, y: H - 52))
 let statusX: CGFloat = W - 300
 
 func state(at t: Double) -> SceneState {
+    if t < INSERT_AT { return stateOld(at: t) }
+    if t >= INSERT_AT + INSERT_LEN { return stateOld(at: t - INSERT_LEN) }
+    // New scenes, panel stays open
+    var s = SceneState()
+    let u = t - INSERT_AT
+    s.notch = true; s.expand = 1; m.expanded = true; settings.style = .orb
+    updateData(t, heat: 0.75)
+    let clicks: [Double] = [2.0, 4.2, 6.4]
+    if let c = clicks.last(where: { $0 <= u }), u - c < 0.45 { s.clickAge = u - c }
+    let heatPt = CGPoint(x: W / 2 + 120, y: 230)
+    switch u {
+    case ..<2.2:
+        m.tab = .thermal
+        s.cursor = path(u, [(0, heatPt), (1.0, CGPoint(x: W / 2 + 40, y: 190)), (1.9, CGPoint(x: tabX[.battery]!, y: tabY))])
+        s.caption = "Every part: CPU cores, GPU, memory, SSD, battery"
+    case ..<4.4:
+        m.tab = .battery
+        s.cursor = path(u, [(2.2, CGPoint(x: tabX[.battery]!, y: tabY)), (3.0, CGPoint(x: W / 2 + 20, y: 150)), (4.1, CGPoint(x: tabX[.history]!, y: tabY))])
+        s.caption = "Battery health, cycles and time left"
+    case ..<6.6:
+        m.tab = .history; RangeBox.startInBench = false
+        s.cursor = path(u, [(4.4, CGPoint(x: tabX[.history]!, y: tabY)), (5.4, CGPoint(x: W / 2 - 60, y: 160)), (6.3, CGPoint(x: W / 2 - 150, y: tabY + 30))])
+        s.caption = "24-hour history"
+    default:
+        m.tab = .history; RangeBox.startInBench = true
+        s.cursor = path(u, [(6.6, CGPoint(x: W / 2 - 150, y: tabY + 30)), (7.6, CGPoint(x: W / 2 + 60, y: 170)), (9.0, heatPt)])
+        s.caption = "Benchmark your code: from the app, Terminal or your AI agent"
+    }
+    return s
+}
+
+func stateOld(at t: Double) -> SceneState {
+    RangeBox.startInBench = false
     var s = SceneState()
     let clicks: [Double] = [7.6, 9.2, 11.9, 13.2, 20.3, 23.0, 25.2]
     if let c = clicks.last(where: { $0 <= t }), t - c < 0.45 { s.clickAge = t - c }
@@ -214,7 +274,7 @@ struct Stage: View {
                     .frame(width: W, height: H)
                     .mask(alignment: .top) {
                         RoundedRectangle(cornerRadius: 22)
-                            .frame(width: m.expanded ? 470 : W, height: m.expanded ? mix(notchH, notchH + 240, s.expand) : H)
+                            .frame(width: m.expanded ? 530 : W, height: m.expanded ? mix(notchH, notchH + 240, s.expand) : H)
                     }
             }
 
@@ -268,7 +328,7 @@ struct TitleCard: View {
             VStack(spacing: big ? 14 : 12) {
                 if let i = iconImage { Image(nsImage: i).resizable().frame(width: big ? 128 : 96, height: big ? 128 : 96) }
                 Text("Thermo").font(.system(size: big ? 54 : 40, weight: .heavy, design: .rounded)).foregroundStyle(.white)
-                Text("Your Mac's vitals, living in the notch.")
+                Text("Mac stats. Right on your notch.")
                     .font(.system(size: big ? 20 : 17, weight: .medium)).foregroundStyle(.white.opacity(0.7))
                 if !big {
                     Text("brew install --cask simarpreetsingh-019/thermo/thermo")
@@ -276,7 +336,8 @@ struct TitleCard: View {
                         .padding(.horizontal, 14).padding(.vertical, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(.white.opacity(0.1)))
                         .padding(.top, 6)
-                    Text("github.com/simarpreetsingh-019/Thermo").font(.system(size: 14)).foregroundStyle(.white.opacity(0.6))
+                    Text("+ MCP server: let your AI agent benchmark your code").font(.system(size: 14, weight: .medium)).foregroundStyle(Color(red: 0.22, green: 0.84, blue: 1))
+                    Text("simarpreetsingh-019.github.io/Thermo").font(.system(size: 14)).foregroundStyle(.white.opacity(0.6))
                     HStack(spacing: 8) {
                         Text("Created by").foregroundStyle(.white.opacity(0.6))
                         Text("Simarpreet Singh").fontWeight(.bold).foregroundStyle(.white)
