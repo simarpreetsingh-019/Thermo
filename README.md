@@ -95,6 +95,7 @@ Add `--json` to any reading for machine-readable output. Without Homebrew, use `
 | `thermo history --range 24h` | averages and peaks |
 | `thermo headroom --kind gpu --memory-gb 8` | room for a heavy job? exit 0 go, 3 wait, 4 no |
 | `thermo wait-cool --target 70` | wait until the Mac cools |
+| `thermo bench --process node -- npm test` | run a command; report CPU/GPU load, heat rise, throttling |
 
 ```bash
 thermo headroom --kind gpu --memory-gb 12 || thermo wait-cool --target 70
@@ -103,7 +104,7 @@ python train.py
 
 ## Connect AI agents and apps
 
-Thermo includes an **MCP server**, so Claude, Codex, Cursor, VS Code and any MCP client can check your Mac before heavy work (training, builds, renders, local LLMs). Tools: `check_headroom`, `wait_until_cool`, `get_status`, `get_temperatures`, `get_top_processes`, `get_battery`, `get_history`.
+Thermo includes an **MCP server**, so Claude, Codex, Cursor, VS Code and any MCP client can **benchmark what your tests, builds and apps do to the Mac** (CPU/GPU load, memory, temperature rise, throttling) and check for headroom before heavy work. Tools: `start_benchmark`, `stop_benchmark`, `check_headroom`, `wait_until_cool`, `get_status`, `get_temperatures`, `get_top_processes`, `get_battery`, `get_history`.
 
 ```bash
 claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp

@@ -1,6 +1,6 @@
 ---
 name: thermo
-description: Check the Mac's live load, temperatures, memory, battery and history with Thermo, and decide whether there is room before starting heavy work (ML training, large builds, renders, video export, local LLMs, big test suites). Use when the user asks why their Mac is slow, hot or out of memory, or before launching a GPU-, CPU- or memory-heavy job on macOS.
+description: Benchmark the CPU, GPU, memory and temperature impact of tests, builds and apps on macOS, and check the Mac's live load, temperatures, memory, battery and history with Thermo, and decide whether there is room before starting heavy work (ML training, large builds, renders, video export, local LLMs, big test suites). Use when the user asks why their Mac is slow, hot or out of memory, or before launching a GPU-, CPU- or memory-heavy job on macOS.
 ---
 
 # Thermo: Mac load and heat for agents
@@ -14,6 +14,7 @@ If the `thermo` MCP server is connected, call its tools:
 
 | Tool | Use it to |
 |---|---|
+| `start_benchmark` (`label`, `process`) → run the workload → `stop_benchmark` (`id`) | measure what a test, build, load test or app does to CPU, GPU, memory and temperatures (peaks, heat rise, throttling) |
 | `check_headroom` (`kind`: any/gpu/cpu/memory, `memory_gb`) | decide go / wait / no before a heavy job |
 | `wait_until_cool` (`target_celsius`, `timeout_seconds`) | pause until the Mac cools |
 | `get_status` | one-call overview with a health summary |
@@ -34,7 +35,17 @@ thermo apps --sort memory --json
 
 If `thermo` isn't on the PATH, run `/Applications/Thermo.app/Contents/MacOS/Thermo --cli <command> --json`.
 
-## How to act on results
+## Benchmarking
+
+When the user asks how heavy something is, or to compare before/after a change:
+1. `start_benchmark` with a clear `label` and the `process` to track (e.g. `python`, `node`).
+2. Run the workload with your normal shell tool.
+3. `stop_benchmark`, then report the `summary` line plus what matters: peak CPU/GPU, heat rise, throttling seconds.
+4. For comparisons, run both and show the numbers side by side.
+
+CLI: `thermo bench --process node -- npm test` (add `--json`).
+
+## How to act on headroom
 
 1. Before a heavy job, call `check_headroom` with the right `kind` (and `memory_gb` if you know it).
 2. `go`: start the job.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thermo MCP server: let AI agents check your Mac's heat, memory and GPU</title>
+<title>Thermo MCP server: benchmark CPU, GPU and temperature from your AI agent</title>
 <meta name="description" content="Connect Claude Code, Claude Desktop, Codex, Cursor, VS Code or any MCP client to Thermo. Agents check headroom before heavy jobs, wait for the Mac to cool, and read temperatures, processes, battery and history. Plus CLI, local API, clients and a GitHub Action.">
 <meta name="keywords" content="mcp server mac, mac temperature mcp, claude code mcp macos, codex mcp, cursor mcp, ai agent gpu headroom, check mac temperature api, macos system monitor api, thermo mcp">
 <meta name="theme-color" content="#050506">
@@ -54,8 +54,8 @@
   <div class="glow" style="background:radial-gradient(closest-side,rgba(56,214,255,.2),transparent 70%),radial-gradient(closest-side at 70% 40%,rgba(169,139,255,.2),transparent 70%)"></div>
   <div class="wrap">
     <div class="eyebrow" style="color:var(--cyan)">MCP server · CLI · Local API</div>
-    <h1>Agents that know<br><span class="grad">when to wait.</span></h1>
-    <p class="lede">Thermo gives Claude, Codex, Cursor and any MCP client live access to your Mac's heat, memory, GPU and battery. Before a heavy job, your agent asks one question: <i>is there room right now?</i></p>
+    <h1>Measure what your code<br><span class="grad">does to your Mac.</span></h1>
+    <p class="lede">Connect Thermo to Claude, Codex, Cursor or any MCP client. While your agent runs tests, builds or your app, Thermo records CPU and GPU load, memory and every temperature, then reports the peaks, the heat rise and any throttling. It can also check for headroom before heavy work.</p>
     <div class="btns">
       <a class="btn primary" href="#setup">Connect in one line</a>
       <a class="btn" href="./#install">Install Thermo first</a>
@@ -63,7 +63,25 @@
   </div>
 </section>
 
-<section style="padding-top:20px">
+<section style="padding-top:8px">
+  <div class="wrap">
+    <div class="term rv">
+      <div class="bar"><i></i><i></i><i></i><span>claude — ~/projects/image-api</span></div>
+      <div class="body" data-script='[
+        ["u","Benchmark the resize endpoint under load and tell me what it does to my Mac",700],
+        ["fn","⏺ thermo · start_benchmark(label: \"load test\", process: \"node\")",700],
+        ["ok","  ✓ recording · id 7f3a9c21",500],
+        ["fn","⏺ Bash · npx autocannon -c 50 -d 30 localhost:3000/resize",1700],
+        ["c","     31,204 requests in 30 s · p99 latency 212 ms",600],
+        ["fn","⏺ thermo · stop_benchmark(id: \"7f3a9c21\")",800],
+        ["wait","  📊 31 s: CPU avg 71% (peak 96%), GPU avg 4%, heat 48→93°C (+45), throttled for 9 s, node avg 388% CPU",900],
+        ["a","The endpoint is CPU-bound: node used ~3.9 cores and the Mac hit 93°C, throttling for the last 9 s, which explains the p99 jump. Want me to move the resize to a worker pool and re-run the benchmark to compare?",400]
+      ]'></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:8px">
   <div class="wrap">
     <div class="term rv">
       <div class="bar"><i></i><i></i><i></i><span>claude — ~/projects/video-render</span></div>
@@ -178,10 +196,12 @@ args = ["--mcp"]</pre>
   <div class="wrap">
     <div class="sec-head rv">
       <div class="eyebrow">Tools</div>
-      <h2>Seven tools. All read-only.</h2>
+      <h2>Nine tools. All read-only.</h2>
       <p class="lede">Thermo never changes anything on your Mac through MCP. It reads and reports.</p>
     </div>
     <div class="rv">
+      <div class="tool"><div><code class="n">start_benchmark</code><div class="args">label: string<br>process: string (optional)<br>interval_seconds: 0.5–10 (1)</div></div><p><b style="color:var(--fg)">Start measuring.</b> Records CPU, GPU, memory and every temperature about once a second while your test, build or app runs. Optionally tracks one process (e.g. <code>node</code>, <code>python</code>).</p></div>
+      <div class="tool"><div><code class="n">stop_benchmark</code><div class="args">id: string (optional)</div></div><p>Stops and returns the report: CPU/GPU avg, p95 and peak; memory peak and swap growth; temperature start → peak overall and per part; throttling seconds; the tracked process's CPU and memory.</p></div>
       <div class="tool"><div><code class="n">check_headroom</code><div class="args">kind: any | gpu | cpu | memory<br>memory_gb: number</div></div><p><b style="color:var(--fg)">Call this before heavy work.</b> Returns <span class="verdict v-go">go</span><span class="verdict v-wait">wait</span><span class="verdict v-no">no</span> with reasons, tips and which apps to close.</p></div>
       <div class="tool"><div><code class="n">wait_until_cool</code><div class="args">target_celsius: 40–100 (70)<br>timeout_seconds: 5–1800 (300)</div></div><p>Blocks until the Mac reaches the target temperature, or the timeout passes.</p></div>
       <div class="tool"><div><code class="n">get_status</code></div><p>CPU, GPU, memory and pressure, hottest temperature, throttling, battery, and a one-line health summary.</p></div>
@@ -221,10 +241,15 @@ args = ["--mcp"]</pre>
         <tr><td><code>thermo history --range 24h</code></td><td>Averages and peaks</td></tr>
         <tr><td><code>thermo headroom --kind gpu</code></td><td>Exit <b>0</b> go · <b>3</b> wait · <b>4</b> no</td></tr>
         <tr><td><code>thermo wait-cool --target 70</code></td><td>Waits, then returns</td></tr>
+        <tr><td><code>thermo bench -- npm test</code></td><td>Runs a command, reports load, heat rise, throttling</td></tr>
         <tr><td><code>thermo mcp</code></td><td>Starts the MCP server</td></tr>
       </table></div>
       <div>
-        <h3 style="margin-bottom:10px">Gate any script</h3>
+        <h3 style="margin-bottom:10px">Benchmark any command</h3>
+<pre>thermo bench --process python -- python train.py
+<span class="c"># 📊 6 min: CPU avg 64%, GPU avg 91% (peak 100%),
+#    heat 45→88°C (+43), no throttling, python avg 210% CPU</span></pre>
+        <h3 style="margin:22px 0 10px">Gate any script</h3>
 <pre><span class="c"># wait for room before training</span>
 thermo headroom --kind gpu --memory-gb 12 \
   || thermo wait-cool --target 70

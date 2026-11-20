@@ -13,7 +13,7 @@ Use Thermo to decide whether a Mac has room for heavy work (ML training, builds,
 
 ## MCP
 - Command: `/Applications/Thermo.app/Contents/MacOS/Thermo --mcp` (stdio)
-- Tools: check_headroom(kind, memory_gb), wait_until_cool(target_celsius, timeout_seconds), get_status, get_temperatures, get_top_processes(limit, sort_by), get_battery, get_history(range)
+- Tools: start_benchmark(label, process, interval_seconds) / stop_benchmark(id) to measure CPU, GPU, memory and temperature impact of a workload; check_headroom(kind, memory_gb), wait_until_cool(target_celsius, timeout_seconds), get_status, get_temperatures, get_top_processes(limit, sort_by), get_battery, get_history(range)
 - Claude Code plugin: `/plugin marketplace add simarpreetsingh-019/Thermo` then `/plugin install thermo@thermo`
 
 ## Docs

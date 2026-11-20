@@ -209,6 +209,8 @@ enum CLI {
             }
             out(o) { (o["cooled"] as? Bool == true ? "✓ " : "✗ ") + (o["message"] as? String ?? "") }
             return o["cooled"] as? Bool == true ? 0 : 3
+        case "bench", "benchmark":
+            return BenchCLI.run(Array(rest.dropFirst()), json: json)
         case "api":
             print(LocalAPI.infoText()); return 0
         default:
@@ -308,6 +310,12 @@ enum MCPServer {
         tool("check_headroom", "Before starting a heavy job (ML training, builds, renders, video export, large models): is there room right now? Returns verdict go / wait / no, the reasons, and which apps to close.", [
             "kind": ["type": "string", "enum": ["any", "gpu", "cpu", "memory"], "default": "any", "description": "Which resource the job leans on."],
             "memory_gb": ["type": "number", "minimum": 0, "description": "Memory the job needs, in GB (optional)."]]),
+        tool("start_benchmark", "Start recording CPU, GPU, memory and every temperature (about once a second) before running a test, build, benchmark or app you want to measure. Returns an id; run the workload, then call stop_benchmark.", [
+            "label": ["type": "string", "description": "Name for this run, e.g. 'pytest' or 'render 4K'."],
+            "process": ["type": "string", "description": "Optional app/process name (or project folder) to track separately, e.g. 'python' or 'node'."],
+            "interval_seconds": ["type": "number", "minimum": 0.5, "maximum": 10, "default": 1]]),
+        tool("stop_benchmark", "Stop a recording and get the load report: CPU/GPU avg, p95 and peak, memory peak and swap growth, temperature start→peak (overall and per part), throttling time, and the tracked process's usage.", [
+            "id": ["type": "string", "description": "The id from start_benchmark (defaults to the most recent)."]]),
         tool("wait_until_cool", "Wait until the Mac cools to a target temperature (or the timeout passes) before continuing a heavy job.", [
             "target_celsius": ["type": "number", "minimum": 40, "maximum": 100, "default": 70],
             "timeout_seconds": ["type": "number", "minimum": 5, "maximum": 1800, "default": 300]]),
@@ -332,7 +340,7 @@ enum MCPServer {
                     "protocolVersion": params["protocolVersion"] as? String ?? "2025-06-18",
                     "capabilities": ["tools": ["listChanged": false]],
                     "serverInfo": ["name": "thermo", "title": "Thermo", "version": Report.version],
-                    "instructions": "Thermo reports live Mac load, temperatures, memory, battery and history. Call check_headroom before starting heavy GPU/CPU/memory work, and wait_until_cool if it says to wait. All tools are read-only.",
+                    "instructions": "Thermo measures Mac load and heat. To benchmark a test, build or app: call start_benchmark, run the workload, then stop_benchmark for CPU/GPU/memory/temperature averages, peaks, temperature rise and throttling. Before heavy work, call check_headroom (and wait_until_cool if it says wait). All tools are read-only.",
                 ]
             case "ping": reply["result"] = [String: Any]()
             case "tools/list": reply["result"] = ["tools": tools]
@@ -360,6 +368,12 @@ enum MCPServer {
         case "get_battery": return Report.battery(p.read(processes: false))
         case "get_history": History.shared.reload(); return Report.history(range: a["range"] as? String ?? "1h")
         case "check_headroom": return Report.headroom(p.read(), kind: a["kind"] as? String ?? "any", memoryGB: num("memory_gb") ?? 0)
+        case "start_benchmark":
+            let b = Benchmarks.start(label: a["label"] as? String ?? "benchmark", process: a["process"] as? String, interval: num("interval_seconds") ?? 1)
+            return ["id": b.id, "label": b.label, "recording": true, "next": "Run the workload now, then call stop_benchmark with this id.", "also_running": Benchmarks.running.filter { $0["id"] as? String != b.id }]
+        case "stop_benchmark":
+            guard let b = Benchmarks.stop(a["id"] as? String) else { return ["error": "No running benchmark with that id. Call start_benchmark first."] }
+            return b.stop()
         case "wait_until_cool": return CLI.waitUntilCool(target: num("target_celsius") ?? 70, timeout: min(num("timeout_seconds") ?? 300, 1800))
         default: return nil
         }

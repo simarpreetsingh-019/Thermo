@@ -14,7 +14,7 @@ case "${1:-open}" in
     pkill -x Thermo; sleep 1
     open "$APP" --args --update-now   # launched by macOS, so closing the terminal doesn't stop it
     echo "Checking for updates… Thermo relaunches by itself (on the new version if there is one)." ;;
-  status|temps|temperatures|apps|processes|battery|history|headroom|wait-cool|api)
+  status|temps|temperatures|apps|processes|battery|history|headroom|wait-cool|bench|benchmark|api)
     exec "$BIN" --cli "$@" ;;
   mcp)                  exec "$BIN" --mcp ;;
   help|-h|--help)
@@ -37,6 +37,9 @@ Readings (add --json for machine-readable output):
   thermo headroom [--kind gpu|cpu|memory] [--memory-gb 8]
                                  room for a heavy job? exit 0 go, 3 wait, 4 no
   thermo wait-cool [--target 70] [--timeout 600]   wait until the Mac cools
+  thermo bench [--process NAME] -- <command>
+                                 run a command and report CPU/GPU load, heat rise, throttling
+  thermo bench --seconds 60      record while you run something yourself
   thermo api                     local API address and token (if turned on)
   thermo mcp                     MCP server for AI agents (stdio)
 
