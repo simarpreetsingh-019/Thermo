@@ -81,7 +81,11 @@ if [ "$MODE" != "--quick" ]; then
       if cargo audit --version >/dev/null 2>&1; then step "dependency advisories (cargo audit)" cargo audit --quiet
       else skip "dependency advisories" "cargo install cargo-audit --locked"; fi ;;
     swift)
-      if has swiftlint; then step "lint (swiftlint)" swiftlint --quiet; else skip "lint" "brew install swiftlint"; fi
+      # SwiftLint needs full Xcode. Without it locally, lint runs in CI (ci.yml installs it there), and
+      # release.sh refuses to publish a commit whose CI run didn't pass, so a release is still always linted.
+      if has swiftlint; then step "lint (swiftlint)" swiftlint --quiet
+      elif [ -z "${CI:-}" ]; then printf "• %-46s– runs in CI (SwiftLint needs Xcode); release.sh requires CI to pass\n" "lint"
+      else skip "lint" "brew install swiftlint"; fi
       if [ -f Package.resolved ]; then step "dependencies pinned (Package.resolved)" true; fi ;;
     python)
       if has ruff; then step "lint (ruff)" ruff check -q .; else skip "lint" "pipx install ruff"; fi

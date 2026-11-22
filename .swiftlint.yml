@@ -1,0 +1,28 @@
+# SwiftLint for Thermo (runs in CI; see scripts/check.sh). Keeps the rules that catch real bugs and drops pure
+# style rules that fight this compact codebase (short names like `m`/`s`, long SwiftUI lines, big view files).
+included:
+  - Sources
+  - clients/Thermo.swift
+excluded:
+  - build
+  - tools
+  - tests
+disabled_rules:
+  - identifier_name
+  - line_length
+  - type_body_length
+  - file_length
+  - function_body_length
+  - cyclomatic_complexity
+  - large_tuple
+  - nesting
+  - function_parameter_count
+  - type_name
+  - multiple_closures_with_trailing_closure
+  - statement_position
+  - opening_brace
+  - closure_parameter_position
+  - for_where
+  - todo
+force_cast: warning
+force_try: warning
