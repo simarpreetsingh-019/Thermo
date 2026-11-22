@@ -1,18 +1,20 @@
 <p align="center"><img src="docs/icon.png" width="128" alt="Thermo icon"></p>
 
-# Thermo
+# Thermo for Mac
 
-**Mac stats. Right on your notch.**
+**Free, open-source Mac app that shows CPU, GPU, SSD and battery temperatures around the notch, and tells you what's heating your Mac.**
+
+Mac stats. Right on your notch. For Apple Silicon (M1–M5) and Intel Macs, macOS 13+.
 
 <p align="center">
   <b>Created by <a href="https://simarpreetsingh-019.github.io">Simarpreet Singh</a></b> ·
   <a href="https://x.com/simarpreet_019">@simarpreet_019</a> ·
   <a href="mailto:simarpreetsingh.019@gmail.com">simarpreetsingh.019@gmail.com</a><br>
-  If Thermo helps you, please ⭐ star the repo and share it!
+  If Thermo for Mac helps you, please ⭐ star the repo and share it!
 </p>
 
-A tiny, live system monitor that lives **in your MacBook's notch**, or floats anywhere on any Mac.
-It shows CPU, RAM, GPU and temperature, and when your Mac gets hot it tells you **what's slowing down, which app is causing it, how long cooling will take, and what to close**.
+A tiny, live temperature and system monitor that lives **in your MacBook's notch**, in the menu bar, or floats anywhere on any Mac.
+It shows the temperature of every part, CPU, GPU and memory use, and **thermal throttling**. When your Mac gets hot it tells you **which app is causing it, what's slowing down, how long cooling will take, and what to close**. It also logs a 24-hour history and lets you (or your AI agent) benchmark the heat and load of your own code.
 
 <p align="center"><img src="docs/demo.gif" width="720" alt="Thermo demo: notch gauges, expanded panel, apps list and heat advisor"></p>
 <p align="center">📖 <a href="https://simarpreetsingh-019.github.io/Thermo/"><b>Website</b></a> · 🌡️ <a href="https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html"><b>How to check your Mac's temperature</b></a> · 🤖 <a href="https://simarpreetsingh-019.github.io/Thermo/agents.html"><b>AI agents</b></a> · 🎬 <a href="docs/launch.mp4"><b>Watch the full launch video (1080p, 41 s)</b></a></p>

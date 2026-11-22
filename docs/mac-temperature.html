@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How to check your MacBook's temperature (and cool it down) | Thermo</title>
+<title>How to check your MacBook's temperature (and cool it down) | Thermo for Mac</title>
 <meta name="description" content="macOS doesn't show your Mac's temperature. Here's how to see the exact CPU, GPU, battery and SSD temperature on a MacBook, what's normal on Apple Silicon, the best free apps to monitor it, and 8 ways to cool a hot Mac down.">
 <meta name="keywords" content="check macbook temperature, mac cpu temperature, macbook running hot, how hot is my mac, mac temperature monitor free, apple silicon temperature normal, cool down macbook, mac gpu temperature, macbook overheating">
 <meta name="author" content="Simarpreet Singh">
@@ -33,7 +33,7 @@
   {"@type":"Question","name":"What is a normal MacBook temperature?","acceptedAnswer":{"@type":"Answer","text":"On Apple Silicon Macs, CPU temperatures of about 35–60°C at light use and 70–95°C under heavy load are normal. Apple chips slow themselves down (throttle) above roughly 95–105°C to stay safe. The battery should stay below about 40–45°C, and the palm rest below about 40°C."}},
   {"@type":"Question","name":"How do I cool down a hot MacBook?","acceptedAnswer":{"@type":"Answer","text":"Find and quit the app using the most CPU or GPU, put the Mac on a hard flat surface, keep vents clear, move to a cooler room (lower room temperature helps directly), unplug the charger for a while if the battery is warm, close browser tabs playing video, and lower screen brightness. Thermo shows which app is causing the heat and how long cooling will take."}},
   {"@type":"Question","name":"Does moving to an air-conditioned room cool a Mac faster?","acceptedAnswer":{"@type":"Answer","text":"Yes. A Mac can only cool down to a bit above the room temperature, so a cooler room lowers both the idle temperature and how hot it gets under load. It helps most for fanless MacBook Airs. Stopping the busy app helps even more."}},
-  {"@type":"Question","name":"Is there a free app to monitor Mac temperature?","acceptedAnswer":{"@type":"Answer","text":"Yes. Thermo and Stats are free and open source. Thermo shows per-part temperatures around the MacBook notch, explains what is heating the Mac and what to close, tracks battery health and 24-hour history, and needs no admin rights."}}
+  {"@type":"Question","name":"Is there a free app to monitor Mac temperature?","acceptedAnswer":{"@type":"Answer","text":"Yes. Thermo for Mac, Stats, ThermalForge, Hot and ThermalAtlas are free and open source. Thermo for Mac shows per-part temperatures and throttling around the MacBook notch, explains what is heating the Mac and what to close, tracks battery health and 24-hour history, and needs no admin rights."}}
  ]}]
 </script>
 <link rel="stylesheet" href="style.css">
@@ -76,7 +76,7 @@
     <p>Activity Monitor shows CPU and memory use, but not degrees. macOS only tells apps a vague "thermal state" (nominal, fair, serious, critical). The real numbers come from dozens of hardware sensors inside your Mac, which a monitoring app can read without admin rights.</p>
 
     <h2>The quickest way: Thermo (free)</h2>
-    <p>Thermo is a free, open-source app that sits around your MacBook's notch (or in the menu bar on any Mac).</p>
+    <p>Thermo for Mac is a free, open-source app that sits around your MacBook's notch (or in the menu bar on any Mac). It runs on Apple Silicon (M1–M5) and Intel Macs with macOS 13 or later.</p>
     <ul>
       <li><b>Exact temperature of every part:</b> CPU performance and efficiency cores, GPU, memory, SSD, battery, Wi-Fi and palm rest, each against its own safe range.</li>
       <li><b>Why it's hot:</b> names the app causing the heat (even which project a <code>node</code> or <code>python</code> process belongs to), with one-click quit.</li>
@@ -118,14 +118,17 @@
     <p>Thermo shows a cooldown estimate and tells you when it's back to normal, so you know whether to wait or close something.</p>
 
     <h2>Other Mac temperature apps</h2>
-    <p>Good tools, depending on what you need:</p>
+    <p>Good tools, depending on what you need. Pick Thermo for Mac if you want to know <i>why</i> your Mac is hot and what to close, or to measure your own code; pick a fan-control app if you want to set fan speeds yourself.</p>
     <div class="tbl"><table>
       <tr><th>App</th><th>Price</th><th>Best for</th></tr>
-      <tr><td><b>Thermo</b></td><td>Free, open source</td><td>Per-part temperatures at the notch, what's causing the heat and what to close, battery health, history, alerts, and AI-agent access</td></tr>
+      <tr><td><b>Thermo for Mac</b></td><td>Free, open source</td><td>Per-part temperatures and throttling at the notch, which app is causing the heat and what to close, battery health, 24-hour logging, alerts, benchmarks and AI-agent access. No admin rights.</td></tr>
       <tr><td>Stats</td><td>Free, open source</td><td>Many menu-bar modules: CPU, GPU, disk, network, sensors</td></tr>
       <tr><td>iStat Menus</td><td>Paid</td><td>Very detailed menu-bar stats and notifications</td></tr>
       <tr><td>Macs Fan Control</td><td>Free / paid Pro</td><td>Reading sensors and manually controlling fans on Macs with fans</td></tr>
       <tr><td>Fanny</td><td>Free</td><td>A simple fan speed and CPU temperature widget</td></tr>
+      <tr><td>ThermalForge</td><td>Free, open source</td><td>Fan control profiles, temperature monitoring and thermal logging on Apple Silicon</td></tr>
+      <tr><td>Hot</td><td>Free, open source</td><td>A minimal menu-bar CPU temperature and throttling indicator</td></tr>
+      <tr><td>ThermalAtlas</td><td>Free, open source</td><td>Monitoring CPU, GPU and SSD temperatures on Apple Silicon</td></tr>
     </table></div>
 
     <h2>FAQ</h2>
