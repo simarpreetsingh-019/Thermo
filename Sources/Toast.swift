@@ -166,14 +166,29 @@ final class Toasts {
 
     func updateAvailable(_ r: Release) {
         show(ToastContent(
-            icon: "arrow.down.circle.fill", tint: .orange,
-            title: "Thermo \(r.version) is available",
+            icon: r.isSecurity || r.replacesYanked ? "exclamationmark.shield.fill" : "arrow.down.circle.fill",
+            tint: r.isSecurity || r.replacesYanked ? .red : .orange,
+            title: r.replacesYanked ? "Please switch to Thermo \(r.version)" : r.isSecurity ? "Security update: Thermo \(r.version)" : "Thermo \(r.version) is available",
             subtitle: "You have \(Updater.shared.current). Here's what's new:",
             bullets: releaseBullets(r.notes),
             actions: [
                 ToastAction(title: "Later", primary: false, run: {}),
                 ToastAction(title: "Update now", primary: true, run: { Updater.shared.promptInstall() }),
             ]))
+    }
+
+    /// A message from the maintainer (shipcrate announce), shown once.
+    func announcement(_ a: Announcement) {
+        show(ToastContent(
+            icon: a.level == "info" ? "megaphone.fill" : "exclamationmark.triangle.fill",
+            tint: a.level == "security" ? .red : a.level == "warning" ? .orange : .mint,
+            title: "From the Thermo maintainer",
+            subtitle: a.message,
+            bullets: [],
+            actions: a.url.map { u in [ToastAction(title: "Later", primary: false, run: {}),
+                                        ToastAction(title: "Open", primary: true, run: { NSWorkspace.shared.open(u) })] }
+                ?? [ToastAction(title: "OK", primary: true, run: {})],
+            autoHide: 30))
     }
 
     func whatsNew(version: String, notes: String) {

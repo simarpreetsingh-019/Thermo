@@ -71,7 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ n: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        _ = Updater.shared   // starts the daily update check
+        ThermoUpdates.start()   // starts the daily update check (shipcrate's updater) with Thermo's toasts
         #if !NO_CONNECT
         LocalAPI.shared.monitor = monitor
         if LocalAPI.shared.enabled { LocalAPI.shared.start() }
@@ -84,7 +84,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             print("Open at login:", SMAppService.mainApp.status == .enabled ? "on" : "off (\(SMAppService.mainApp.status.rawValue))")
             exit(0)
         }
-        let busy = Updater.shared.announceLaunch()
+        let busy = ThermoUpdates.announceLaunch()
         if settings.mode == .notch && !UserDefaults.standard.bool(forKey: "notchTipShown") {
             DispatchQueue.main.asyncAfter(deadline: .now() + (busy ? 30 : 4)) {
                 guard self.settings.mode == .notch else { return }
@@ -99,7 +99,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 switch CommandLine.arguments[i + 1] {
                 case "welcome": Toasts.shared.welcome()
                 case "notch": Toasts.shared.notchTip(settings: self.settings)
-                case "update": Toasts.shared.updateAvailable(Release(version: "9.9.9", notes: notes, zipURL: URL(string: "https://github.com")!, shaURL: URL(string: "https://github.com")!, pageURL: URL(string: "https://github.com")!))
+                case "update": Toasts.shared.updateAvailable(Release(version: "9.9.9", notes: notes, zipURL: URL(string: "https://github.com")!, sha256: String(repeating: "0", count: 64), pageURL: URL(string: "https://github.com")!, security: false))
                 default: Toasts.shared.whatsNew(version: Updater.shared.current, notes: notes)
                 }
             }

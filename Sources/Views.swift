@@ -237,10 +237,10 @@ struct ExpandedPanel: View {
                 Spacer()
                 if let r = up.available {
                     Button { up.promptInstall() } label: {
-                        Label("Update \(r.version)", systemImage: "arrow.down.circle.fill")
+                        Label(r.replacesYanked ? "Switch to \(r.version)" : "Update \(r.version)", systemImage: r.isSecurity ? "exclamationmark.shield.fill" : "arrow.down.circle.fill")
                             .font(.system(size: 10, weight: .bold))
                             .padding(.horizontal, 8).padding(.vertical, 4)
-                            .background(Capsule().fill(Color.orange.opacity(0.9)))
+                            .background(Capsule().fill((r.isSecurity || r.replacesYanked ? Color.red : Color.orange).opacity(0.9)))
                     }.buttonStyle(.plain).help("A new version of Thermo is available")
                 }
                 if showPin {
@@ -353,6 +353,8 @@ struct SettingsMenu: View {
             Button("Check for Updates…") { Updater.shared.check(userInitiated: true) }
             Toggle("Check for updates automatically", isOn: Binding(
                 get: { Updater.shared.autoCheck }, set: { Updater.shared.autoCheck = $0 }))
+            Toggle("Get beta updates first (testers)", isOn: Binding(
+                get: { ThermoUpdates.beta }, set: { ThermoUpdates.beta = $0 }))
             Button("Send Feedback…") { sendFeedback() }
             Button("Share Thermo (copy link)") { shareThermo() }
             Menu("About Thermo") {

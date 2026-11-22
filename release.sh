@@ -2,9 +2,15 @@
 # Publishes a new Thermo version: builds, zips, writes the checksum the in-app updater verifies,
 # creates the GitHub release, and bumps the Homebrew tap.
 #   ./release.sh 1.4.0 "What's new in this version"
+#   ./release.sh 1.10.0-beta.1 "…"   beta: only people with "Get beta updates first" on (maintainers/testers) get it;
+#                                     no Homebrew bump, not "latest" on GitHub, so everyone else never sees it.
+# Also publishes latest.json (+ .sig with signed updates) for the in-app updater (shipcrate, Sources/Updater.swift),
+# and keeps Thermo.zip + Thermo.zip.sha256 so copies on 1.9.0 and older (old updater) still update.
+# Afterwards: scripts/rollout.sh, scripts/yank.sh, scripts/announce.sh, scripts/stats.sh (see release.conf).
 set -euo pipefail
 cd "$(dirname "$0")"
 V="${1:?usage: ./release.sh <version> [notes]}"; NOTES="${2:-}"
+PRE=0; case "$V" in *-*) PRE=1 ;; esac
 REPO=simarpreetsingh-019/Thermo; TAP_REPO=simarpreetsingh-019/homebrew-thermo
 
 sed -i '' "s|<key>CFBundleShortVersionString</key><string>[^<]*</string>|<key>CFBundleShortVersionString</key><string>$V</string>|" build.sh
@@ -13,8 +19,7 @@ rm -f build/Thermo.zip build/Thermo.zip.sha256
 (cd build && ditto -c -k --keepParent Thermo.app Thermo.zip && shasum -a 256 Thermo.zip > Thermo.zip.sha256)
 SHA=$(cut -d' ' -f1 build/Thermo.zip.sha256)
 
-git add -A && (git commit -qm "Release $V" || true) && git push -q
-gh release create "v$V" build/Thermo.zip build/Thermo.zip.sha256 --repo "$REPO" --title "Thermo $V" --notes "$NOTES
+BODY="$NOTES
 
 **SHA-256:** \`$SHA\`
 
@@ -24,6 +29,25 @@ Already have Thermo? It updates itself — look for the orange **Update** button
 
 Made by **Simarpreet Singh** · [simarpreetsingh-019.github.io](https://simarpreetsingh-019.github.io) · [@simarpreet_019](https://x.com/simarpreet_019)
 💬 [Send feedback](https://github.com/$REPO/issues/new/choose) · ⭐ Star the repo if Thermo helps you!"
+[ $PRE = 1 ] && BODY="> 🧪 **Beta** for testers: only copies with \"Get beta updates first\" turned on are offered this.
+
+$BODY"
+
+# Update manifest for the in-app updater (shipcrate): latest.json (+ latest.json.sig when signed updates are on).
+rm -rf dist && mkdir -p dist && cp build/Thermo.zip build/Thermo.zip.sha256 dist/
+printf '%s\n' "$BODY" > dist/notes.md
+sh scripts/manifest.sh "$V"
+ASSETS=(dist/Thermo.zip dist/Thermo.zip.sha256 dist/latest.json dist/SHA256SUMS)
+[ -f dist/latest.json.sig ] && ASSETS+=(dist/latest.json.sig)
+
+git add -A && (git commit -qm "Release $V" || true) && git push -q
+PREFLAG=(); [ $PRE = 1 ] && PREFLAG=(--prerelease)
+gh release create "v$V" "${ASSETS[@]}" ${PREFLAG[@]+"${PREFLAG[@]}"} --repo "$REPO" --title "Thermo $V" --notes-file dist/notes.md
+sh scripts/channel.sh dist/latest.json   # beta testers get every release (beta and stable) through beta.json
+if [ $PRE = 1 ]; then
+  echo "Released beta Thermo $V for testers only — https://github.com/$REPO/releases/tag/v$V"
+  exit 0
+fi
 
 TAP=$(mktemp -d)
 gh repo clone "$TAP_REPO" "$TAP" -- -q
