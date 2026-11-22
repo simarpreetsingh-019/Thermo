@@ -16,7 +16,7 @@ case "${1:-open}" in
     echo "Checking for updates… Thermo relaunches by itself (on the new version if there is one)." ;;
   status|temps|temperatures|apps|processes|battery|history|headroom|wait-cool|bench|benchmark|api)
     exec "$BIN" --cli "$@" ;;
-  mcp)                  exec "$BIN" --mcp ;;
+  mcp|--mcp)            exec "$BIN" --mcp ;;
   help|-h|--help)
     cat <<HELP
 thermo: live CPU, RAM, GPU and temperature in your Mac's notch
