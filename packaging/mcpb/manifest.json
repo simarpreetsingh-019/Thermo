@@ -1,0 +1,94 @@
+{
+  "manifest_version": "0.3",
+  "name": "thermo",
+  "display_name": "Thermo for Mac",
+  "version": "1.9.0",
+  "description": "Benchmark Mac CPU, GPU, memory and temperature while your agent runs tests or builds.",
+  "long_description": "Official MCP server of Thermo for Mac (github.com/simarpreetsingh-019/Thermo). Start a benchmark, run your tests or build, stop it, and get CPU/GPU/memory averages and peaks, temperature rise and throttling time. Compare before/after runs as a Markdown table for pull requests, check headroom before heavy jobs, and wait for the Mac to cool. Reads Apple Silicon and Intel sensors locally, needs no admin rights, sends nothing over the network. All tools are read-only.",
+  "author": {
+    "name": "Simarpreet Singh",
+    "url": "https://simarpreetsingh-019.github.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simarpreetsingh-019/Thermo"
+  },
+  "homepage": "https://simarpreetsingh-019.github.io/Thermo/agents.html",
+  "documentation": "https://simarpreetsingh-019.github.io/Thermo/agents.html",
+  "support": "https://github.com/simarpreetsingh-019/Thermo/issues",
+  "icon": "icon.png",
+  "license": "MIT",
+  "keywords": [
+    "macos",
+    "temperature",
+    "cpu",
+    "gpu",
+    "benchmark",
+    "performance",
+    "thermal",
+    "throttling",
+    "battery",
+    "apple-silicon"
+  ],
+  "server": {
+    "type": "binary",
+    "entry_point": "server/Thermo",
+    "mcp_config": {
+      "command": "${__dirname}/server/Thermo",
+      "args": [
+        "--mcp"
+      ]
+    }
+  },
+  "tools": [
+    {
+      "name": "get_status",
+      "description": "CPU, GPU, memory, hottest temperature and thermal state right now"
+    },
+    {
+      "name": "get_temperatures",
+      "description": "Temperature of every part (cores, GPU, memory, SSD, battery) against its safe range"
+    },
+    {
+      "name": "get_top_processes",
+      "description": "Apps using the most CPU and memory, grouped by app or project"
+    },
+    {
+      "name": "get_battery",
+      "description": "Battery charge, health, cycles and temperature"
+    },
+    {
+      "name": "get_history",
+      "description": "Per-minute CPU, memory, GPU and temperature for the last 24 hours"
+    },
+    {
+      "name": "check_headroom",
+      "description": "Whether the Mac has room for a heavy job now (go / wait / no)"
+    },
+    {
+      "name": "start_benchmark",
+      "description": "Start recording CPU, GPU, memory and temperatures"
+    },
+    {
+      "name": "stop_benchmark",
+      "description": "Stop recording and return averages, peaks, heat rise and throttling"
+    },
+    {
+      "name": "list_benchmarks",
+      "description": "Saved benchmark runs, newest first"
+    },
+    {
+      "name": "compare_benchmarks",
+      "description": "Before/after comparison with a Markdown table for pull requests"
+    },
+    {
+      "name": "wait_until_cool",
+      "description": "Wait until the Mac is cool enough for the next heavy job"
+    }
+  ],
+  "compatibility": {
+    "platforms": [
+      "darwin"
+    ]
+  }
+}

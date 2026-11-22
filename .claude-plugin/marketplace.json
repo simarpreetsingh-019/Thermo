@@ -1,6 +1,6 @@
 {
   "name": "thermo",
-  "description": "Thermo: live Mac load, temperatures, memory and battery for AI agents.",
+  "description": "Official marketplace for Thermo for Mac (github.com/simarpreetsingh-019/Thermo).",
   "owner": {
     "name": "Simarpreet Singh",
     "url": "https://simarpreetsingh-019.github.io"
@@ -9,7 +9,34 @@
     {
       "name": "thermo",
       "source": "./plugins/thermo",
-      "description": "Live Mac CPU, GPU, memory, temperatures and battery for agents; checks headroom before heavy jobs."
+      "description": "Official Thermo for Mac plugin: benchmark CPU, GPU, memory and temperature while your agent runs tests or builds, compare before/after, check headroom and wait for the Mac to cool. Read-only, local.",
+      "category": "development",
+      "keywords": [
+        "macos",
+        "mac",
+        "temperature",
+        "cpu",
+        "gpu",
+        "benchmark",
+        "performance",
+        "thermal",
+        "throttling",
+        "battery",
+        "apple-silicon",
+        "mcp"
+      ],
+      "homepage": "https://simarpreetsingh-019.github.io/Thermo/agents.html",
+      "repository": "https://github.com/simarpreetsingh-019/Thermo",
+      "license": "MIT",
+      "author": {
+        "name": "Simarpreet Singh",
+        "url": "https://simarpreetsingh-019.github.io"
+      },
+      "version": "1.9.0"
     }
-  ]
+  ],
+  "metadata": {
+    "description": "Official marketplace for Thermo for Mac (github.com/simarpreetsingh-019/Thermo).",
+    "version": "1.9.0"
+  }
 }

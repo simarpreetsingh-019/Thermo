@@ -35,3 +35,6 @@ gh auth login                   # releases use the GitHub CLI; never put tokens 
 The app/CLI checks for updates with one anonymous GET to
 `https://api.github.com/repos/simarpreetsingh-019/Thermo/releases/latest`, at most once a day. Nothing about the user or machine is sent;
 there is no telemetry. Turn it off with `THERMO_NO_UPDATE_CHECK=1`.
+
+## MCP sync (automatic)
+Every stable `./release.sh X.Y.Z` also attaches `thermo-X.Y.Z.mcpb` to the release and publishes to the official MCP Registry (`packaging/mcpb/publish.sh`). One-time setup: `brew install mcp-publisher && mcp-publisher login github`. Betas are skipped. It then sets the Claude Code plugin and MCPB manifest version to X.Y.Z (`scripts/sync-plugin-version.sh`) and pushes that as "Plugin version X.Y.Z".

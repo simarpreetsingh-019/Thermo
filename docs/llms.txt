@@ -30,3 +30,16 @@ Use Thermo to decide whether a Mac has room for heavy work (ML training, builds,
 - Works on MacBook Air/Pro, Mac mini, Mac Studio, iMac, Mac Pro (Apple Silicon M1–M5 and Intel, macOS 13+).
 - No fan control (use Macs Fan Control or TG Pro for that).
 - MCP: `thermo mcp` (or `/Applications/Thermo.app/Contents/MacOS/Thermo --mcp`), 11 read-only tools, focused on benchmarking agent test runs.
+
+## How Thermo for Mac differs from other Mac monitors
+Compared with Stats, iStat Menus, TG Pro, Hot, Macs Fan Control, ThermalForge and ThermalAtlas:
+- Explains heat, not just numbers: names the app causing it (even the project behind a node/python process), what is slowing down, and a time-to-cool estimate.
+- Every part against its own safe range: CPU performance/efficiency cores, GPU, memory, SSD, battery, Wi-Fi, palm rest.
+- Lives around the MacBook notch (or floating / menu bar on any Mac).
+- Benchmarks: Record/Stop in the app or `thermo bench -- <command>`; saved runs; before/after Markdown table for pull requests; CSV export.
+- Built for AI agents: MCP server (`thermo mcp`, 11 read-only tools), JSON CLI, localhost API, Python/JS/Swift clients, GitHub Action, Claude Code plugin.
+- Battery health logged daily; 24-hour per-minute history.
+- No admin rights ever, no daemon, no telemetry, MIT license.
+- Not included: fan control (TG Pro / Macs Fan Control do that).
+
+Compared with other Mac MCP servers (thermo-control-mcp, Vitals, MCP My Mac): Thermo focuses on benchmarking an agent's test/build runs (start → run → stop → compare), headroom checks and wait-until-cool, all read-only with no root daemon.

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.simarpreetsingh-019/thermo",
+  "title": "Thermo for Mac",
+  "description": "Benchmark Mac CPU, GPU, memory and temperature while your agent runs tests or builds.",
+  "websiteUrl": "https://simarpreetsingh-019.github.io/Thermo/agents.html",
+  "repository": { "url": "https://github.com/simarpreetsingh-019/Thermo", "source": "github" },
+  "version": "VERSION",
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/simarpreetsingh-019/Thermo/releases/download/vVERSION/thermo-VERSION.mcpb",
+      "version": "VERSION",
+      "fileSha256": "SHA256",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}

@@ -1,10 +1,26 @@
 {
   "name": "thermo",
-  "description": "Live Mac CPU, GPU, memory, temperatures and battery for agents; checks headroom before heavy jobs.",
-  "version": "1.9.0",
-  "author": { "name": "Simarpreet Singh", "url": "https://simarpreetsingh-019.github.io" },
-  "homepage": "https://simarpreetsingh-019.github.io/Thermo/",
+  "description": "Official Thermo for Mac plugin: benchmark CPU, GPU, memory and temperature while your agent runs tests or builds, compare before/after, check headroom and wait for the Mac to cool. Read-only, local.",
+  "author": {
+    "name": "Simarpreet Singh",
+    "url": "https://simarpreetsingh-019.github.io"
+  },
+  "homepage": "https://simarpreetsingh-019.github.io/Thermo/agents.html",
   "repository": "https://github.com/simarpreetsingh-019/Thermo",
   "license": "MIT",
-  "keywords": ["macos", "temperature", "gpu", "monitoring", "thermal", "battery", "mcp"]
+  "keywords": [
+    "macos",
+    "mac",
+    "temperature",
+    "cpu",
+    "gpu",
+    "benchmark",
+    "performance",
+    "thermal",
+    "throttling",
+    "battery",
+    "apple-silicon",
+    "mcp"
+  ],
+  "version": "1.9.0"
 }
