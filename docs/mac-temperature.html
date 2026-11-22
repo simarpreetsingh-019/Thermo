@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How to check your MacBook's temperature (and cool it down) | Thermo for Mac</title>
 <meta name="description" content="macOS doesn't show your Mac's temperature. Here's how to see the exact CPU, GPU, battery and SSD temperature on a MacBook, what's normal on Apple Silicon, the best free apps to monitor it, and 8 ways to cool a hot Mac down.">
-<meta name="keywords" content="check macbook temperature, mac cpu temperature, macbook running hot, how hot is my mac, mac temperature monitor free, apple silicon temperature normal, cool down macbook, mac gpu temperature, macbook overheating">
+<meta name="keywords" content="check macbook temperature, mac cpu temperature, macbook running hot, how hot is my mac, mac temperature monitor free, apple silicon temperature normal, cool down macbook, mac gpu temperature, macbook overheating, powermetrics temperature apple silicon, mac studio temperature, mac mini temperature, mac pro temperature, imac temperature, mac thermal throttling, terminal cpu temperature mac">
 <meta name="author" content="Simarpreet Singh">
 <meta name="theme-color" content="#050506">
 <link rel="canonical" href="https://simarpreetsingh-019.github.io/Thermo/mac-temperature.html">
@@ -33,7 +33,7 @@
   {"@type":"Question","name":"What is a normal MacBook temperature?","acceptedAnswer":{"@type":"Answer","text":"On Apple Silicon Macs, CPU temperatures of about 35–60°C at light use and 70–95°C under heavy load are normal. Apple chips slow themselves down (throttle) above roughly 95–105°C to stay safe. The battery should stay below about 40–45°C, and the palm rest below about 40°C."}},
   {"@type":"Question","name":"How do I cool down a hot MacBook?","acceptedAnswer":{"@type":"Answer","text":"Find and quit the app using the most CPU or GPU, put the Mac on a hard flat surface, keep vents clear, move to a cooler room (lower room temperature helps directly), unplug the charger for a while if the battery is warm, close browser tabs playing video, and lower screen brightness. Thermo shows which app is causing the heat and how long cooling will take."}},
   {"@type":"Question","name":"Does moving to an air-conditioned room cool a Mac faster?","acceptedAnswer":{"@type":"Answer","text":"Yes. A Mac can only cool down to a bit above the room temperature, so a cooler room lowers both the idle temperature and how hot it gets under load. It helps most for fanless MacBook Airs. Stopping the busy app helps even more."}},
-  {"@type":"Question","name":"Is there a free app to monitor Mac temperature?","acceptedAnswer":{"@type":"Answer","text":"Yes. Thermo for Mac, Stats, ThermalForge, Hot and ThermalAtlas are free and open source. Thermo for Mac shows per-part temperatures and throttling around the MacBook notch, explains what is heating the Mac and what to close, tracks battery health and 24-hour history, and needs no admin rights."}}
+  {"@type":"Question","name":"Is there a free app to monitor Mac temperature?","acceptedAnswer":{"@type":"Answer","text":"Yes. Thermo for Mac, Stats, ThermalForge, Hot and ThermalAtlas are free and open source. Thermo for Mac shows per-part temperatures and throttling around the MacBook notch, explains what is heating the Mac and what to close, tracks battery health and 24-hour history, and needs no admin rights."}},{"@type": "Question", "name": "Can I check Mac CPU temperature in Terminal?", "acceptedAnswer": {"@type": "Answer", "text": "Not with built-in tools on Apple Silicon. `sudo powermetrics --samplers smc` only worked on Intel Macs, and `powermetrics -s thermal` reports thermal pressure (nominal, fair, serious, critical), not degrees. Install Thermo and run `thermo temps` (or `thermo temps --json`) for exact per-part temperatures without sudo."}},{"@type": "Question", "name": "Does it work on Mac Studio, Mac mini, iMac and Mac Pro?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Thermo reads whatever sensors your Mac has, on any Apple Silicon (M1\u2013M5) or Intel Mac with macOS 13 or later. On desktops without a notch it lives in the menu bar. The list of parts shown depends on the model, so a Mac mini shows no battery or palm rest."}},{"@type": "Question", "name": "Why do temperature apps show different numbers?", "acceptedAnswer": {"@type": "Answer", "text": "Apple Silicon has dozens of sensors and Apple publishes no official mapping, so each app picks its own sensors and calls the result \"CPU\". Some show the hottest core, others an average. Thermo shows each part separately (performance cores, efficiency cores, GPU, memory, SSD, battery) and labels which reading it uses as the hottest."}},{"@type": "Question", "name": "Why can't App Store apps show Mac temperature?", "acceptedAnswer": {"@type": "Answer", "text": "Sandboxed Mac App Store apps can't read the hardware sensors (SMC), so many store apps only show CPU usage or a thermal state. Temperature apps such as Thermo, Stats, TG Pro and iStat Menus are downloaded directly or installed with Homebrew."}},{"@type": "Question", "name": "Does Thermo show fan speed or control fans?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet. Thermo focuses on temperatures, throttling and what is causing the heat, and needs no admin rights. For manual fan control use Macs Fan Control or TG Pro."}}
  ]}]
 </script>
 <link rel="stylesheet" href="style.css">
@@ -93,6 +93,12 @@
 🟢 SSD                      45°C
 🟢 Battery                  37°C</pre>
 
+    <h2>Can you check it in Terminal?</h2>
+    <p>On Intel Macs, <code>sudo powermetrics --samplers smc</code> printed the CPU temperature. On Apple Silicon that sampler is gone, and <code>powermetrics -s thermal</code> only says the thermal pressure level, not degrees. Thermo adds a <code>thermo</code> command that needs no sudo: <code>thermo temps</code>, <code>thermo status --json</code>, or <code>thermo headroom</code> before a heavy build.</p>
+
+    <h2>MacBook, Mac Studio, Mac mini, iMac, Mac Pro</h2>
+    <p>Every Mac has a different set of sensors. Thermo reads what your model has: MacBooks show battery and palm rest, desktops don't. Mac Studio, Mac mini, iMac and Mac Pro get Thermo in the menu bar instead of the notch. Readings differ between apps because Apple publishes no official sensor map; Thermo shows each part on its own so you can see exactly what is hot.</p>
+
     <h2>What's a normal MacBook temperature?</h2>
     <p>Typical ranges for Apple Silicon (M1 to M5) MacBooks:</p>
     <div class="tbl rng"><table>
@@ -127,6 +133,7 @@
       <tr><td>Macs Fan Control</td><td>Free / paid Pro</td><td>Reading sensors and manually controlling fans on Macs with fans</td></tr>
       <tr><td>Fanny</td><td>Free</td><td>A simple fan speed and CPU temperature widget</td></tr>
       <tr><td>ThermalForge</td><td>Free, open source</td><td>Fan control profiles, temperature monitoring and thermal logging on Apple Silicon</td></tr>
+      <tr><td>TG Pro</td><td>Free / paid</td><td>Every sensor plus fan control and hardware diagnostics, all Mac models</td></tr>
       <tr><td>Hot</td><td>Free, open source</td><td>A minimal menu-bar CPU temperature and throttling indicator</td></tr>
       <tr><td>ThermalAtlas</td><td>Free, open source</td><td>Monitoring CPU, GPU and SSD temperatures on Apple Silicon</td></tr>
     </table></div>
@@ -136,6 +143,12 @@
     <p>Rarely. Apple chips protect themselves by slowing down, and shut down if needed. Heat mainly costs speed and, over years, battery health. Keeping the battery cool is the best long-term habit.</p>
     <h3>Why is my MacBook Air hotter than a Pro?</h3>
     <p>The Air has no fan, so it relies on slowing the chip to cool. A cooler room and a hard surface make a bigger difference on an Air.</p>
+    <h3>Why do temperature apps show different numbers?</h3>
+    <p>Apple Silicon has dozens of sensors and Apple publishes no official mapping, so each app picks its own sensors and calls the result "CPU". Some show the hottest core, others an average. Thermo shows each part separately (performance cores, efficiency cores, GPU, memory, SSD, battery) and labels which reading it uses as the hottest.</p>
+    <h3>Why can't App Store apps show Mac temperature?</h3>
+    <p>Sandboxed Mac App Store apps can't read the hardware sensors (SMC), so many store apps only show CPU usage or a thermal state. Temperature apps such as Thermo, Stats, TG Pro and iStat Menus are downloaded directly or installed with Homebrew.</p>
+    <h3>Does Thermo show fan speed or control fans?</h3>
+    <p>Not yet. Thermo focuses on temperatures, throttling and what is causing the heat, and needs no admin rights. For manual fan control use Macs Fan Control or TG Pro.</p>
     <h3>Can my AI coding assistant check the temperature?</h3>
     <p>With Thermo, yes. Its built-in MCP server lets Claude, Codex, Cursor and others check heat and memory before heavy jobs and wait for the Mac to cool. See the <a href="agents.html">agent guide</a>.</p>
 

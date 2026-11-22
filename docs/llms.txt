@@ -24,3 +24,9 @@ Use Thermo to decide whether a Mac has room for heavy work (ML training, builds,
 - [Integrations](https://github.com/simarpreetsingh-019/Thermo/blob/main/integrations/README.md)
 - [Clients](https://github.com/simarpreetsingh-019/Thermo/tree/main/clients): Python, JavaScript, Swift
 - [README](https://github.com/simarpreetsingh-019/Thermo#readme)
+
+## Quick facts
+- macOS shows no temperatures in degrees; on Apple Silicon `powermetrics` reports only thermal pressure. Thermo reads the SMC sensors without sudo.
+- Works on MacBook Air/Pro, Mac mini, Mac Studio, iMac, Mac Pro (Apple Silicon M1–M5 and Intel, macOS 13+).
+- No fan control (use Macs Fan Control or TG Pro for that).
+- MCP: `thermo mcp` (or `/Applications/Thermo.app/Contents/MacOS/Thermo --mcp`), 11 read-only tools, focused on benchmarking agent test runs.
