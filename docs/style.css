@@ -260,3 +260,31 @@ nav .star:hover{text-decoration:none;background:rgba(255,255,255,.08)}
 .cmp th.me{color:#ff8a4c}
 .cmp .y{color:var(--fg)}
 .cmp td.y::before{content:"● ";color:#2ee6a6;font-size:10px}
+
+/* v2 polish */
+.mac .caption.top{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 18px;color:var(--mut);font-size:14px}
+.mac .caption .dot{width:8px;height:8px;border-radius:50%;background:#2ee6a6;box-shadow:0 0 0 0 rgba(46,230,166,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(46,230,166,0)}100%{box-shadow:0 0 0 0 rgba(46,230,166,0)}}
+.mac .screen{transition:background .6s ease}
+.dock button{width:clamp(14px,3.4vw,40px);aspect-ratio:1;border-radius:22%;background:var(--c);border:0;padding:0;cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+.dock button:hover{transform:translateY(-22%) scale(1.25)}
+.dock button.on{box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.tile-b,.cards .card{transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s}
+.tile-b::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--glow,#ff6b2c) 16%,transparent),transparent 60%)}
+.tile-b:hover,.cards .card:hover{transform:translateY(-6px);border-color:var(--line2);box-shadow:0 30px 70px -30px rgba(255,107,44,.35)}
+.tile-b:hover{border-color:color-mix(in srgb,var(--glow,#ff6b2c) 45%,transparent);box-shadow:0 30px 70px -30px color-mix(in srgb,var(--glow,#ff6b2c) 55%,transparent)}
+.tile-b:hover::before{opacity:1}
+.tile-b .big{font-size:clamp(52px,5.4vw,92px)}
+.frame video{display:block;width:100%;height:auto;background:#000}
+a.chip{transition:transform .2s,border-color .2s,background .2s}
+a.chip:hover{text-decoration:none;transform:translateY(-3px);border-color:var(--c,var(--line2));background:var(--card2)}
+.marquee:hover .track{animation-play-state:paused}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1000px){.cards.c4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.cards.c4{grid-template-columns:1fr}}
+.word{font-size:clamp(72px,17vw,210px);font-weight:800;letter-spacing:-.06em;line-height:.8;text-align:center;margin:40px 0 -6px;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent 85%);-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none;overflow:hidden}
+@media (prefers-reduced-motion:reduce){.tile-b:hover,.cards .card:hover,a.chip:hover{transform:none}.mac .caption .dot{animation:none}}
+.tile-b .viz{position:relative}
+.spot{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px var(--sc),0 0 14px var(--sc);pointer-events:none;opacity:0;transition:opacity .15s}
+.spot-l{position:absolute;transform:translate(-50%,-140%);padding:3px 8px;border-radius:8px;background:rgba(0,0,0,.75);border:1px solid var(--line2);font:600 12px/1.3 -apple-system,sans-serif;color:#fff;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s}
+.viz:hover .spot,.viz:hover .spot-l{opacity:1}

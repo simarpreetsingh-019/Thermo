@@ -25,7 +25,7 @@
 <script type="application/ld+json">
 [{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Connect AI agents to Thermo (MCP server for macOS)", "about": "Thermo MCP server: check_headroom, wait_until_cool, get_status, get_temperatures, get_top_processes, get_battery, get_history", "author": {"@type": "Person", "name": "Simarpreet Singh", "url": "https://simarpreetsingh-019.github.io", "image": "https://simarpreetsingh-019.github.io/Thermo/creator.jpg", "sameAs": ["https://x.com/simarpreet_019", "https://github.com/simarpreetsingh-019"]}, "url": "https://simarpreetsingh-019.github.io/Thermo/agents.html", "image": "https://simarpreetsingh-019.github.io/Thermo/og-agents.png"}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the agent get access to my files or apps?", "acceptedAnswer": {"@type": "Answer", "text": "No. All eleven tools are read-only system readings. Thermo can't open, change or quit anything through MCP. App names and project folder names are included in process lists; turn that off in ⚙ → Connections → Share app names."}}, {"@type": "Question", "name": "How is Thermo different from other Mac MCP servers?", "acceptedAnswer": {"@type": "Answer", "text": "Most Mac MCP servers give a snapshot of system info, and thermo-control-mcp adds fan control through a root daemon. Thermo is built for benchmarking: start_benchmark, run your tests or build, stop_benchmark, then compare_benchmarks for a before/after Markdown table. It also checks headroom before heavy jobs and waits for the Mac to cool. All 11 tools are read-only, it needs no admin rights or daemon, and it works without the Thermo app running."}}, {"@type": "Question", "name": "Does Thermo need to be running?", "acceptedAnswer": {"@type": "Answer", "text": "No. The MCP server and CLI take their own readings. The Thermo app is only needed for the local HTTP API and for recording history."}}, {"@type": "Question", "name": "Does it work in cloud agents or on Linux/Windows?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet: Thermo reads Mac hardware, so it runs where your Mac is. Windows and Linux support is next on the roadmap."}}, {"@type": "Question", "name": "Does it use the network?", "acceptedAnswer": {"@type": "Answer", "text": "No. MCP and the CLI talk over standard input/output only. The optional API listens on 127.0.0.1, never on your network."}}, {"@type": "Question", "name": "The server doesn't show up in my client.", "acceptedAnswer": {"@type": "Answer", "text": "Check the path exists: ls /Applications/Thermo.app/Contents/MacOS/Thermo. Run thermo status to make sure readings work. In Claude Code, claude mcp list should show thermo ✔ Connected. Still stuck? Open an issue."}}]}, {"@context": "https://schema.org", "@type": "HowTo", "name": "Connect an AI agent to Thermo's MCP server", "step": [{"@type": "HowToStep", "text": "Install Thermo: brew install --cask simarpreetsingh-019/thermo/thermo"}, {"@type": "HowToStep", "text": "Add the MCP server: claude mcp add thermo -- /Applications/Thermo.app/Contents/MacOS/Thermo --mcp (or the same command and args in Codex, Cursor, VS Code or any MCP client)"}, {"@type": "HowToStep", "text": "Ask your agent to benchmark a workload: it calls start_benchmark, runs it, then stop_benchmark for CPU/GPU load, heat rise and throttling."}]}]
 </script>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 <style>
   .split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
   @media (max-width:900px){.split{grid-template-columns:1fr}}
@@ -349,6 +349,7 @@ curl -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:47615/v1/headroom?kind=
   </div>
 </section>
 
+<div class="word" aria-hidden="true">Thermo</div>
 <footer class="site" id="about"><div class="wrap">
   <div class="row">
     <a class="me" href="https://simarpreetsingh-019.github.io" title="Simarpreet Singh's portfolio">
@@ -371,6 +372,6 @@ curl -H "Authorization: Bearer $TOKEN" "http://127.0.0.1:47615/v1/headroom?kind=
   </div>
 </div></footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=3"></script>
 </body>
 </html>

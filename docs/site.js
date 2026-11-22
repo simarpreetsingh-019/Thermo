@@ -77,6 +77,18 @@
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('preserveAspectRatio', 'none');
     svg.innerHTML = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".45"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
       <path d="${d}L${W},${H}L0,${H}Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`;
+    // Hover: a dot rides the line and shows the value at that point.
+    const box = svg.parentElement, unit = svg.dataset.unit || '%', base = +(svg.dataset.base || 0), k = +(svg.dataset.k || 1);
+    const dot = document.createElement('i'), lab = document.createElement('span');
+    dot.className = 'spot'; lab.className = 'spot-l'; dot.style.setProperty('--sc', c);
+    box.append(dot, lab);
+    svg.addEventListener('pointermove', e => {
+      const r = svg.getBoundingClientRect(), b = box.getBoundingClientRect();
+      const i = Math.round(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * (n - 1));
+      const px = r.left - b.left + i / (n - 1) * r.width, py = r.top - b.top + (1 - pts[i] / 100) * r.height;
+      dot.style.left = lab.style.left = px + 'px'; dot.style.top = lab.style.top = py + 'px';
+      lab.textContent = Math.round(base + pts[i] * k) + unit;
+    });
   });
 
   // Agent terminal demo: <div class="body" data-script='[["u","text"],["tool","..."],...]'>
@@ -118,4 +130,22 @@
       try { await navigator.clipboard.writeText(url); say('Link copied'); } catch { prompt('Copy this link:', url); }
     });
   });
+})();
+
+// v2: wallpaper dock, tile glow, deep links into agent tabs
+(() => {
+  const scr = document.querySelector('.mac .screen');
+  document.querySelectorAll('.dock button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.dock button').forEach(x => x.classList.toggle('on', x === b));
+    if (scr) scr.style.background = b.dataset.wall || '';
+  }));
+  document.querySelectorAll('.tile-b').forEach(t => t.addEventListener('pointermove', e => {
+    const r = t.getBoundingClientRect();
+    t.style.setProperty('--mx', (e.clientX - r.left) + 'px'); t.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }));
+  const m = location.hash.match(/^#(setup|api)-([a-z]+)$/);
+  if (m) {
+    const btn = document.querySelector(`#${m[1]} .seg button[data-t="${m[2]}"]`);
+    if (btn) { btn.click(); setTimeout(() => document.getElementById(m[1]).scrollIntoView(), 60); }
+  }
 })();

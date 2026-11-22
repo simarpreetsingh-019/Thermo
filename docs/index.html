@@ -30,7 +30,7 @@
 <script type="application/ld+json">
 [{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Thermo for Mac", "alternateName": ["Thermo", "Thermo Mac temperature monitor"], "slogan": "Mac stats. Right on your notch.", "operatingSystem": "macOS 13 or later", "applicationCategory": "UtilitiesApplication", "applicationSubCategory": "System monitor", "softwareVersion": "1.9.0", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free, open-source macOS app that shows live temperatures (CPU cores, GPU, memory, SSD, battery), CPU, GPU and memory usage around the MacBook notch, explains what is heating the Mac and what to close, tracks battery health and 24-hour history, and includes a CLI, local API and MCP server so AI agents can benchmark CPU/GPU load and temperature.", "featureList": ["Per-component temperatures", "CPU, GPU and memory usage", "Heat advisor with app to close", "Battery health", "24-hour history", "Smart alerts", "MCP server for AI agents", "Benchmark CPU, GPU and temperature of a workload", "Thermal throttling status", "History logging and CSV export", "Apple Silicon M1\u2013M5 and Intel", "Benchmark recording with before/after Markdown comparison", "Names the app and project causing heat", "Time-to-cool estimate", "MCP server for AI agents (11 read-only tools)", "JSON command-line tool (thermo temps, thermo bench)", "Daily battery health log", "Works on MacBook, Mac mini, Mac Studio, iMac and Mac Pro"], "image": "https://simarpreetsingh-019.github.io/Thermo/og-home.png", "screenshot": "https://simarpreetsingh-019.github.io/Thermo/demo.gif", "url": "https://simarpreetsingh-019.github.io/Thermo/", "downloadUrl": "https://github.com/simarpreetsingh-019/Thermo/releases/latest", "installUrl": "https://simarpreetsingh-019.github.io/Thermo/#install", "codeRepository": "https://github.com/simarpreetsingh-019/Thermo", "license": "https://opensource.org/licenses/MIT", "author": {"@type": "Person", "name": "Simarpreet Singh", "url": "https://simarpreetsingh-019.github.io", "image": "https://simarpreetsingh-019.github.io/Thermo/creator.jpg", "sameAs": ["https://x.com/simarpreet_019", "https://github.com/simarpreetsingh-019"]}}, {"@context": "https://schema.org", "@type": "WebSite", "name": "Thermo for Mac", "url": "https://simarpreetsingh-019.github.io/Thermo/"}]
 </script>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -58,6 +58,7 @@
     </div>
 
     <div class="mac rv">
+      <div class="caption top"><span class="dot"></span>Live demo · hover the notch · click the dock to change wallpaper</div>
       <div class="lid"><div class="screen">
         <div class="menubar"><div><span></span><span>Finder</span><span>File</span><span>Edit</span><span>View</span></div><div><span>Wi-Fi</span><span>100%</span><span>9:41</span></div></div>
         <div class="win"><div class="tb"><i></i><i></i><i></i></div><div class="tx"><span class="d">~/projects/llm-finetune</span>
@@ -67,7 +68,7 @@ Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
 <div class="prog"><i></i></div>Epoch 2/3 <span class="o">GPU 91%</span>  loss 0.972
 <span class="d">eta 06:41</span></div></div>
         <div class="win win2"><div class="tb"><i></i><i></i><i></i></div><div class="tx"><b>Thermo</b><span class="o">Warming up</span><br>Training (python) is the main heat source. Still at full speed.</div></div>
-        <div class="dock"><i style="--c:linear-gradient(#5ac8fa,#007aff)"></i><i style="--c:linear-gradient(#ffd60a,#ff9f0a)"></i><i style="--c:linear-gradient(#34c759,#248a3d)"></i><i style="--c:linear-gradient(#2c2c2e,#000)"></i><i style="--c:linear-gradient(#ff6b2c,#ff4f8b)"></i><i style="--c:linear-gradient(#bf5af2,#5e5ce6)"></i><i style="--c:linear-gradient(#e5e5ea,#aeaeb2)"></i></div>
+        <div class="dock"><button type="button" style="--c:linear-gradient(#5ac8fa,#007aff)" data-wall="radial-gradient(120% 90% at 80% 100%,#5ac8fa,#0a2a6b 60%,#05060a)" aria-label="Ocean wallpaper" title="Ocean"></button><button type="button" style="--c:linear-gradient(#ffd60a,#ff9f0a)" data-wall="radial-gradient(120% 90% at 20% 100%,#ffb020,#7a2d00 60%,#0a0503)" aria-label="Sunset wallpaper" title="Sunset"></button><button type="button" style="--c:linear-gradient(#34c759,#248a3d)" data-wall="radial-gradient(120% 90% at 50% 100%,#2ee6a6,#06402f 60%,#030807)" aria-label="Forest wallpaper" title="Forest"></button><button type="button" style="--c:linear-gradient(#2c2c2e,#000)" data-wall="linear-gradient(160deg,#1c1c1e,#000)" aria-label="Midnight wallpaper" title="Midnight"></button><button type="button" style="--c:linear-gradient(#ff6b2c,#ff4f8b)" data-wall="" aria-label="Default wallpaper" title="Default"></button><button type="button" style="--c:linear-gradient(#bf5af2,#5e5ce6)" data-wall="radial-gradient(120% 90% at 80% 100%,#bf5af2,#2a1060 60%,#06040c)" aria-label="Aurora wallpaper" title="Aurora"></button><button type="button" style="--c:linear-gradient(#e5e5ea,#aeaeb2)" data-wall="linear-gradient(160deg,#e5e5ea,#8e8e93)" aria-label="Silver wallpaper" title="Silver"></button></div>
         <div class="hud" title="Hover or click">
           <div class="side">
             <div class="ring" data-live="cpu" style="--c:var(--cyan)"></div>
@@ -90,7 +91,6 @@ Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
         </div>
       </div></div>
       <div class="base"></div>
-      <div class="caption">Live demo. Hover the notch.</div>
     </div>
   </div>
 </section>
@@ -99,7 +99,7 @@ Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
   <div class="wrap rv">
     <div class="stats">
       <div><b class="grad">16 MB</b><span>of memory, about the size of one photo</span></div>
-      <div><b>~2%</b><span>of one CPU core while running</span></div>
+      <div><b>~0.3%</b><span>of total CPU on an 8-core Mac</span></div>
       <div><b>0</b><span>telemetry, admin rights or kernel extensions</span></div>
       <div><b>$0</b><span>free and MIT-licensed, forever</span></div>
     </div>
@@ -114,52 +114,52 @@ Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
       <p class="lede">Not just numbers. Thermo explains what's happening and what to do about it.</p>
     </div>
     <div class="bento">
-      <div class="tile-b s4 rv">
+      <div class="tile-b s4 rv" style="--glow:#ff6b2c">
         <div class="k">Heat advisor</div>
         <h3>Knows why your Mac is hot.</h3>
         <p>Shows the apps causing it (even which project a <code>node</code> or <code>python</code> process belongs to), what's slowing down, and how long it'll take to cool. One click to quit.</p>
-        <div class="viz"><svg class="spark" data-seed="7" data-color="#ff6b2c"></svg></div>
+        <div class="viz"><svg class="spark" data-seed="7" data-color="#ff6b2c" data-unit="°C" data-base="38" data-k=".62"></svg></div>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#ffb020">
         <div class="k">Battery</div>
         <div class="big grad">100%</div>
         <h3 style="margin-top:12px">Battery health</h3>
         <p>Health, cycles, watts in or out, time left, and a daily health log.</p>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#a98bff">
         <div class="k">Memory</div>
         <h3>Real memory pressure.</h3>
         <p>Pressure and swap the way macOS sees them. No fake "RAM cleaning", just what to close.</p>
-        <div class="viz"><svg class="spark" data-seed="3" data-color="#a98bff"></svg></div>
+        <div class="viz"><svg class="spark" data-seed="3" data-color="#a98bff" data-unit="% memory"></svg></div>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#ff4f8b">
         <div class="k">Smart alerts</div>
         <h3>Taps you only when it matters.</h3>
         <p>A small card if your Mac stays hot, memory stays tight, or an app gets stuck. Kept in an inbox, gone in 45 s.</p>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#38d6ff">
         <div class="k">History</div>
         <h3>24 hours, minute by minute.</h3>
         <p>CPU, memory, GPU and heat graphs with a shared hover line.</p>
-        <div class="viz"><svg class="spark" data-seed="11" data-color="#38d6ff"></svg></div>
+        <div class="viz"><svg class="spark" data-seed="11" data-color="#38d6ff" data-unit="% CPU"></svg></div>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#5ac8fa">
         <div class="k">Any Mac</div>
         <h3>Notch, floating, or menu bar.</h3>
         <p>Around the notch on MacBooks. Drag it down to float anywhere, with magnetic corners. Or keep it in the menu bar. Apple Silicon and Intel.</p>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#2ee6a6">
         <div class="k">Benchmarks</div>
         <h3>Before and after, as a table.</h3>
         <p>Press Record, run your tests or app, press Stop. Thermo saves CPU, GPU, memory, peak heat and throttling, then copies a before/after Markdown table for your pull request.</p>
-        <div class="viz"><svg class="spark" data-seed="5" data-color="#2ee6a6"></svg></div>
+        <div class="viz"><svg class="spark" data-seed="5" data-color="#2ee6a6" data-unit="% GPU"></svg></div>
       </div>
-      <div class="tile-b s2 rv">
+      <div class="tile-b s2 rv" style="--glow:#f5f5f7">
         <div class="k">Terminal</div>
         <h3>thermo temps. That's it.</h3>
         <p><code>thermo status</code>, <code>thermo temps</code>, <code>thermo bench -- npm test</code>, <code>thermo headroom</code>. Plain text or <code>--json</code>, no sudo. What <code>powermetrics</code> no longer shows on Apple Silicon.</p>
       </div>
-      <div class="tile-b s6 rv">
+      <div class="tile-b s6 rv" style="--glow:#38d6ff">
         <div class="k">Built for agents</div>
         <h3>Benchmark with your AI.</h3>
         <p>An MCP server, CLI and local API. Your agent records CPU, GPU and temperature while your code runs, and checks for headroom before heavy jobs.</p>
@@ -220,8 +220,8 @@ Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
       <div class="eyebrow">See it in action</div>
       <h2>Hover. Expand. Done.</h2>
     </div>
-    <div class="frame rv"><img src="demo.gif" alt="Thermo expanding from the MacBook notch to show CPU, GPU, memory and temperature" loading="lazy" width="1120" height="630"></div>
-    <p class="center" style="color:var(--dim);margin-top:18px"><a href="https://github.com/simarpreetsingh-019/Thermo/raw/main/docs/launch.mp4">Watch the launch video (41 s) →</a></p>
+    <div class="frame rv"><video src="launch.mp4" autoplay muted loop playsinline preload="metadata" width="1280" height="720" aria-label="Thermo expanding from the MacBook notch to show CPU, GPU, memory and temperature"><img src="demo.gif" alt="Thermo expanding from the MacBook notch"></video></div>
+    <p class="center" style="color:var(--dim);margin-top:18px"><a href="https://github.com/simarpreetsingh-019/Thermo/raw/main/docs/launch.mp4">Open the video full size →</a></p>
   </div>
 </section>
 
@@ -257,8 +257,8 @@ Epoch 1/3 <span class="o">GPU 86%</span>  loss 1.284
     </div>
     <div class="marquee rv" style="margin-top:40px">
       <div class="track">
-        <span class="chip"><i style="--c:#ff6b2c"></i>Claude Code</span><span class="chip"><i style="--c:#ffb020"></i>Claude Desktop</span><span class="chip"><i style="--c:#2ee6a6"></i>Codex</span><span class="chip"><i style="--c:#38d6ff"></i>Cursor</span><span class="chip"><i style="--c:#a98bff"></i>VS Code</span><span class="chip"><i style="--c:#ff4f8b"></i>Windsurf</span><span class="chip"><i style="--c:#2ee6a6"></i>Zed</span><span class="chip"><i style="--c:#ffb020"></i>GitHub Actions</span><span class="chip"><i style="--c:#38d6ff"></i>Python</span><span class="chip"><i style="--c:#a98bff"></i>Node.js</span><span class="chip"><i style="--c:#ff6b2c"></i>Swift</span><span class="chip"><i style="--c:#2ee6a6"></i>Any MCP client</span>
-        <span class="chip" aria-hidden="true"><i style="--c:#ff6b2c"></i>Claude Code</span><span class="chip" aria-hidden="true"><i style="--c:#ffb020"></i>Claude Desktop</span><span class="chip" aria-hidden="true"><i style="--c:#2ee6a6"></i>Codex</span><span class="chip" aria-hidden="true"><i style="--c:#38d6ff"></i>Cursor</span><span class="chip" aria-hidden="true"><i style="--c:#a98bff"></i>VS Code</span><span class="chip" aria-hidden="true"><i style="--c:#ff4f8b"></i>Windsurf</span><span class="chip" aria-hidden="true"><i style="--c:#2ee6a6"></i>Zed</span><span class="chip" aria-hidden="true"><i style="--c:#ffb020"></i>GitHub Actions</span><span class="chip" aria-hidden="true"><i style="--c:#38d6ff"></i>Python</span><span class="chip" aria-hidden="true"><i style="--c:#a98bff"></i>Node.js</span><span class="chip" aria-hidden="true"><i style="--c:#ff6b2c"></i>Swift</span><span class="chip" aria-hidden="true"><i style="--c:#2ee6a6"></i>Any MCP client</span>
+        <a class="chip" href="agents.html#setup-cc"><i style="--c:#ff6b2c"></i>Claude Code</a><a class="chip" href="agents.html#setup-cd"><i style="--c:#ffb020"></i>Claude Desktop</a><a class="chip" href="agents.html#setup-codex"><i style="--c:#2ee6a6"></i>Codex</a><a class="chip" href="agents.html#setup-cursor"><i style="--c:#38d6ff"></i>Cursor</a><a class="chip" href="agents.html#setup-vscode"><i style="--c:#a98bff"></i>VS Code</a><a class="chip" href="agents.html#setup-ws"><i style="--c:#ff4f8b"></i>Windsurf</a><a class="chip" href="agents.html#setup-any"><i style="--c:#2ee6a6"></i>Zed</a><a class="chip" href="agents.html#actions"><i style="--c:#ffb020"></i>GitHub Actions</a><a class="chip" href="agents.html#api-py"><i style="--c:#38d6ff"></i>Python</a><a class="chip" href="agents.html#api-js"><i style="--c:#a98bff"></i>Node.js</a><a class="chip" href="agents.html#api-sw"><i style="--c:#ff6b2c"></i>Swift</a><a class="chip" href="agents.html#setup-any"><i style="--c:#2ee6a6"></i>Any MCP client</a>
+        <a class="chip" href="agents.html#setup-cc" aria-hidden="true" tabindex="-1"><i style="--c:#ff6b2c"></i>Claude Code</a><a class="chip" href="agents.html#setup-cd" aria-hidden="true" tabindex="-1"><i style="--c:#ffb020"></i>Claude Desktop</a><a class="chip" href="agents.html#setup-codex" aria-hidden="true" tabindex="-1"><i style="--c:#2ee6a6"></i>Codex</a><a class="chip" href="agents.html#setup-cursor" aria-hidden="true" tabindex="-1"><i style="--c:#38d6ff"></i>Cursor</a><a class="chip" href="agents.html#setup-vscode" aria-hidden="true" tabindex="-1"><i style="--c:#a98bff"></i>VS Code</a><a class="chip" href="agents.html#setup-ws" aria-hidden="true" tabindex="-1"><i style="--c:#ff4f8b"></i>Windsurf</a><a class="chip" href="agents.html#setup-any" aria-hidden="true" tabindex="-1"><i style="--c:#2ee6a6"></i>Zed</a><a class="chip" href="agents.html#actions" aria-hidden="true" tabindex="-1"><i style="--c:#ffb020"></i>GitHub Actions</a><a class="chip" href="agents.html#api-py" aria-hidden="true" tabindex="-1"><i style="--c:#38d6ff"></i>Python</a><a class="chip" href="agents.html#api-js" aria-hidden="true" tabindex="-1"><i style="--c:#a98bff"></i>Node.js</a><a class="chip" href="agents.html#api-sw" aria-hidden="true" tabindex="-1"><i style="--c:#ff6b2c"></i>Swift</a><a class="chip" href="agents.html#setup-any" aria-hidden="true" tabindex="-1"><i style="--c:#2ee6a6"></i>Any MCP client</a>
       </div>
     </div>
     <div class="center rv" style="margin-top:44px">
@@ -313,10 +313,10 @@ gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo</
       <div class="eyebrow" style="color:var(--cool)">Privacy</div>
       <h2>Your Mac's data<br>stays on your Mac.</h2>
     </div>
-    <div class="cards">
+    <div class="cards c4">
       <div class="card rv"><h3>No telemetry</h3><p>The only network request is a daily update check against GitHub Releases. It sends nothing about you.</p></div>
       <div class="card rv"><h3>No admin rights</h3><p>Public macOS APIs only. No kernel extensions, no helper tools, no passwords.</p></div>
-      <div class="card rv"><h3>Verified updates</h3><p>Every update must match its SHA-256 checksum and pass a code-signature check before it's installed.</p></div>
+      <div class="card rv"><h3>Verified releases</h3><p>Updates must match their SHA-256 checksum and pass a code-signature check. Every release also ships Sigstore signatures, build provenance and an SBOM, made with <a href="https://github.com/simarpreetsingh-019/shipcrate">shipcrate</a>.</p></div>
       <div class="card rv"><h3>Locked-down API</h3><p>Off by default. Localhost only, read-only, token-protected, and it refuses requests from web pages.</p></div>
     </div>
   </div>
@@ -337,6 +337,7 @@ gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo</
   </div>
 </section>
 
+<div class="word" aria-hidden="true">Thermo</div>
 <footer class="site" id="about"><div class="wrap">
   <div class="row">
     <a class="me" href="https://simarpreetsingh-019.github.io" title="Simarpreet Singh's portfolio">
@@ -359,6 +360,6 @@ gh attestation verify ~/Downloads/Thermo.zip --repo simarpreetsingh-019/Thermo</
   </div>
 </div></footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=3"></script>
 </body>
 </html>
