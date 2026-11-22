@@ -4,7 +4,10 @@ All notable changes to Thermo for Mac. Newest first. `./release.sh X.Y.Z` copies
 being released into the GitHub release notes under "What's new".
 Mark a release as a security update with `./release.sh X.Y.Z --security`: the updaters then show a stronger notice.
 
-## [Unreleased]
+## [1.10.0-beta.2] - 2026-11-22
+
+### Fixed
+- **Beta updates:** Thermo compared versions without their beta part, so testers on 1.10.0-beta.1 were never offered 1.10.0-beta.2, or even 1.10.0. Versions now follow the usual order (beta.1 < beta.2 < release). If you're on beta.1, install this one by hand once; after that, updates arrive by themselves.
 
 ### Changed
 - Releases use the full shipcrate pipeline: a quality gate before every release, CI on every push and pull request, and signed build provenance (SBOM + Sigstore) for every release.
