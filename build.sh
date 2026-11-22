@@ -10,7 +10,9 @@ APP=build/Thermo.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 for arch in arm64 x86_64; do
-  swiftc -O ${FLAGS[@]+"${FLAGS[@]}"} -target "$arch-apple-macos13.0" Sources/*.swift -o "build/th-$arch" 2> >(grep -v "ld: warning" >&2)
+  swiftc -O ${FLAGS[@]+"${FLAGS[@]}"} -target "$arch-apple-macos13.0" Sources/*.swift -o "build/th-$arch" 2>"build/swiftc-$arch.log" \
+    || { grep -v "ld: warning" "build/swiftc-$arch.log" >&2; exit 1; }
+  grep -v "ld: warning" "build/swiftc-$arch.log" >&2 || true
 done
 lipo -create build/th-arm64 build/th-x86_64 -output "$APP/Contents/MacOS/Thermo"
 rm build/th-*

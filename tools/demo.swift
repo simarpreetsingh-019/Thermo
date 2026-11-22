@@ -367,7 +367,7 @@ let pw = Int(W * 2), ph = Int(H * 2)
 let writer = try! AVAssetWriter(outputURL: outMP4, fileType: .mp4)
 let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
     AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: pw, AVVideoHeightKey: ph,
-    AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 6_000_000]])
+    AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 450_000]])
 let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
     kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32ARGB, kCVPixelBufferWidthKey as String: pw, kCVPixelBufferHeightKey as String: ph])
 writer.add(input); writer.startWriting(); writer.startSession(atSourceTime: .zero)
